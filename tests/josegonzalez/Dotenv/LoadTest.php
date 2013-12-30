@@ -60,7 +60,7 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $environment['ENULL']);
 	}
 
-	public function testParseExported()
+	public function testParseQuoted()
 	{
 		$this->Loader->setFilepath($this->fixturePath . 'quoted.env');
 		$this->Loader->parse();
