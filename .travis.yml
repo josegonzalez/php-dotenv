@@ -13,4 +13,4 @@ before_script:
 
 script:
   - phpcs --standard=psr2 src/
-  - phpunit --coverage-text
+  - phpunit
