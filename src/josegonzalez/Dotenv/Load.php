@@ -194,7 +194,7 @@ class Load implements JsonSerializable
     protected function requireParse($method)
     {
         if (!is_array($this->environment)) {
-            throw new LogicException(sprintf('Environment must be parsed before calling %s', $method));
+            throw new LogicException(sprintf('Environment must be parsed before calling %s()', $method));
         }
     }
 }

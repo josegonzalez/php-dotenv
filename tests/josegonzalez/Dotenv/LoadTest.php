@@ -26,7 +26,7 @@ class LoadTest extends PHPUnit_Framework_TestCase
 
 	public function testFilepath()
 	{
-		$this->assertEquals($this->fixturePath, $this->loader->filepath());
+		$this->assertEquals($this->fixturePath, $this->Loader->filepath());
 	}
 
 	public function testSetFilepath()
@@ -76,8 +76,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	public function testExpect()
 	{
 		$this->Loader->parse();
-		$this->assertTrue($this->Loader->expect('FOO'));
-		$this->assertTrue($this->Loader->expect(array('FOO', 'BAR')));
+		$this->assertInstanceOf('Load', $this->Loader->expect('FOO'));
+		$this->assertInstanceOf('Load', $this->Loader->expect(array('FOO', 'BAR')));
 	}
 
 	public function testDefine()
