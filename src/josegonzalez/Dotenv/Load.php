@@ -39,6 +39,8 @@ class Load
         if (is_string($options)) {
             $filepath = $options;
             $options = array();
+        } elseif (isset($options['filepath'])) {
+            $filepath = $options['filepath'];
         }
 
         $dotenv = new \josegonzalez\Dotenv\Load($filepath);
