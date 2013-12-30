@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite name="ColorExtractor Test Suite">
+            <directory>tests/josegonzalez/Dotenv</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/josegonzalez/Dotenv</directory>
+        </whitelist>
+    </filter>
+</phpunit>
