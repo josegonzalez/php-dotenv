@@ -80,6 +80,10 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('josegonzalez\Dotenv\Load', $this->Loader->expect(array('FOO', 'BAR')));
 	}
 
+	/**
+	 * @expectedException LogicException
+	 * @expectedExceptionMessage Key "NULL" has already been defined
+	 */
 	public function testDefine()
 	{
 		$this->Loader->parse();
