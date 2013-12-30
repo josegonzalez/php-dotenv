@@ -6,14 +6,16 @@ use \PHPUnit_Framework_TestCase;
 class LoadTest extends PHPUnit_Framework_TestCase
 {
 
-	public function setUp() {
+	public function setUp()
+	{
 		$this->env = $_ENV;
 		$this->server = $_SERVER;
 		$this->fixturePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
 		$this->Loader = new Loader($this->fixturePath . '.env');
 	}
 
-	public function tearDown() {
+	public function tearDown()
+	{
 		$_ENV = $this->env;
 		$_SERVER = $this->server;
 		unset($this->env);
@@ -22,16 +24,19 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		unset($this->Loader);
 	}
 
-	public function testFilepath() {
+	public function testFilepath()
+	{
 		$this->assertEquals($this->fixturePath, $this->loader->filepath());
 	}
 
-	public function testSetFilepath() {
+	public function testSetFilepath()
+	{
 		$this->Loader->setFilepath('/tmp/.env');
 		$this->assertEquals('/tmp/.env', $this->Loader->filepath());
 	}
 
-	public function testParse() {
+	public function testParse()
+	{
 		$this->Loader->parse();
 		$environment = $this->Loader->toArray();
 
@@ -42,7 +47,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $environment['NULL']);
 	}
 
-	public function testParseExported() {
+	public function testParseExported()
+	{
 		$this->Loader->setFilepath($this->fixturePath . 'exported.env');
 		$this->Loader->parse();
 		$environment = $this->Loader->toArray();
@@ -54,7 +60,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $environment['ENULL']);
 	}
 
-	public function testParseExported() {
+	public function testParseExported()
+	{
 		$this->Loader->setFilepath($this->fixturePath . 'quoted.env');
 		$this->Loader->parse();
 		$environment = $this->Loader->toArray();
@@ -66,13 +73,15 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $environment['QNULL']);
 	}
 
-	public function testExpect() {
+	public function testExpect()
+	{
 		$this->Loader->parse();
 		$this->assertTrue($this->Loader->expect('FOO'));
 		$this->assertTrue($this->Loader->expect(array('FOO', 'BAR')));
 	}
 
-	public function testDefine() {
+	public function testDefine()
+	{
 		$this->Loader->parse();
 		$this->Loader->define();
 
@@ -82,7 +91,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('pgsql:host=localhost;dbname=test', EQUALS);
 	}
 
-	public function testToEnv() {
+	public function testToEnv()
+	{
 		$this->Loader->parse();
 		$this->Loader->toEnv();
 
@@ -93,7 +103,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $_ENV['NULL']);
 	}
 
-	public function testToServer() {
+	public function testToServer()
+	{
 		$this->Loader->parse();
 		$this->Loader->toServer();
 
@@ -108,7 +119,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException LogicException
 	 * @expectedExceptionMessage Environment must be parsed before calling expect()
 	 */
-	public function testExpectRequireException() {
+	public function testExpectRequireException()
+	{
 		$this->Loader->expect();
 	}
 
@@ -116,7 +128,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException InvalidArgumentException
 	 * @expectedExceptionMessage No arguments were passed to expect()
 	 */
-	public function testExpectArgumentException() {
+	public function testExpectArgumentException()
+	{
 		$this->Loader->parse();
 		$this->Loader->expect();
 	}
@@ -125,7 +138,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException RuntimeException
 	 * @expectedExceptionMessage Required ENV vars missing: ['BAZ']
 	 */
-	public function testExpectMissingRequiredException() {
+	public function testExpectMissingRequiredException()
+	{
 		$this->Loader->parse();
 		$this->assertTrue($this->Loader->expect(array('BAZ')));
 	}
@@ -134,7 +148,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException LogicException
 	 * @expectedExceptionMessage Environment must be parsed before calling define()
 	 */
-	public function testDefineRequireException() {
+	public function testDefineRequireException()
+	{
 		$this->Loader->define();
 	}
 
@@ -142,7 +157,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException LogicException
 	 * @expectedExceptionMessage Key "NULL" has already been defined
 	 */
-	public function testDefineNullException() {
+	public function testDefineNullException()
+	{
 		$this->Loader->parse();
 		$this->Loader->define();
 	}
@@ -151,7 +167,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException LogicException
 	 * @expectedExceptionMessage Environment must be parsed before calling toEnv()
 	 */
-	public function testToEnvRequireException() {
+	public function testToEnvRequireException()
+	{
 		$this->Loader->toEnv();
 	}
 
@@ -159,7 +176,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException LogicException
 	 * @expectedExceptionMessage Environment must be parsed before calling toServer()
 	 */
-	public function testToServerRequireException() {
+	public function testToServerRequireException()
+	{
 		$this->Loader->toServer();
 	}
 
@@ -167,7 +185,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	 * @expectedException LogicException
 	 * @expectedExceptionMessage Environment must be parsed before calling toArray()
 	 */
-	public function testToArrayException() {
+	public function testToArrayException()
+	{
 		$this->Loader->toArray();
 	}
 }

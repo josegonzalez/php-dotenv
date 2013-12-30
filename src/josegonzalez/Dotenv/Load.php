@@ -10,28 +10,32 @@ use RuntimeException;
 class Load implements JsonSerializable
 {
 
-    protected $_filepath = null;
+    protected $filepath = null;
 
-    protected $_environment = null;
+    protected $environment = null;
 
-    public function __construct($filepath = null) {
+    public function __construct($filepath = null)
+    {
         $this->setFilepath($filepath);
         return $this;
     }
 
-    public function filepath() {
-        return $this->_filepath;
+    public function filepath()
+    {
+        return $this->filepath;
     }
 
-    public function setFilepath($filepath = null) {
+    public function setFilepath($filepath = null)
+    {
         if ($filepath == null) {
             $filepath = __DIR__ . DIRECTORY_SEPARATOR . '.env';
         }
-        $this->_filepath = $filepath;
+        $this->filepath = $filepath;
         return $this;
     }
 
-    public static function load($options = null) {
+    public static function load($options = null)
+    {
         $filepath = null;
         if (is_string($options)) {
             $filepath = $options;
@@ -59,23 +63,24 @@ class Load implements JsonSerializable
         return $dotenv;
     }
 
-    public function parse() {
-        if (!file_exists($this->_filepath)) {
-            throw new InvalidArgumentException(sprintf("Environment file '%s' is not found.", $this->_filepath));
+    public function parse()
+    {
+        if (!file_exists($this->filepath)) {
+            throw new InvalidArgumentException(sprintf("Environment file '%s' is not found.", $this->filepath));
         }
 
-        if (!is_readable($this->_filepath)) {
-            throw new InvalidArgumentException(sprintf("Environment file '%s' is not readable.", $this->_filepath));
+        if (!is_readable($this->filepath)) {
+            throw new InvalidArgumentException(sprintf("Environment file '%s' is not readable.", $this->filepath));
         }
 
-        $fc = file_get_contents($this->_filepath);
+        $fc = file_get_contents($this->filepath);
         if ($fc === false) {
-            throw new InvalidArgumentException(sprintf("Environment file '%s' is not readable.", $this->_filepath));
+            throw new InvalidArgumentException(sprintf("Environment file '%s' is not readable.", $this->filepath));
         }
 
         $lines = explode(PHP_EOL, $fc);
 
-        $this->_environment = array();
+        $this->environment = array();
         foreach ($lines as $line) {
             if (empty($line)) {
                 continue;
@@ -93,13 +98,14 @@ class Load implements JsonSerializable
                 $value = $matches[1];
             }
 
-            $this->_environment[$key] = $value;
+            $this->environment[$key] = $value;
         }
 
         return $this;
     }
 
-    public function expect() {
+    public function expect()
+    {
         $this->requireParse('expect');
 
         $args = func_get_args();
@@ -115,7 +121,7 @@ class Load implements JsonSerializable
         $missingEnvs = array();
 
         foreach ($keys as $key) {
-            if (!isset($this->_environment[$key])) {
+            if (!isset($this->environment[$key])) {
                 $missingEnvs[] = $key;
             }
         }
@@ -127,9 +133,10 @@ class Load implements JsonSerializable
         return $this;
     }
 
-    public function define() {
+    public function define()
+    {
         $this->requireParse('define');
-        foreach ($this->_environment as $key => $value) {
+        foreach ($this->environment as $key => $value) {
             if (defined($key)) {
                 throw new LogicException(sprintf('Key "%s" has already been defined', $key));
             }
@@ -140,9 +147,10 @@ class Load implements JsonSerializable
         return $this;
     }
 
-    public function toEnv($overwrite = false) {
+    public function toEnv($overwrite = false)
+    {
         $this->requireParse('toEnv');
-        foreach ($this->_environment as $key => $value) {
+        foreach ($this->environment as $key => $value) {
             if (isset($_ENV[$key]) && !$overwrite) {
                 throw new LogicException(sprintf('Key "%s" has already been defined in $_ENV', $key));
             }
@@ -153,9 +161,10 @@ class Load implements JsonSerializable
         return $this;
     }
 
-    public function toServer($overwrite = false) {
+    public function toServer($overwrite = false)
+    {
         $this->requireParse('toServer');
-        foreach ($this->_environment as $key => $value) {
+        foreach ($this->environment as $key => $value) {
             if (isset($_SERVER[$key]) && !$overwrite) {
                 throw new LogicException(sprintf('Key "%s" has already been defined in $_SERVER', $key));
             }
@@ -166,21 +175,25 @@ class Load implements JsonSerializable
         return $this;
     }
 
-    public function toArray() {
+    public function toArray()
+    {
         $this->requireParse('environment');
-        return $this->_environment;
+        return $this->environment;
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return $this->toArray();
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return json_encode($this, JSON_PRETTY_PRINT);
     }
 
-    protected function requireParse($method) {
-        if (!is_array($this->_environment)) {
+    protected function requireParse($method)
+    {
+        if (!is_array($this->environment)) {
             throw new LogicException(sprintf('Environment must be parsed before calling %s', $method));
         }
     }
