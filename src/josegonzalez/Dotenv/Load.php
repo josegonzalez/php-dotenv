@@ -2,19 +2,12 @@
 
 namespace josegonzalez\Dotenv;
 
-// FIXME Don't declare interface, if it's already exists.
-if (!(version_compare(PHP_VERSION, '5.4.0') >= 0) || interface_exists('JsonSerializable', false)) {
-    use josegonzalez\Dotenv\JsonSerializable;
-} else {
-    use JsonSerializable;
-}
 use InvalidArgumentException;
 use LogicException;
-use JsonSerializable;
 use RuntimeException;
 
 
-class Load implements JsonSerializable
+class Load
 {
 
     protected $filepath = null;
@@ -188,14 +181,13 @@ class Load implements JsonSerializable
         return $this->environment;
     }
 
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
     public function __toString()
     {
-        return json_encode($this, JSON_PRETTY_PRINT);
+        if (version_compare(PHP_VERSION, '5.4.0') < 0) {
+            return json_encode($this->toArray());
+        } else {
+            return json_encode($this->toArray(), JSON_PRETTY_PRINT);
+        }
     }
 
     protected function requireParse($method)
