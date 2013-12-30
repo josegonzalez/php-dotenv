@@ -177,7 +177,7 @@ class Load implements JsonSerializable
 
     public function toArray()
     {
-        $this->requireParse('environment');
+        $this->requireParse('toArray');
         return $this->environment;
     }
 

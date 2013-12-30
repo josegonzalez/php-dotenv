@@ -26,7 +26,7 @@ class LoadTest extends PHPUnit_Framework_TestCase
 
 	public function testFilepath()
 	{
-		$this->assertEquals($this->fixturePath, $this->Loader->filepath());
+		$this->assertEquals($this->fixturePath . '.env', $this->Loader->filepath());
 	}
 
 	public function testSetFilepath()
@@ -76,8 +76,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	public function testExpect()
 	{
 		$this->Loader->parse();
-		$this->assertInstanceOf('Load', $this->Loader->expect('FOO'));
-		$this->assertInstanceOf('Load', $this->Loader->expect(array('FOO', 'BAR')));
+		$this->assertInstanceOf('josegonzalez\Dotenv\Load', $this->Loader->expect('FOO'));
+		$this->assertInstanceOf('josegonzalez\Dotenv\Load', $this->Loader->expect(array('FOO', 'BAR')));
 	}
 
 	public function testDefine()
@@ -155,7 +155,7 @@ class LoadTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @expectedException LogicException
-	 * @expectedExceptionMessage Key "NULL" has already been defined
+	 * @expectedExceptionMessage Key "FOO" has already been defined
 	 */
 	public function testDefineNullException()
 	{
