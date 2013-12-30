@@ -11,7 +11,7 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->env = $_ENV;
 		$this->server = $_SERVER;
 		$this->fixturePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
-		$this->Loader = new Loader($this->fixturePath . '.env');
+		$this->Loader = new Load($this->fixturePath . '.env');
 	}
 
 	public function tearDown()
