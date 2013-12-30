@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
 
-
 class Load
 {
 
