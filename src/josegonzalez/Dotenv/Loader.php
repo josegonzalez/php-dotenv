@@ -51,6 +51,11 @@ class Loader
 
         $dotenv = new \josegonzalez\Dotenv\Loader($filepath);
         $dotenv->parse();
+
+        if (array_key_exists('skipExisting', $options)) {
+            $dotenv->skipExisting($options['skipExisting']);
+        }
+
         if (array_key_exists('expect', $options)) {
             $dotenv->expect($options['expect']);
         }
