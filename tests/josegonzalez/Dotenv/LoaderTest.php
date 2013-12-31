@@ -1,9 +1,9 @@
 <?php
 
-use josegonzalez\Dotenv\Load;
+use josegonzalez\Dotenv\Loader;
 use \PHPUnit_Framework_TestCase;
 
-class LoadTest extends PHPUnit_Framework_TestCase
+class LoaderTest extends PHPUnit_Framework_TestCase
 {
 
 	public function setUp()
@@ -11,7 +11,7 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->env = $_ENV;
 		$this->server = $_SERVER;
 		$this->fixturePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
-		$this->Loader = new Load($this->fixturePath . '.env');
+		$this->Loader = new Loader($this->fixturePath . '.env');
 	}
 
 	public function tearDown()
@@ -76,8 +76,8 @@ class LoadTest extends PHPUnit_Framework_TestCase
 	public function testExpect()
 	{
 		$this->Loader->parse();
-		$this->assertInstanceOf('josegonzalez\Dotenv\Load', $this->Loader->expect('FOO'));
-		$this->assertInstanceOf('josegonzalez\Dotenv\Load', $this->Loader->expect(array('FOO', 'BAR')));
+		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->expect('FOO'));
+		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->expect(array('FOO', 'BAR')));
 	}
 
 	/**
@@ -95,6 +95,13 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('pgsql:host=localhost;dbname=test', EQUALS);
 	}
 
+    public function testSkipExistingDefine()
+    {
+        $this->Loader->parse();
+        $this->Loader->skipExisting('define');
+        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->define());
+    }
+
 	public function testToEnv()
 	{
 		$this->Loader->parse();
@@ -107,6 +114,13 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $_ENV['NULL']);
 	}
 
+    public function testSkipExistingToEnv()
+    {
+        $this->Loader->parse();
+        $this->Loader->skipExisting('toEnv');
+        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toEnv());
+    }
+
 	public function testToServer()
 	{
 		$this->Loader->parse();
@@ -118,6 +132,13 @@ class LoadTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('pgsql:host=localhost;dbname=test', $_SERVER['EQUALS']);
 		$this->assertEquals('', $_SERVER['NULL']);
 	}
+
+    public function testSkipExistingToServer()
+    {
+        $this->Loader->parse();
+        $this->Loader->skipExisting('toServer');
+        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toServer());
+    }
 
 	/**
 	 * @expectedException LogicException

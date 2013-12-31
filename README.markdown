@@ -28,7 +28,7 @@ Create a new loader:
 
 ```php
 <?php
-$Loader = new josegonzalez\Dotenv\Load('path/to/.env');
+$Loader = new josegonzalez\Dotenv\Loader('path/to/.env');
 // Parse the .env file
 $Loader->parse();
 // Send the parsed .env file to the $_ENV variable
@@ -40,7 +40,7 @@ Most methods return the loader directly, so the following is also possible:
 
 ```php
 <?php
-$Loader = (new josegonzalez\Dotenv\Load('path/to/.env'))
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->toEnv(); // Throws LogicException if ->parse() is not called first
 ?>
@@ -52,7 +52,7 @@ You can also define constants automatically from your env file:
 
 ```php
 <?php
-$Loader = (new josegonzalez\Dotenv\Load('path/to/.env'))
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->define(); // Throws LogicException if ->parse() is not called first
 ?>
@@ -65,7 +65,7 @@ Already defined constants will result in an immediate `LogicException`.
 ```php
 <?php
 $overwriteENV = true;
-$Loader = (new josegonzalez\Dotenv\Load('path/to/.env'))
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->toEnv($overwriteENV); // Throws LogicException if ->parse() is not called first
 ?>
@@ -78,7 +78,7 @@ Already defined `$_ENV` entries will result in an immediate `LogicException`, un
 ```php
 <?php
 $overwriteSERVER = true;
-$Loader = (new josegonzalez\Dotenv\Load('path/to/.env'))
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->toServer($overwriteSERVER); // Throws LogicException if ->parse() is not called first
 ?>
@@ -90,7 +90,7 @@ Already defined `$_SERVER` entries will result in an immediate `LogicException`,
 
 ```php
 <?php
-$environment = (new josegonzalez\Dotenv\Load('path/to/.env'))
+$environment = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->toArray(); // Throws LogicException if ->parse() is not called first
 ?>
@@ -100,7 +100,7 @@ $environment = (new josegonzalez\Dotenv\Load('path/to/.env'))
 
 ```php
 <?php
-$jsonEnvironment = (string)((new josegonzalez\Dotenv\Load('path/to/.env'))->parse());
+$jsonEnvironment = (string)((new josegonzalez\Dotenv\Loader('path/to/.env'))->parse());
 ?>
 ```
 
@@ -108,7 +108,7 @@ $jsonEnvironment = (string)((new josegonzalez\Dotenv\Load('path/to/.env'))->pars
 
 ```php
 <?php
-$Loader = (new josegonzalez\Dotenv\Load('path/to/.env'))
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->expect('FOO', 'BAR', 'BAZ'); // Throws RuntimeException if variables are missing
 ?>

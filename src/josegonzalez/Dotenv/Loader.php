@@ -6,12 +6,18 @@ use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
 
-class Load
+class Loader
 {
+
+    protected $environment = null;
 
     protected $filepath = null;
 
-    protected $environment = null;
+    protected $skip = array(
+        'define' => false,
+        'toEnv' => false,
+        'toServer' => false,
+    );
 
     public function __construct($filepath = null)
     {
@@ -43,7 +49,7 @@ class Load
             $filepath = $options['filepath'];
         }
 
-        $dotenv = new \josegonzalez\Dotenv\Load($filepath);
+        $dotenv = new \josegonzalez\Dotenv\Loader($filepath);
         $dotenv->parse();
         if (array_key_exists('expect', $options)) {
             $dotenv->expect($options['expect']);
@@ -139,6 +145,10 @@ class Load
         $this->requireParse('define');
         foreach ($this->environment as $key => $value) {
             if (defined($key)) {
+                if ($this->skip['define']) {
+                    continue;
+                }
+
                 throw new LogicException(sprintf('Key "%s" has already been defined', $key));
             }
 
@@ -153,6 +163,10 @@ class Load
         $this->requireParse('toEnv');
         foreach ($this->environment as $key => $value) {
             if (isset($_ENV[$key]) && !$overwrite) {
+                if ($this->skip['toEnv']) {
+                    continue;
+                }
+
                 throw new LogicException(sprintf('Key "%s" has already been defined in $_ENV', $key));
             }
 
@@ -167,10 +181,33 @@ class Load
         $this->requireParse('toServer');
         foreach ($this->environment as $key => $value) {
             if (isset($_SERVER[$key]) && !$overwrite) {
+                if ($this->skip['toServer']) {
+                    continue;
+                }
+
                 throw new LogicException(sprintf('Key "%s" has already been defined in $_SERVER', $key));
             }
 
             $_SERVER[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    public function skipExisting($types = null)
+    {
+        $args = func_get_args();
+        if (isset($args[0]) && is_array($args[0])) {
+            $args = $args[0];
+        }
+
+        $types = (array)$args;
+        if (empty($types)) {
+            $types = array_keys($this->skip);
+        }
+
+        foreach ((array)$types as $type) {
+            $this->skip[$type] = true;
         }
 
         return $this;
