@@ -1,6 +1,5 @@
 {
     "name": "josegonzalez/dotenv",
-    "version": "0.0.2",
     "type": "library",
     "description": "dotenv file parsing for PHP",
     "keywords": ["php", "dotenv", "configuration"],
