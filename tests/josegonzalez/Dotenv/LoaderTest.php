@@ -150,7 +150,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException LogicException
 	 * @expectedExceptionMessage No arguments were passed to expect()
 	 */
 	public function testExpectArgumentException()
