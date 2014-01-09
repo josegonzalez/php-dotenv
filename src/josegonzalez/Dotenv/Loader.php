@@ -13,6 +13,8 @@ class Loader
 
     protected $filepath = null;
 
+    protected $raise = true;
+
     protected $skip = array(
         'define' => false,
         'toEnv' => false,
