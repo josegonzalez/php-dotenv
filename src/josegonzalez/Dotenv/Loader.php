@@ -84,20 +84,23 @@ class Loader
     public function parse()
     {
         if (!file_exists($this->filepath)) {
-            return $this->raise('InvalidArgumentException',
+            return $this->raise(
+                'InvalidArgumentException',
                 sprintf("Environment file '%s' is not found.", $this->filepath)
             );
         }
 
         if (!is_readable($this->filepath)) {
-            return $this->raise('InvalidArgumentException',
+            return $this->raise(
+                'InvalidArgumentException',
                 sprintf("Environment file '%s' is not readable.", $this->filepath)
             );
         }
 
         $fc = file_get_contents($this->filepath);
         if ($fc === false) {
-            return $this->raise('InvalidArgumentException',
+            return $this->raise(
+                'InvalidArgumentException',
                 sprintf("Environment file '%s' is not readable.", $this->filepath)
             );
         }
@@ -151,7 +154,8 @@ class Loader
         }
 
         if (!empty($missingEnvs)) {
-            return $this->raise('RuntimeException',
+            return $this->raise(
+                'RuntimeException',
                 sprintf("Required ENV vars missing: ['%s']", implode("', '", $missingEnvs))
             );
         }
@@ -168,7 +172,8 @@ class Loader
                     continue;
                 }
 
-                return $this->raise('LogicException',
+                return $this->raise(
+                    'LogicException',
                     sprintf('Key "%s" has already been defined', $key)
                 );
             }
@@ -188,7 +193,8 @@ class Loader
                     continue;
                 }
 
-                return $this->raise('LogicException',
+                return $this->raise(
+                    'LogicException',
                     sprintf('Key "%s" has already been defined in $_ENV', $key)
                 );
             }
@@ -208,7 +214,8 @@ class Loader
                     continue;
                 }
 
-                return $this->raise('LogicException',
+                return $this->raise(
+                    'LogicException',
                     sprintf('Key "%s" has already been defined in $_SERVER', $key)
                 );
             }
@@ -262,9 +269,10 @@ class Loader
     protected function requireParse($method)
     {
         if (!is_array($this->environment)) {
-            return $this->raise('LogicException', sprintf(
-                'Environment must be parsed before calling %s()', $method
-            ));
+            return $this->raise(
+                'LogicException',
+                sprintf('Environment must be parsed before calling %s()', $method)
+            );
         }
     }
 
