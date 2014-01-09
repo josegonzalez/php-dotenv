@@ -72,22 +72,26 @@ class Loader
             $dotenv->toServer($options['toServer']);
         }
 
+        if (array_key_exists('raiseExceptions', $options)) {
+            $dotenv->raiseExceptions($options);
+        }
+
         return $dotenv;
     }
 
     public function parse()
     {
         if (!file_exists($this->filepath)) {
-            throw new InvalidArgumentException(sprintf("Environment file '%s' is not found.", $this->filepath));
+            return $this->raise('InvalidArgumentException', sprintf("Environment file '%s' is not found.", $this->filepath));
         }
 
         if (!is_readable($this->filepath)) {
-            throw new InvalidArgumentException(sprintf("Environment file '%s' is not readable.", $this->filepath));
+            return $this->raise('InvalidArgumentException', sprintf("Environment file '%s' is not readable.", $this->filepath));
         }
 
         $fc = file_get_contents($this->filepath);
         if ($fc === false) {
-            throw new InvalidArgumentException(sprintf("Environment file '%s' is not readable.", $this->filepath));
+            return $this->raise('InvalidArgumentException', sprintf("Environment file '%s' is not readable.", $this->filepath));
         }
 
         $lines = explode(PHP_EOL, $fc);
@@ -122,7 +126,7 @@ class Loader
 
         $args = func_get_args();
         if (count($args) == 0) {
-            throw new InvalidArgumentException("No arguments were passed to expect()");
+            return $this->raise('InvalidArgumentException', 'No arguments were passed to expect()');
         }
 
         if (isset($args[0]) && is_array($args[0])) {
@@ -139,7 +143,7 @@ class Loader
         }
 
         if (!empty($missingEnvs)) {
-            throw new RuntimeException(sprintf("Required ENV vars missing: ['%s']", implode("', '", $missingEnvs)));
+            return $this->raise('RuntimeException', sprintf("Required ENV vars missing: ['%s']", implode("', '", $missingEnvs)));
         }
 
         return $this;
@@ -154,7 +158,7 @@ class Loader
                     continue;
                 }
 
-                throw new LogicException(sprintf('Key "%s" has already been defined', $key));
+                return $this->raise('LogicException', sprintf('Key "%s" has already been defined', $key));
             }
 
             define($key, $value);
@@ -172,7 +176,7 @@ class Loader
                     continue;
                 }
 
-                throw new LogicException(sprintf('Key "%s" has already been defined in $_ENV', $key));
+                return $this->raise('LogicException', sprintf('Key "%s" has already been defined in $_ENV', $key));
             }
 
             $_ENV[$key] = $value;
@@ -190,7 +194,7 @@ class Loader
                     continue;
                 }
 
-                throw new LogicException(sprintf('Key "%s" has already been defined in $_SERVER', $key));
+                return $this->raise('LogicException', sprintf('Key "%s" has already been defined in $_SERVER', $key));
             }
 
             $_SERVER[$key] = $value;
@@ -218,6 +222,12 @@ class Loader
         return $this;
     }
 
+    public function raiseExceptions($raise = true)
+    {
+        $this->raise = $raise;
+        return $this;
+    }
+
     public function toArray()
     {
         $this->requireParse('toArray');
@@ -236,7 +246,16 @@ class Loader
     protected function requireParse($method)
     {
         if (!is_array($this->environment)) {
-            throw new LogicException(sprintf('Environment must be parsed before calling %s()', $method));
+            return $this->raise('LogicException', sprintf('Environment must be parsed before calling %s()', $method));
         }
+    }
+
+    protected function raise($exception, $message)
+    {
+        if ($this->raise) {
+            throw new $exception($message);
+        }
+
+        return false;
     }
 }
