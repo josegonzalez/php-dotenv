@@ -95,12 +95,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('pgsql:host=localhost;dbname=test', EQUALS);
 	}
 
-    public function testSkipExistingDefine()
-    {
-        $this->Loader->parse();
-        $this->Loader->skipExisting('define');
-        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->define());
-    }
+	public function testSkipExistingDefine()
+	{
+		$this->Loader->parse();
+		$this->Loader->skipExisting('define');
+		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->define());
+	}
 
 	public function testToEnv()
 	{
@@ -114,12 +114,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $_ENV['NULL']);
 	}
 
-    public function testSkipExistingToEnv()
-    {
-        $this->Loader->parse();
-        $this->Loader->skipExisting('toEnv');
-        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toEnv());
-    }
+	public function testSkipExistingToEnv()
+	{
+		$this->Loader->parse();
+		$this->Loader->skipExisting('toEnv');
+		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toEnv());
+	}
 
 	public function testToServer()
 	{
@@ -133,12 +133,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('', $_SERVER['NULL']);
 	}
 
-    public function testSkipExistingToServer()
-    {
-        $this->Loader->parse();
-        $this->Loader->skipExisting('toServer');
-        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toServer());
-    }
+	public function testSkipExistingToServer()
+	{
+		$this->Loader->parse();
+		$this->Loader->skipExisting('toServer');
+		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toServer());
+	}
 
 	/**
 	 * @expectedException LogicException
