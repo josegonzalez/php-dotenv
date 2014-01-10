@@ -120,7 +120,7 @@ You can also call it via the static `load` method call, which takes an array of 
 
 ```php
 <?php
-josegonzalez\Dotenv\Load::load(array(
+josegonzalez\Dotenv\Loader::load(array(
   'filepath' => 'path/to/.env',
   'expect' => array('FOO', 'BAR', 'BAZ'),
   'toEnv' => true,
