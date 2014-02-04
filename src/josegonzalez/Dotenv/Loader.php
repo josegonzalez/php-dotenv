@@ -90,6 +90,13 @@ class Loader
             );
         }
 
+        if (is_dir($this->filepath)) {
+            return $this->raise(
+                'InvalidArgumentException',
+                sprintf("Environment file '%s' is a directory. Should be a file.", $this->filepath)
+            );
+        }
+
         if (!is_readable($this->filepath)) {
             return $this->raise(
                 'InvalidArgumentException',
