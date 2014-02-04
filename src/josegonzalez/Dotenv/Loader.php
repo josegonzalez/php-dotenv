@@ -13,6 +13,8 @@ class Loader
 
     protected $filepath = null;
 
+    protected $prefix = null;
+
     protected $raise = true;
 
     protected $skip = array(
@@ -56,6 +58,10 @@ class Loader
 
         if (array_key_exists('skipExisting', $options)) {
             $dotenv->skipExisting($options['skipExisting']);
+        }
+
+        if (array_key_exists('prefix', $options)) {
+            $dotenv->prefix($options['prefix']);
         }
 
         if (array_key_exists('expect', $options)) {
@@ -174,18 +180,19 @@ class Loader
     {
         $this->requireParse('define');
         foreach ($this->environment as $key => $value) {
-            if (defined($key)) {
+            $prefixedKey = $this->prefixed($key);
+            if (defined($prefixedKey)) {
                 if ($this->skip['define']) {
                     continue;
                 }
 
                 return $this->raise(
                     'LogicException',
-                    sprintf('Key "%s" has already been defined', $key)
+                    sprintf('Key "%s" has already been defined', $prefixedKey)
                 );
             }
 
-            define($key, $value);
+            define($prefixedKey, $value);
         }
 
         return $this;
@@ -195,18 +202,19 @@ class Loader
     {
         $this->requireParse('toEnv');
         foreach ($this->environment as $key => $value) {
-            if (isset($_ENV[$key]) && !$overwrite) {
+            $prefixedKey = $this->prefixed($key);
+            if (isset($_ENV[$prefixedKey]) && !$overwrite) {
                 if ($this->skip['toEnv']) {
                     continue;
                 }
 
                 return $this->raise(
                     'LogicException',
-                    sprintf('Key "%s" has already been defined in $_ENV', $key)
+                    sprintf('Key "%s" has already been defined in $_ENV', $prefixedKey)
                 );
             }
 
-            $_ENV[$key] = $value;
+            $_ENV[$prefixedKey] = $value;
         }
 
         return $this;
@@ -216,18 +224,19 @@ class Loader
     {
         $this->requireParse('toServer');
         foreach ($this->environment as $key => $value) {
-            if (isset($_SERVER[$key]) && !$overwrite) {
+            $prefixedKey = $this->prefixed($key);
+            if (isset($_SERVER[$prefixedKey]) && !$overwrite) {
                 if ($this->skip['toServer']) {
                     continue;
                 }
 
                 return $this->raise(
                     'LogicException',
-                    sprintf('Key "%s" has already been defined in $_SERVER', $key)
+                    sprintf('Key "%s" has already been defined in $_SERVER', $prefixedKey)
                 );
             }
 
-            $_SERVER[$key] = $value;
+            $_SERVER[$prefixedKey] = $value;
         }
 
         return $this;
@@ -250,6 +259,21 @@ class Loader
         }
 
         return $this;
+    }
+
+    public function prefix($prefix = null)
+    {
+        $this->prefix = $prefix;
+        return $this;
+    }
+
+    public function prefixed($key)
+    {
+        if (!!$this->prefix) {
+            $key = $this->prefix . $key;
+        }
+
+        return $key;
     }
 
     public function raiseExceptions($raise = true)

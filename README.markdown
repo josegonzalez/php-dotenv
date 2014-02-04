@@ -86,6 +86,17 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 
 Already defined `$_SERVER` entries will result in an immediate `LogicException`, unless `$overwriteSERVER` is set to `true` (default `false`).
 
+### Setting key prefixes
+
+```php
+<?php
+$environment = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->parse()
+              ->prefix('FOO')
+              ->toServer(); // BAR=baz becomes FOOBAR=baz
+?>
+```
+
 ### Return as array
 
 ```php
@@ -111,6 +122,17 @@ $jsonEnvironment = (string)((new josegonzalez\Dotenv\Loader('path/to/.env'))->pa
 $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->expect('FOO', 'BAR', 'BAZ'); // Throws RuntimeException if variables are missing
+?>
+```
+
+### Turning off exceptions
+
+```php
+<?php
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->parse()
+              ->raiseExceptions(false)
+              ->expect('FOO', 'BAR', 'BAZ'); // Returns false if variables are missing
 ?>
 ```
 
