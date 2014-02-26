@@ -118,7 +118,7 @@ class Loader
             );
         }
 
-        $lines = explode(PHP_EOL, $fc);
+        $lines = preg_split('/\r\n|\r|\n/', $fc);
 
         $this->environment = array();
         foreach ($lines as $line) {
