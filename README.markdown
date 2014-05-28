@@ -24,6 +24,8 @@ Add the plugin to your project's `composer.json` - something like this:
 
 ## Usage
 
+> Example `.env` files are available in the [fixtures](https://github.com/josegonzalez/php-dotenv/tree/master/tests/josegonzalez/fixtures) directory.
+
 Create a new loader:
 
 ```php
