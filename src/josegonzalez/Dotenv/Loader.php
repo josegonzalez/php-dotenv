@@ -21,6 +21,7 @@ class Loader
         'define' => false,
         'toEnv' => false,
         'toServer' => false,
+        'toPutenv' => false
     );
 
     public function __construct($filepath = null)
@@ -78,6 +79,10 @@ class Loader
 
         if (array_key_exists('toServer', $options)) {
             $dotenv->toServer($options['toServer']);
+        }
+
+        if (array_key_exists('toPutenv', $options)) {
+            $dotenv->toPutenv($options['toPutenv']);
         }
 
         if (array_key_exists('raiseExceptions', $options)) {
@@ -215,6 +220,28 @@ class Loader
             }
 
             $_ENV[$prefixedKey] = $value;
+        }
+
+        return $this;
+    }
+
+    public function toPutenv($overwrite = false)
+    {
+        $this->requireParse('toPutenv');
+        foreach ($this->environment as $key => $value) {
+            $prefixedKey = $this->prefixed($key);
+            if (getenv($prefixedKey) && !$overwrite) {
+                if ($this->skip['toPutenv']) {
+                    continue;
+                }
+
+                return $this->raise(
+                    'LogicException',
+                    sprintf('Key "%s" has already been defined in getenv()', $prefixedKey)
+                );
+            }
+
+            putenv($prefixedKey . '=' . $value);
         }
 
         return $this;
