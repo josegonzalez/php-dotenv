@@ -143,7 +143,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     public function testToPutenv()
     {
 		$this->Loader->parse();
-		$this->Loader->toPutenv();
+		$this->Loader->putenv();
 
 		$this->assertEquals('bar', getenv('FOO'));
 		$this->assertEquals('baz', getenv('BAR'));
@@ -155,7 +155,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     public function testSkipExistingToPutenv()
     {
 		$this->Loader->parse();
-		$this->Loader->skipExisting('toPutenv');
+		$this->Loader->skipExisting('putenv');
 		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toEnv());
     }
 

@@ -21,7 +21,7 @@ class Loader
         'define' => false,
         'toEnv' => false,
         'toServer' => false,
-        'toPutenv' => false
+        'putenv' => false
     );
 
     public function __construct($filepath = null)
@@ -81,8 +81,8 @@ class Loader
             $dotenv->toServer($options['toServer']);
         }
 
-        if (array_key_exists('toPutenv', $options)) {
-            $dotenv->toPutenv($options['toPutenv']);
+        if (array_key_exists('putenv', $options)) {
+            $dotenv->putenv($options['putenv']);
         }
 
         if (array_key_exists('raiseExceptions', $options)) {
@@ -225,13 +225,13 @@ class Loader
         return $this;
     }
 
-    public function toPutenv($overwrite = false)
+    public function putenv($overwrite = false)
     {
-        $this->requireParse('toPutenv');
+        $this->requireParse('putenv');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
             if (getenv($prefixedKey) && !$overwrite) {
-                if ($this->skip['toPutenv']) {
+                if ($this->skip['putenv']) {
                     continue;
                 }
 
