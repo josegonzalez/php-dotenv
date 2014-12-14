@@ -139,6 +139,25 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 		$this->Loader->skipExisting('toServer');
 		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toServer());
 	}
+    
+    public function testToPutenv()
+    {
+		$this->Loader->parse();
+		$this->Loader->putenv();
+
+		$this->assertEquals('bar', getenv('FOO'));
+		$this->assertEquals('baz', getenv('BAR'));
+		$this->assertEquals('with spaces', getenv('SPACED'));
+		$this->assertEquals('pgsql:host=localhost;dbname=test', getenv('EQUALS'));
+		$this->assertEquals('', getenv('NULL'));
+    }
+
+    public function testSkipExistingToPutenv()
+    {
+		$this->Loader->parse();
+		$this->Loader->skipExisting('putenv');
+		$this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->toEnv());
+    }
 
 	/**
 	 * @expectedException LogicException
