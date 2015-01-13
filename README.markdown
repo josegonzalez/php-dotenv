@@ -132,8 +132,8 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 ```php
 <?php
 $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
-              ->parse()
               ->raiseExceptions(false)
+              ->parse()
               ->expect('FOO', 'BAR', 'BAZ'); // Returns false if variables are missing
 ?>
 ```
