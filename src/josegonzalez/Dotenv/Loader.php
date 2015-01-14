@@ -55,6 +55,11 @@ class Loader
         }
 
         $dotenv = new \josegonzalez\Dotenv\Loader($filepath);
+
+        if (array_key_exists('raiseExceptions', $options)) {
+            $dotenv->raiseExceptions($options);
+        }
+
         $dotenv->parse();
 
         if (array_key_exists('skipExisting', $options)) {
@@ -83,10 +88,6 @@ class Loader
 
         if (array_key_exists('putenv', $options)) {
             $dotenv->putenv($options['putenv']);
-        }
-
-        if (array_key_exists('raiseExceptions', $options)) {
-            $dotenv->raiseExceptions($options);
         }
 
         return $dotenv;
