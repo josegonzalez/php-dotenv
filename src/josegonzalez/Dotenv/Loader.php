@@ -57,7 +57,7 @@ class Loader
         $dotenv = new \josegonzalez\Dotenv\Loader($filepath);
 
         if (array_key_exists('raiseExceptions', $options)) {
-            $dotenv->raiseExceptions($options);
+            $dotenv->raiseExceptions($options['raiseExceptions']);
         }
 
         $dotenv->parse();
