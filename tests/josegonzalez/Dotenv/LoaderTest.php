@@ -232,5 +232,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 	public function testToArrayException()
 	{
 		$this->Loader->toArray();
-	}
+    }
+
+    public function testStaticMissingEnvNoExceptions()
+    {
+        josegonzalez\Dotenv\Loader::load([
+            'raiseExceptions' => false
+        ]);
+    }
 }
