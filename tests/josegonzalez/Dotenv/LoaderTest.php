@@ -236,8 +236,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     public function testStaticMissingEnvNoExceptions()
     {
-        josegonzalez\Dotenv\Loader::load([
+        josegonzalez\Dotenv\Loader::load(array(
             'raiseExceptions' => false
-        ]);
+        ));
     }
 }
