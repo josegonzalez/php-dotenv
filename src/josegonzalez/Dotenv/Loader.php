@@ -52,6 +52,7 @@ class Loader
             $options = array();
         } elseif (isset($options['filepath'])) {
             $filepath = $options['filepath'];
+            unset($options['filepath']);
         }
 
         $dotenv = new \josegonzalez\Dotenv\Loader($filepath);
@@ -62,32 +63,19 @@ class Loader
 
         $dotenv->parse();
 
-        if (array_key_exists('skipExisting', $options)) {
-            $dotenv->skipExisting($options['skipExisting']);
-        }
-
-        if (array_key_exists('prefix', $options)) {
-            $dotenv->prefix($options['prefix']);
-        }
-
-        if (array_key_exists('expect', $options)) {
-            $dotenv->expect($options['expect']);
-        }
-
-        if (array_key_exists('define', $options)) {
-            $dotenv->define();
-        }
-
-        if (array_key_exists('toEnv', $options)) {
-            $dotenv->toEnv($options['toEnv']);
-        }
-
-        if (array_key_exists('toServer', $options)) {
-            $dotenv->toServer($options['toServer']);
-        }
-
-        if (array_key_exists('putenv', $options)) {
-            $dotenv->putenv($options['putenv']);
+        $methods = array(
+            'skipExisting',
+            'prefix',
+            'expect',
+            'define',
+            'toEnv',
+            'toServer',
+            'putenv',
+        );
+        foreach ($methods as $method) {
+            if (array_key_exists($method, $options)) {
+                $dotenv->$method($options[$method]);
+            }
         }
 
         return $dotenv;
@@ -98,33 +86,33 @@ class Loader
         if (!file_exists($this->filepath)) {
             return $this->raise(
                 'InvalidArgumentException',
-                sprintf("Environment file '%s' is not found.", $this->filepath)
+                sprintf("Environment file '%s' is not found", $this->filepath)
             );
         }
 
         if (is_dir($this->filepath)) {
             return $this->raise(
                 'InvalidArgumentException',
-                sprintf("Environment file '%s' is a directory. Should be a file.", $this->filepath)
+                sprintf("Environment file '%s' is a directory. Should be a file", $this->filepath)
             );
         }
 
         if (!is_readable($this->filepath)) {
             return $this->raise(
                 'InvalidArgumentException',
-                sprintf("Environment file '%s' is not readable.", $this->filepath)
+                sprintf("Environment file '%s' is not readable", $this->filepath)
             );
         }
 
-        $fc = file_get_contents($this->filepath);
-        if ($fc === false) {
+        $contents = file_get_contents($this->filepath);
+        if ($contents === false) {
             return $this->raise(
                 'InvalidArgumentException',
-                sprintf("Environment file '%s' is not readable.", $this->filepath)
+                sprintf("Environment file '%s' is not readable", $this->filepath)
             );
         }
 
-        $lines = preg_split('/\r\n|\r|\n/', $fc);
+        $lines = preg_split('/\r\n|\r|\n/', $contents);
 
         $this->environment = array();
         foreach ($lines as $line) {
@@ -289,6 +277,17 @@ class Loader
         return $this;
     }
 
+    public function skipped()
+    {
+        $skipped = array();
+        foreach ($this->skip as $key => $value) {
+            if ($value == true) {
+                $skipped[] = $key;
+            }
+        }
+        return $skipped;
+    }
+
     public function prefix($prefix = null)
     {
         $this->prefix = $prefix;
@@ -313,16 +312,27 @@ class Loader
     public function toArray()
     {
         $this->requireParse('toArray');
-        return $this->environment;
+        if ($this->environment === null) {
+            return null;
+        }
+
+        $environment = array();
+        foreach ($this->environment as $key => $value) {
+            $environment[$this->prefixed($key)] = $value;
+
+        }
+        return $environment;
     }
 
     public function __toString()
     {
-        if (version_compare(PHP_VERSION, '5.4.0') < 0) {
-            return json_encode($this->toArray());
-        } else {
-            return json_encode($this->toArray(), JSON_PRETTY_PRINT);
+        try {
+            $data = $this->toArray();
+        } catch (LogicException $e) {
+            $data = array();
         }
+
+        return json_encode($data);
     }
 
     protected function requireParse($method)
