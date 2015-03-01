@@ -120,12 +120,13 @@ class Loader
                 continue;
             }
 
-            if (!preg_match('/(?:export )?([a-zA-Z_][a-zA-Z0-9_]*)=(.*)/', $line, $matches)) {
+            if (!preg_match('/(?:export )?([a-zA-Z_][a-zA-Z0-9_]*)(\s?)=(\s?)(.*)/', $line, $matches)) {
                 continue;
             }
 
             $key = $matches[1];
-            $value = $matches[2];
+            $value = $matches[4];
+
             if (preg_match('/^\'(.*)\'$/', $value, $matches)) {
                 $value = $matches[1];
             } elseif (preg_match('/^"(.*)"$/', $value, $matches)) {

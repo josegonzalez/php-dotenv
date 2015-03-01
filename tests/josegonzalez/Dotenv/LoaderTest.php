@@ -81,6 +81,15 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $environment['QBAR']);
         $this->assertEquals('with spaces', $environment['QSPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test', $environment['QEQUALS']);
+
+        $this->Loader->setFilepath($this->fixturePath . 'space.env');
+        $this->Loader->parse();
+        $environment = $this->Loader->toArray();
+
+        $this->assertEquals('bar', $environment['FOO']);
+        $this->assertEquals('baz', $environment['BAR']);
+        $this->assertEquals('with spaces', $environment['SPACED']);
+        $this->assertEquals('pgsql:host=localhost;dbname=test', $environment['EQUALS']);
     }
 
     /**
