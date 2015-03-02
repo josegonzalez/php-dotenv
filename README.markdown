@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.org/josegonzalez/php-dotenv.png?branch=master)](https://travis-ci.org/josegonzalez/php-dotenv) [![Coverage Status](https://coveralls.io/repos/josegonzalez/php-dotenv/badge.png?branch=master)](https://coveralls.io/r/josegonzalez/php-dotenv?branch=master) [![Total Downloads](https://poser.pugx.org/josegonzalez/dotenv/d/total.png)](https://packagist.org/packages/josegonzalez/dotenv) [![Latest Stable Version](https://poser.pugx.org/josegonzalez/dotenv/v/stable.png)](https://packagist.org/packages/josegonzalez/dotenv)
 
 # PHP Dotenv
-
 `.env` file parsing for PHP
+
+## What is it and why should I use it?
+When developing and deploying your applications you are interacting with two different environments. These two places both execute your code but will do so using different credentials, such as database connection credentials, for example. How do you tackle these differing credentials? dotEnv will solve this issue by allowing you to configure your environments and easily switch between them.
 
 ## Requirements
 
