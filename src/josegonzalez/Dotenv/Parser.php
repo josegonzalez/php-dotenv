@@ -85,10 +85,6 @@ class Parser
 
     public function processQuotedValue($value, $environment)
     {
-        if ($value[0] === '"' && substr($value, -1) === '"') {
-            $value = substr($value, 1, -1);
-        }
-
         if (strpos($value, '\\n') !== false) {
             $value = str_replace('\\n', "\n", $value);
 
