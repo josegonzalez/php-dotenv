@@ -3,6 +3,7 @@
 namespace josegonzalez\Dotenv;
 
 use InvalidArgumentException;
+use josegonzalez\Dotenv\Parser;
 use LogicException;
 use RuntimeException;
 
@@ -97,44 +98,15 @@ class Loader
             );
         }
 
-        if (!is_readable($this->filepath)) {
+        if (!is_readable($this->filepath) || ($contents = file_get_contents($this->filepath)) === false) {
             return $this->raise(
                 'InvalidArgumentException',
                 sprintf("Environment file '%s' is not readable", $this->filepath)
             );
         }
 
-        $contents = file_get_contents($this->filepath);
-        if ($contents === false) {
-            return $this->raise(
-                'InvalidArgumentException',
-                sprintf("Environment file '%s' is not readable", $this->filepath)
-            );
-        }
-
-        $lines = preg_split('/\r\n|\r|\n/', $contents);
-
-        $this->environment = array();
-        foreach ($lines as $line) {
-            if (empty($line)) {
-                continue;
-            }
-
-            if (!preg_match('/(?:export )?([a-zA-Z_][a-zA-Z0-9_]*)(\s?)=(\s?)(.*)/', $line, $matches)) {
-                continue;
-            }
-
-            $key = $matches[1];
-            $value = $matches[4];
-
-            if (preg_match('/^\'(.*)\'$/', $value, $matches)) {
-                $value = $matches[1];
-            } elseif (preg_match('/^"(.*)"$/', $value, $matches)) {
-                $value = $matches[1];
-            }
-
-            $this->environment[$key] = $value;
-        }
+        $parser = new Parser;
+        $this->environment = $parser->parse($contents);
 
         return $this;
     }

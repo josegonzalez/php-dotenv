@@ -24,8 +24,6 @@ Add the plugin to your project's `composer.json` - something like this:
 
 ## Usage
 
-> Example `.env` files are available in the [fixtures](https://github.com/josegonzalez/php-dotenv/tree/master/tests/josegonzalez/fixtures) directory.
-
 Create a new loader:
 
 ```php
@@ -47,6 +45,39 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->toEnv(); // Throws LogicException if ->parse() is not called first
 ?>
 ```
+
+You can use a `.env` file with any of the following features:
+
+```shell
+# comments are allowed
+FOO=bar # you can also have comments on the end of a line
+export BAR=baz # you can optionally begin with an `export` statement
+
+# both single and double quotes are allowed
+BAZ='qux'
+QUX="quux"
+
+# as are escaped quotes or similar:
+QUUX="corge \" grault"
+CORGE='garply" waldo'
+
+# spaces are allowed as well
+ GRAULT =fred
+GARPLY = plugh
+
+# you can even have nested variables using `{$VAR}` syntax
+# remember to define the nested var *before* using it
+WALDO={$xyzzy} # not yet defined, so will result in WALDO = `{}`
+THUD={$GARPLY} # will be defined as `plugh`
+
+# note that variables beginning with a character
+# other than [a-zA-Z_] shall be skipped.
+# However, numbers *are* allowed elsewhere in the key
+01SKIPPED=skipped
+NOT_SKIPPED1=not skipped
+```
+
+> Example `.env` files are available in the [fixtures](https://github.com/josegonzalez/php-dotenv/tree/master/tests/josegonzalez/fixtures) directory.
 
 ### Defining Constants
 

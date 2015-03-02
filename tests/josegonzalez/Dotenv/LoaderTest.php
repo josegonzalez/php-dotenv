@@ -56,40 +56,88 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParse()
     {
+        $this->Loader->setFilepath($this->fixturePath . 'all.env');
         $this->Loader->parse();
         $environment = $this->Loader->toArray();
-
         $this->assertEquals('bar', $environment['FOO']);
         $this->assertEquals('baz', $environment['BAR']);
         $this->assertEquals('with spaces', $environment['SPACED']);
-        $this->assertEquals('pgsql:host=localhost;dbname=test', $environment['EQUALS']);
-
-        $this->Loader->setFilepath($this->fixturePath . 'exported.env');
-        $this->Loader->parse();
-        $environment = $this->Loader->toArray();
+        $this->assertEquals('pgsql:host=localhost;dbname=test#notacomment', $environment['EQUALS']);
 
         $this->assertEquals('bar', $environment['EFOO']);
         $this->assertEquals('baz', $environment['EBAR']);
         $this->assertEquals('with spaces', $environment['ESPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test', $environment['EEQUALS']);
 
-        $this->Loader->setFilepath($this->fixturePath . 'quoted.env');
-        $this->Loader->parse();
-        $environment = $this->Loader->toArray();
-
         $this->assertEquals('bar', $environment['QFOO']);
         $this->assertEquals('baz', $environment['QBAR']);
         $this->assertEquals('with spaces', $environment['QSPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test', $environment['QEQUALS']);
 
-        $this->Loader->setFilepath($this->fixturePath . 'space.env');
+        $this->assertEquals('bar', $environment['SFOO']);
+        $this->assertEquals('baz', $environment['SBAR']);
+        $this->assertEquals('with spaces', $environment['SSPACED']);
+        $this->assertEquals('pgsql:host=localhost;dbname=test', $environment['SEQUALS']);
+
+        $this->assertEquals('bar', $environment['CFOO']);
+        $this->assertEquals('with spaces', $environment['CSPACED']);
+        $this->assertEquals('a value with a # character', $environment['CQUOTES']);
+        $this->assertEquals('a value with a # character & a quote " character inside quotes', $environment['CQUOTESWITHQUOTE']);
+        $this->assertEquals('', $environment['CNULL']);
+
+        $this->assertEquals(array(
+            'FOO' => 'bar',
+            'BAR' => 'baz',
+            'SPACED' => 'with spaces',
+            'EQUALS' => 'pgsql:host=localhost;dbname=test#notacomment',
+            'NOT_SKIPPED1' => 'not skipped',
+            'EFOO' => 'bar',
+            'EBAR' => 'baz',
+            'ESPACED' => 'with spaces',
+            'EEQUALS' => 'pgsql:host=localhost;dbname=test',
+            'QFOO' => 'bar',
+            'QBAR' => 'baz',
+            'QSPACED' => 'with spaces',
+            'QEQUALS' => 'pgsql:host=localhost;dbname=test',
+            'SFOO' => 'bar',
+            'SBAR' => 'baz',
+            'SSPACED' => 'with spaces',
+            'SEQUALS' => 'pgsql:host=localhost;dbname=test',
+            'CFOO' => 'bar',
+            'CSPACED' => 'with spaces',
+            'CQUOTES' => 'a value with a # character',
+            'CQUOTESWITHQUOTE' => 'a value with a # character & a quote " character inside quotes',
+            'CNULL' => '',
+            'SPVAR1' => '$a6^C7k%zs+e^.jvjXk',
+            'SPVAR2' => '?BUty3koaV3%GA*hMAwH}B',
+            'SPVAR3' => 'jdgEB4{QgEC]HL))&GcXxokB+wqoN+j>xkV7K?m$r',
+            'SPVAR4' => '22222:22#2^{',
+            'SPVAR5' => 'test some escaped characters like a quote \\\' or maybe a backslash \\\\',
+            'NVAR1' => 'Hello',
+            'NVAR2' => 'World!',
+            'NVAR3' => 'Hello World!',
+            'NVAR4' => '${NVAR1} ${NVAR2}',
+            'NVAR5' => '$NVAR1 {NVAR2}',
+        ), $environment);
+
+        $this->Loader->setFilepath($this->fixturePath . 'cake.env');
         $this->Loader->parse();
         $environment = $this->Loader->toArray();
-
-        $this->assertEquals('bar', $environment['FOO']);
-        $this->assertEquals('baz', $environment['BAR']);
-        $this->assertEquals('with spaces', $environment['SPACED']);
-        $this->assertEquals('pgsql:host=localhost;dbname=test', $environment['EQUALS']);
+        $this->assertEquals('app', $environment['APP_NAME']);
+        $this->assertEquals('2', $environment['DEBUG']);
+        $this->assertEquals('DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi', $environment['SECURITY_SALT']);
+        $this->assertEquals('76859309657453542496749683645', $environment['SECURITY_CIPHER_SEED']);
+        $this->assertEquals('mysql://user:password@localhost/database_name?encoding=utf8', $environment['DATABASE_URL']);
+        $this->assertEquals('mysql://user:password@localhost/test_database_name?encoding=utf8', $environment['DATABASE_TEST_URL']);
+        $this->assertEquals('file:///CACHE/?prefix=APP_NAME_&duration=DURATION', $environment['CACHE_URL']);
+        $this->assertEquals('file:///CACHE/?prefix=APP_NAME_debug_kit_&duration=DURATION', $environment['CACHE_DEBUG_KIT_URL']);
+        $this->assertEquals('file:///CACHE/?prefix=APP_NAME_cake_core_&duration=DURATION', $environment['CACHE_CAKE_CORE_URL']);
+        $this->assertEquals('file:///CACHE/?prefix=APP_NAME_cake_model_&duration=DURATION', $environment['CACHE_CAKE_MODEL_URL']);
+        $this->assertEquals('file:///LOGS/?types=notice,info,debug&file=debug', $environment['LOG_URL']);
+        $this->assertEquals('file:///LOGS/?types=warning,error,critical,alert,emergency&file=error', $environment['LOG_ERROR_URL']);
+        $this->assertEquals('mail://localhost/?from=you@localhost', $environment['EMAIL_URL']);
+        $this->assertEquals('smtp://user:secret@localhost:25/?from[site@localhost]=My+Site&timeout=30', $environment['EMAIL_SMTP_URL']);
+        $this->assertEquals('smtp://user:secret@localhost:25/?from=you@localhost&messageId=1&template=0&layout=0&timeout=30', $environment['EMAIL_FAST_URL']);
     }
 
     /**
