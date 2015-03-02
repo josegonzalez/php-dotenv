@@ -90,7 +90,6 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'BAR' => 'baz',
             'SPACED' => 'unquotedwithspaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test#notacomment',
-            'NEWLINE' => "newline\nchar",
             'ANOTHER_NEWLINE' => "quoted newline\nchar",
             'NOT_SKIPPED1' => 'not skipped',
             'EFOO' => 'bar',
@@ -120,6 +119,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'NVAR3' => 'Hello World!',
             'NVAR4' => '{$NVAR1} {$NVAR2}',
             'NVAR5' => '$NVAR1 {NVAR2}',
+            'PHP_NULL' => null,
+            'STRING_NULL' => 'null',
+            'PHP_TRUE' => true,
+            'STRING_TRUE' => 'true',
+            'PHP_FALSE' => false,
+            'STRING_FALSE' => 'false',
         ), $environment);
 
         $this->Loader->setFilepath($this->fixturePath . 'cake.env');

@@ -48,21 +48,55 @@ class Parser
                 $value = preg_replace($regexPattern, '$1', $value);
                 $value = str_replace("\\$quote", $quote, $value);
                 $value = str_replace('\\\\', '\\', $value);
+                $value = $this->processQuotedValue($value, $environment);
+
+                if (strpbrk($value[0], '"\'') !== false) {
+                    $quote = $value[0];
+                    $value = preg_replace($regexPattern, '$1', $value);
+                    $value = str_replace("\\$quote", $quote, $value);
+                    $value = str_replace('\\\\', '\\', $value);
+                }
             } else {
-                $parts = explode(' ', $value, 2);
-                $value = $parts[0];
+                $value = $this->processUnquotedValue($value);
             }
 
-            $environment[$key] = $this->postProcess(trim($value), $environment);
+            $environment[$key] = $value;
         }
 
         return $environment;
     }
 
-    public function postProcess($value, $environment)
+    public function processUnquotedValue($value)
     {
+        $parts = explode(' ', trim($value), 2);
+        $value = $parts[0];
+        if ($value === 'true') {
+            $value = true;
+        } elseif ($value === 'false') {
+            $value = false;
+        } elseif ($value === 'null') {
+            $value = null;
+        } elseif (ctype_digit($value)) {
+            $value = (int)$value;
+        }
+
+        return $value;
+    }
+
+    public function processQuotedValue($value, $environment)
+    {
+        if ($value[0] === '"' && substr($value, -1) === '"') {
+            $value = substr($value, 1, -1);
+        }
+
         if (strpos($value, '\\n') !== false) {
             $value = str_replace('\\n', "\n", $value);
+
+            $lines = explode("\n", $value);
+            $count = count($lines);
+            $lastLine = explode(' #', $lines[$count - 1], 2);
+            $lines[$count - 1] = $lastLine[0];
+            $value = implode("\n", $lines);
         }
 
         if (strpos($value, '$') !== false) {
@@ -77,6 +111,8 @@ class Parser
                 $value
             );
         }
+
+
         return $value;
     }
 }

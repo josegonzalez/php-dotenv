@@ -61,14 +61,24 @@ QUX="quux"
 QUUX="corge \" grault"
 CORGE='garply" waldo'
 
+# unquoted values containing [null, true, false] are turned into
+# their PHP equivalents
+PHP_NULL=null
+PHP_TRUE=true
+PHP_FALSE=false
+
+# when quoted, they are simply string values
+STRING_NULL="null"
+STRING_TRUE="true"
+STRING_FALSE="false"
+
 # spaces are allowed as well
 # in a slightly more relaxed form from bash
  GRAULT =fred
 GARPLY = plugh
-SPACES="quote values with spaces"
+SPACES=" quote values with spaces" # will contain preceding space
 
-# as are newlines (double-escape when quoted!)
-NEWLINE=newline\nchar
+# When using newlines, you should use quoted values
 QUOTED_NEWLINE="newline\\nchar"
 
 # you can even have nested variables using `${VAR}` syntax
