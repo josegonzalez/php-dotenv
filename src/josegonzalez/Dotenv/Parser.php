@@ -48,8 +48,8 @@ class Parser
                 $value = preg_replace($regexPattern, '$1', $value);
                 $value = str_replace("\\$quote", $quote, $value);
                 $value = str_replace('\\\\', '\\', $value);
-            } elseif (strpos($value, ' #') !== false) {
-                $parts = explode(' #', $value, 2);
+            } else {
+                $parts = explode(' ', $value, 2);
                 $value = $parts[0];
             }
 
@@ -67,7 +67,7 @@ class Parser
 
         if (strpos($value, '$') !== false) {
             $value = preg_replace_callback(
-                '/{\$([a-zA-Z0-9_]+)}/',
+                '/\${([a-zA-Z0-9_]+)}/',
                 function ($matchedPatterns) use ($environment) {
                     if (isset($environment[$matchedPatterns[1]])) {
                         return $environment[$matchedPatterns[1]];

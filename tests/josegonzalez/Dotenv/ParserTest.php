@@ -38,14 +38,15 @@ class ParserTest extends PHPUnit_Framework_TestCase
     public function testPostProcess()
     {
         $this->assertEquals('HI', $this->Parser->postProcess('HI', array()));
+        $this->assertEquals("H\nI", $this->Parser->postProcess('H\nI', array()));
         $this->assertEquals('HI$derp', $this->Parser->postProcess('HI$derp', array()));
         $this->assertEquals('HI$derp', $this->Parser->postProcess('HI$derp', array(
             'derp' => 'derp'
         )));
-        $this->assertEquals('HIderp', $this->Parser->postProcess('HI{$derp}', array(
+        $this->assertEquals('HIderp', $this->Parser->postProcess('HI${derp}', array(
             'derp' => 'derp'
         )));
-        $this->assertEquals('HI{}', $this->Parser->postProcess('HI{$derp}', array(
+        $this->assertEquals('HI{}', $this->Parser->postProcess('HI${derp}', array(
         )));
     }
 }

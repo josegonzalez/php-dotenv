@@ -61,7 +61,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $environment = $this->Loader->toArray();
         $this->assertEquals('bar', $environment['FOO']);
         $this->assertEquals('baz', $environment['BAR']);
-        $this->assertEquals('with spaces', $environment['SPACED']);
+        $this->assertEquals('unquotedwithspaces', $environment['SPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test#notacomment', $environment['EQUALS']);
 
         $this->assertEquals('bar', $environment['EFOO']);
@@ -88,7 +88,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
-            'SPACED' => 'with spaces',
+            'SPACED' => 'unquotedwithspaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test#notacomment',
             'NEWLINE' => "newline\nchar",
             'ANOTHER_NEWLINE' => "quoted newline\nchar",
@@ -114,11 +114,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'SPVAR2' => '?BUty3koaV3%GA*hMAwH}B',
             'SPVAR3' => 'jdgEB4{QgEC]HL))&GcXxokB+wqoN+j>xkV7K?m$r',
             'SPVAR4' => '22222:22#2^{',
-            'SPVAR5' => 'test some escaped characters like a quote \\\' or maybe a backslash \\\\',
+            'SPVAR5' => 'test some escaped characters like a quote " or maybe a backslash \\\\',
             'NVAR1' => 'Hello',
             'NVAR2' => 'World!',
             'NVAR3' => 'Hello World!',
-            'NVAR4' => '${NVAR1} ${NVAR2}',
+            'NVAR4' => '{$NVAR1} {$NVAR2}',
             'NVAR5' => '$NVAR1 {NVAR2}',
         ), $environment);
 
