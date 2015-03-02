@@ -29,22 +29,23 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array('FOO' => 'bar'), $this->Parser->parse("FOO=bar  # comment"));
         $this->assertEquals(array(), $this->Parser->parse("0FOO=bar # comment"));
         $this->assertEquals(array('FOO0' => 'bar'), $this->Parser->parse("FOO0=bar # comment"));
+        $this->assertEquals(array('FOO' => "b\nar"), $this->Parser->parse("FOO=b\\nar #comment"));
     }
 
     /**
-     * @covers \josegonzalez\Dotenv\Parser::processReplacements
+     * @covers \josegonzalez\Dotenv\Parser::postProcess
      */
-    public function testProcessReplacements()
+    public function testPostProcess()
     {
-        $this->assertEquals('HI', $this->Parser->processReplacements('HI', array()));
-        $this->assertEquals('HI$derp', $this->Parser->processReplacements('HI$derp', array()));
-        $this->assertEquals('HI$derp', $this->Parser->processReplacements('HI$derp', array(
+        $this->assertEquals('HI', $this->Parser->postProcess('HI', array()));
+        $this->assertEquals('HI$derp', $this->Parser->postProcess('HI$derp', array()));
+        $this->assertEquals('HI$derp', $this->Parser->postProcess('HI$derp', array(
             'derp' => 'derp'
         )));
-        $this->assertEquals('HIderp', $this->Parser->processReplacements('HI{$derp}', array(
+        $this->assertEquals('HIderp', $this->Parser->postProcess('HI{$derp}', array(
             'derp' => 'derp'
         )));
-        $this->assertEquals('HI{}', $this->Parser->processReplacements('HI{$derp}', array(
+        $this->assertEquals('HI{}', $this->Parser->postProcess('HI{$derp}', array(
         )));
     }
 }

@@ -90,6 +90,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test#notacomment',
+            'NEWLINE' => "newline\nchar",
+            'ANOTHER_NEWLINE' => "quoted newline\nchar",
             'NOT_SKIPPED1' => 'not skipped',
             'EFOO' => 'bar',
             'EBAR' => 'baz',

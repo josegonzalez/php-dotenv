@@ -65,6 +65,10 @@ CORGE='garply" waldo'
  GRAULT =fred
 GARPLY = plugh
 
+# as are newlines (double-escape when quoted!)
+NEWLINE=newline\nchar
+QUOTED_NEWLINE="newline\\nchar"
+
 # you can even have nested variables using `{$VAR}` syntax
 # remember to define the nested var *before* using it
 WALDO={$xyzzy} # not yet defined, so will result in WALDO = `{}`

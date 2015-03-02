@@ -53,15 +53,18 @@ class Parser
                 $value = $parts[0];
             }
 
-            $environment[$key] = trim($value);
-            $environment[$key] = $this->processReplacements(trim($value), $environment);
+            $environment[$key] = $this->postProcess(trim($value), $environment);
         }
 
         return $environment;
     }
 
-    public function processReplacements($value, $environment)
+    public function postProcess($value, $environment)
     {
+        if (strpos($value, '\\n') !== false) {
+            $value = str_replace('\\n', "\n", $value);
+        }
+
         if (strpos($value, '$') !== false) {
             $value = preg_replace_callback(
                 '/{\$([a-zA-Z0-9_]+)}/',
