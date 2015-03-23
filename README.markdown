@@ -203,6 +203,23 @@ josegonzalez\Dotenv\Loader::load(array(
 ?>
 ```
 
+## Validating External Environments
+
+In some cases it may be necessary to validate that a given array of environment data matches your requirements. You can use the `Loader->expect()` functionality via the standalone `Expect` class:
+
+```php
+<?php
+use josegonzalez\Dotenv\Expect;
+
+$expect = new Expect($env);
+$expect('FOO'); // Raises a RuntimeException if `env` is missing FOO
+
+// You can turn off exception raising using the second `raise` argument
+$expect = new Expect($env, false);
+$expect('FOO'); // Returns false if `env` is missing FOO
+?>
+```
+
 ## License
 
 The MIT License (MIT)

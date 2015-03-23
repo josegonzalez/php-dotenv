@@ -3,9 +3,9 @@
 namespace josegonzalez\Dotenv;
 
 use InvalidArgumentException;
+use josegonzalez\Dotenv\Expect;
 use josegonzalez\Dotenv\Parser;
 use LogicException;
-use RuntimeException;
 
 class Loader
 {
@@ -115,30 +115,8 @@ class Loader
     {
         $this->requireParse('expect');
 
-        $args = func_get_args();
-        if (count($args) == 0) {
-            return $this->raise('LogicException', 'No arguments were passed to expect()');
-        }
-
-        if (isset($args[0]) && is_array($args[0])) {
-            $args = $args[0];
-        }
-
-        $keys = (array) $args;
-        $missingEnvs = array();
-
-        foreach ($keys as $key) {
-            if (!isset($this->environment[$key])) {
-                $missingEnvs[] = $key;
-            }
-        }
-
-        if (!empty($missingEnvs)) {
-            return $this->raise(
-                'RuntimeException',
-                sprintf("Required ENV vars missing: ['%s']", implode("', '", $missingEnvs))
-            );
-        }
+        $expect = new Expect($this->environment, $this->raise);
+        call_user_func_array($expect, func_get_args());
 
         return $this;
     }
