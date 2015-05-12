@@ -50,7 +50,7 @@ class Parser
                 $value = str_replace('\\\\', '\\', $value);
                 $value = $this->processQuotedValue($value, $environment);
 
-                if (strpbrk($value[0], '"\'') !== false) {
+                if (!empty($value) && strpbrk($value[0], '"\'') !== false) {
                     $quote = $value[0];
                     $value = preg_replace($regexPattern, '$1', $value);
                     $value = str_replace("\\$quote", $quote, $value);
@@ -108,6 +108,9 @@ class Parser
             );
         }
 
+        if ($value === "''" || $value === '""') {
+            $value = '';
+        }
 
         return $value;
     }

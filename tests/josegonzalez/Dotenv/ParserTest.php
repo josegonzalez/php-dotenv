@@ -17,6 +17,8 @@ class ParserTest extends PHPUnit_Framework_TestCase
      */
     public function testParse()
     {
+        $this->assertEquals(array(), $this->Parser->parse("''"));
+        $this->assertEquals(array(), $this->Parser->parse('""'));
         $this->assertEquals(array(), $this->Parser->parse(''));
         $this->assertEquals(array(), $this->Parser->parse("\n"));
         $this->assertEquals(array(), $this->Parser->parse("#comment\n#comment"));
@@ -49,6 +51,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
      */
     public function testProcessQuotedValue()
     {
+        $this->assertEquals('', $this->Parser->processQuotedValue('""', array()));
         $this->assertEquals('9', $this->Parser->processQuotedValue('9', array()));
         $this->assertEquals('true', $this->Parser->processQuotedValue('true', array()));
         $this->assertEquals('false', $this->Parser->processQuotedValue('false', array()));
