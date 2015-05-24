@@ -33,7 +33,8 @@ class UnderscoreArrayFilter
             while (!empty($stack)) {
                 foreach ($stack as $curKey => &$curMerge) {
                     foreach ($curMerge[0] as $key => &$val) {
-                        if (!empty($curMerge[1][$key]) && (array)$curMerge[1][$key] === $curMerge[1][$key] && (array)$val === $val) {
+                        $hasKey = !empty($curMerge[1][$key]);
+                        if ($hasKey && (array)$curMerge[1][$key] === $curMerge[1][$key] && (array)$val === $val) {
                             $stack[] = array(&$val, &$curMerge[1][$key]);
                         } else {
                             $curMerge[1][$key] = $val;
