@@ -31,35 +31,6 @@ class Loader
         return $this;
     }
 
-    public function filepath()
-    {
-        return current($this->filepaths);
-    }
-
-    public function filepaths()
-    {
-        return $this->filepaths;
-    }
-
-    public function setFilepath($filepath = null)
-    {
-        return $this->setFilepaths($filepath);
-    }
-
-    public function setFilepaths($filepaths = null)
-    {
-        if ($filepaths == null) {
-            $filepaths = [__DIR__ . DIRECTORY_SEPARATOR . '.env'];
-        }
-
-        if (is_string($filepaths)) {
-            $filepaths = [$filepaths];
-        }
-
-        $this->filepaths = $filepaths;
-        return $this;
-    }
-
     public static function load($options = null)
     {
         $filepath = null;
@@ -95,6 +66,35 @@ class Loader
         }
 
         return $dotenv;
+    }
+
+    public function filepath()
+    {
+        return current($this->filepaths);
+    }
+
+    public function filepaths()
+    {
+        return $this->filepaths;
+    }
+
+    public function setFilepath($filepath = null)
+    {
+        return $this->setFilepaths($filepath);
+    }
+
+    public function setFilepaths($filepaths = null)
+    {
+        if ($filepaths == null) {
+            $filepaths = [__DIR__ . DIRECTORY_SEPARATOR . '.env'];
+        }
+
+        if (is_string($filepaths)) {
+            $filepaths = [$filepaths];
+        }
+
+        $this->filepaths = $filepaths;
+        return $this;
     }
 
     public function parse()
