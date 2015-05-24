@@ -230,10 +230,10 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 
 The following filters are built into php-dotenv.
 
-- `LowercaseKeyFilter`: Lowercases all the keys for an environment to a single-depth.
-- `NullFilter`: Returns the environment data without any changes.
-- `UnderscoreArrayFilter`: Expands a flat array to a nested array. For example, `['0.Foo.Bar' => 'Far']` becomes `[['Foo' => ['Bar' => 'Far']]]`.
-- `UrlParseFilter`: When there is a key with the suffix `_URL`, this filter uses `parse_url` to add extra data to the environment.
+- `josegonzalez\Dotenv\Filter\LowercaseKeyFilter`: Lowercases all the keys for an environment to a single-depth.
+- `josegonzalez\Dotenv\Filter\NullFilter`: Returns the environment data without any changes.
+- `josegonzalez\Dotenv\Filter\UnderscoreArrayFilter`: Expands a flat array to a nested array. For example, `['0_Foo_Bar' => 'Far']` becomes `[['Foo' => ['Bar' => 'Far']]]`.
+- `josegonzalez\Dotenv\Filter\UrlParseFilter`: When there is a key with the suffix `_URL`, this filter uses `parse_url` to add extra data to the environment.
 
 ### Static Environment Definition
 

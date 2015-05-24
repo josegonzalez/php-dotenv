@@ -7,7 +7,7 @@ class UnderscoreArrayFilter
     /**
      * Expands a flat array to a nested array.
      *
-     * For example, `['0.Foo.Bar' => 'Far']` becomes
+     * For example, `['0_Foo_Bar' => 'Far']` becomes
      * `[['Foo' => ['Bar' => 'Far']]]`.
      *
      * @param array $data Array of environment data
