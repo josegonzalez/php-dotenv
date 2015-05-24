@@ -244,6 +244,155 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Filter\LowercaseKeyFilter::__invoke
+     */
+    public function testLowercaseKeyFilter()
+    {
+        $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
+        ));
+        $this->Loader->setFilepath($this->fixturePath . '.env');
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $this->assertEquals(array(
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'spaced' => 'with spaces',
+            'equals' => 'pgsql:host=localhost;dbname=test',
+        ), $this->Loader->toArray());
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Filter\NullFilter::__invoke
+     */
+    public function testNullFilter()
+    {
+        $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\NullFilter',
+        ));
+        $this->Loader->setFilepath($this->fixturePath . '.env');
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $this->assertEquals(array(
+            'FOO' => 'bar',
+            'BAR' => 'baz',
+            'SPACED' => 'with spaces',
+            'EQUALS' => 'pgsql:host=localhost;dbname=test',
+        ), $this->Loader->toArray());
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::__invoke
+     * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
+     */
+    public function testUrlParseFilter()
+    {
+        $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\UrlParseFilter',
+        ));
+        $this->Loader->setFilepath($this->fixturePath . 'url_parse_filter.env');
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $environment = $this->Loader->toArray();
+        $this->assertEquals(array(
+            'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+            'READ_DATABASE_SCHEME' => 'mysql',
+            'READ_DATABASE_HOST' => 'localhost',
+            'READ_DATABASE_PORT' => '',
+            'READ_DATABASE_USER' => 'user',
+            'READ_DATABASE_PASS' => 'password',
+            'READ_DATABASE_PATH' => '/database_name',
+            'READ_DATABASE_QUERY' => 'encoding=utf8',
+            'READ_DATABASE_FRAGMENT' => '',
+            'DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+            'DATABASE_SCHEME' => 'mysql',
+            'DATABASE_HOST' => 'localhost',
+            'DATABASE_PORT' => '',
+            'DATABASE_USER' => 'user',
+            'DATABASE_PASS' => 'password',
+            'DATABASE_PATH' => '/database_name',
+            'DATABASE_QUERY' => 'encoding=utf8',
+            'DATABASE_FRAGMENT' => '',
+        ), $environment);
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Filter\UnderscoreArrayFilter::__invoke
+     */
+    public function testUnderscoreArrayFilter()
+    {
+        $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
+        ));
+        $this->Loader->setFilepath($this->fixturePath . 'underscore_array_filter.env');
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $environment = $this->Loader->toArray();
+        $this->assertEquals(array(
+            'DATABASE' => array(
+                'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+                0 => array(
+                    'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+                    'OTHERURL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+                ),
+                1 => array(
+                    'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+                    'OTHERURL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+                ),
+            ),
+            'DATA' => array(
+                'BASE' => array(
+                    'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8'
+                ),
+            ),
+
+        ), $environment);
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::__invoke
+     * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
+     * @covers \josegonzalez\Dotenv\Filter\UnderscoreArrayFilter::__invoke
+     */
+    public function testMultipleFilters()
+    {
+        $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\UrlParseFilter',
+            'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
+        ));
+        $this->Loader->setFilepath($this->fixturePath . 'filter.env');
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $environment = $this->Loader->toArray();
+        $this->assertEquals(array(
+            'DATABASE' => array(
+                'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+                'SCHEME' => 'mysql',
+                'HOST' => 'localhost',
+                'PORT' => '',
+                'USER' => 'user',
+                'PASS' => 'password',
+                'PATH' => '/database_name',
+                'QUERY' => 'encoding=utf8',
+                'FRAGMENT' => '',
+            ),
+            'DATA' => array(
+                'BASE' => array(
+                    'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+                    'SCHEME' => 'mysql',
+                    'HOST' => 'localhost',
+                    'PORT' => '',
+                    'USER' => 'user',
+                    'PASS' => 'password',
+                    'PATH' => '/database_name',
+                    'QUERY' => 'encoding=utf8',
+                    'FRAGMENT' => '',
+                ),
+            ),
+        ), $environment);
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::expect
      */
     public function testExpect()
@@ -597,6 +746,31 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'PREFIX_BAR' => 'baz',
             'PREFIX_SPACED' => 'with spaces',
             'PREFIX_EQUALS' => 'pgsql:host=localhost;dbname=test',
+        ), $dotenv->toArray());
+
+        $dotenv = Loader::load(array(
+            'filepath' => $this->fixturePath . 'url_parse_filter.env',
+            'filters' => array('josegonzalez\Dotenv\Filter\UrlParseFilter'),
+        ));
+        $this->assertEquals(array(
+            'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+            'READ_DATABASE_SCHEME' => 'mysql',
+            'READ_DATABASE_HOST' => 'localhost',
+            'READ_DATABASE_PORT' => '',
+            'READ_DATABASE_USER' => 'user',
+            'READ_DATABASE_PASS' => 'password',
+            'READ_DATABASE_PATH' => '/database_name',
+            'READ_DATABASE_QUERY' => 'encoding=utf8',
+            'READ_DATABASE_FRAGMENT' => '',
+            'DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
+            'DATABASE_SCHEME' => 'mysql',
+            'DATABASE_HOST' => 'localhost',
+            'DATABASE_PORT' => '',
+            'DATABASE_USER' => 'user',
+            'DATABASE_PASS' => 'password',
+            'DATABASE_PATH' => '/database_name',
+            'DATABASE_QUERY' => 'encoding=utf8',
+            'DATABASE_FRAGMENT' => '',
         ), $dotenv->toArray());
     }
 
