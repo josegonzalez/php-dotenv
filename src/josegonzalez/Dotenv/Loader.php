@@ -14,6 +14,8 @@ class Loader
 
     protected $filepaths = null;
 
+    protected $filters = array();
+
     protected $prefix = null;
 
     protected $raise = true;
@@ -46,6 +48,10 @@ class Loader
 
         if (array_key_exists('raiseExceptions', $options)) {
             $dotenv->raiseExceptions($options['raiseExceptions']);
+        }
+
+        if (array_key_exists('filters', $options)) {
+            $dotenv->setFilters($options['filters']);
         }
 
         $dotenv->parse();
@@ -86,11 +92,11 @@ class Loader
     public function setFilepaths($filepaths = null)
     {
         if ($filepaths == null) {
-            $filepaths = [__DIR__ . DIRECTORY_SEPARATOR . '.env'];
+            $filepaths = array(__DIR__ . DIRECTORY_SEPARATOR . '.env');
         }
 
         if (is_string($filepaths)) {
-            $filepaths = [$filepaths];
+            $filepaths = array($filepaths);
         }
 
         $this->filepaths = $filepaths;

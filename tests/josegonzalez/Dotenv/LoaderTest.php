@@ -39,7 +39,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testFilepaths()
     {
-        $this->assertEquals([$this->fixturePath . '.env'], $this->Loader->filepaths());
+        $this->assertEquals(array($this->fixturePath . '.env'), $this->Loader->filepaths());
     }
 
     /**
