@@ -50,11 +50,12 @@ class Loader
             $dotenv->raiseExceptions($options['raiseExceptions']);
         }
 
+        $dotenv->parse();
+
         if (array_key_exists('filters', $options)) {
             $dotenv->setFilters($options['filters']);
+            $dotenv->filter();
         }
-
-        $dotenv->parse();
 
         $methods = array(
             'skipExisting',
@@ -100,6 +101,39 @@ class Loader
         }
 
         $this->filepaths = $filepaths;
+        return $this;
+    }
+
+    public function filters()
+    {
+        return $this->filters;
+    }
+
+    public function setFilters(array $filters)
+    {
+        $this->filters = $filters;
+        foreach ($this->filters as $filterClass) {
+            if (!class_exists($filterClass)) {
+                return $this->raise(
+                    'LogicException',
+                    sprintf('Invalid filter class %s', $filterClass)
+                );
+            }
+        }
+        return $this;
+    }
+
+    public function filter()
+    {
+        $this->requireParse('filter');
+
+        $environment = $this->environment;
+        foreach ($this->filters as $filterClass) {
+            $filter = new $filterClass;
+            $environment = $filter($environment);
+        }
+
+        $this->environment = $environment;
         return $this;
     }
 
@@ -332,6 +366,8 @@ class Loader
             throw new $exception($message);
         }
 
+
+        $this->exceptions[] = new $exception($message);
         return false;
     }
 }

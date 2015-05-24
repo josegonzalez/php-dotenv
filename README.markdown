@@ -187,6 +187,45 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 ?>
 ```
 
+### Filtering environments
+
+It is possible to optionally filter the environment data produced by php-dotenv through the use of filter classes. A filter class has an `__invoke` method like so:
+
+```php
+<?php
+class LollipopFilter
+{
+    public function __invoke(array $environment)
+    {
+        $newEnvironment = [];
+        foreach ($environment as $key => $value) {
+            $newEnvironment[$key] = 'lollipop';
+        }
+        return $newEnvironment;
+    }
+}
+```
+
+You can attach filters using the `setFilters()` method, which will override all currently specified filters. If an invalid filter is specified, a LogicException will be thrown.
+
+```php
+<?php
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->setFilters(['LollipopFilter']); // Takes an array of namespaced class names
+?>
+```
+
+Finally, to invoke a filter, you must call `filter()` after calling `parse()`.
+
+```php
+<?php
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->setFilters(['LollipopFilter'])
+              ->parse()
+              ->filter();
+?>
+```
+
 ### Static Environment Definition
 
 You can also call it via the static `load` method call, which takes an array of arguments. If a method name is specified, the method is called with the value in the `$options` array being sent into the method.

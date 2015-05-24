@@ -195,6 +195,55 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::filters
+     */
+    public function testFilters()
+    {
+        $this->assertEquals(array(), $this->Loader->filters());
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     */
+    public function testSetFilters()
+    {
+        $this->assertEquals(array(), $this->Loader->filters());
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\NullFilter',
+        )));
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @expectedException LogicException
+     * @expectedExceptionMessage nvalid filter class SomeFilter
+     */
+    public function testSetFilterException()
+    {
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            'SomeFilter'
+        )));
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     */
+    public function testFilter()
+    {
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\NullFilter',
+        )));
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $this->assertEquals(array(
+            'FOO' => 'bar',
+            'BAR' => 'baz',
+            'SPACED' => 'with spaces',
+            'EQUALS' => 'pgsql:host=localhost;dbname=test',
+        ), $this->Loader->toArray());
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::expect
      */
     public function testExpect()
