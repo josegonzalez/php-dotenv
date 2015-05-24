@@ -152,7 +152,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::parse
-     * @expectedException LogicException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Environment file '.env' is not found
      */
     public function testParseFileNotFound()
@@ -163,7 +163,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::parse
-     * @expectedException LogicException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Environment file '/tmp' is a directory. Should be a file
      */
     public function testParseFileIsDirectory()
