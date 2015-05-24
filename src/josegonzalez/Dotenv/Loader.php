@@ -12,7 +12,7 @@ class Loader
 
     protected $environment = null;
 
-    protected $filepath = null;
+    protected $filepaths = null;
 
     protected $prefix = null;
 
@@ -25,23 +25,38 @@ class Loader
         'putenv' => false
     );
 
-    public function __construct($filepath = null)
+    public function __construct($filepaths = null)
     {
-        $this->setFilepath($filepath);
+        $this->setFilepaths($filepaths);
         return $this;
     }
 
     public function filepath()
     {
-        return $this->filepath;
+        return current($this->filepaths);
+    }
+
+    public function filepaths()
+    {
+        return $this->filepaths;
     }
 
     public function setFilepath($filepath = null)
     {
-        if ($filepath == null) {
-            $filepath = __DIR__ . DIRECTORY_SEPARATOR . '.env';
+        return $this->setFilepaths($filepath);
+    }
+
+    public function setFilepaths($filepaths = null)
+    {
+        if ($filepaths == null) {
+            $filepaths = [__DIR__ . DIRECTORY_SEPARATOR . '.env'];
         }
-        $this->filepath = $filepath;
+
+        if (is_string($filepaths)) {
+            $filepaths = [$filepaths];
+        }
+
+        $this->filepaths = $filepaths;
         return $this;
     }
 
@@ -84,25 +99,34 @@ class Loader
 
     public function parse()
     {
-        if (!file_exists($this->filepath)) {
-            return $this->raise(
-                'InvalidArgumentException',
-                sprintf("Environment file '%s' is not found", $this->filepath)
-            );
-        }
+        $contents = false;
+        $filepaths = $this->filepaths();
 
-        if (is_dir($this->filepath)) {
-            return $this->raise(
-                'InvalidArgumentException',
-                sprintf("Environment file '%s' is a directory. Should be a file", $this->filepath)
-            );
-        }
+        foreach ($filepaths as $filepath) {
+            if (!file_exists($filepath)) {
+                return $this->raise(
+                    'InvalidArgumentException',
+                    sprintf("Environment file '%s' is not found", $filepath)
+                );
+            }
 
-        if (!is_readable($this->filepath) || ($contents = file_get_contents($this->filepath)) === false) {
-            return $this->raise(
-                'InvalidArgumentException',
-                sprintf("Environment file '%s' is not readable", $this->filepath)
-            );
+            if (is_dir($filepath)) {
+                return $this->raise(
+                    'InvalidArgumentException',
+                    sprintf("Environment file '%s' is a directory. Should be a file", $filepath)
+                );
+            }
+
+            if (!is_readable($filepath) || ($contents = file_get_contents($filepath)) === false) {
+                return $this->raise(
+                    'InvalidArgumentException',
+                    sprintf("Environment file '%s' is not readable", $filepath)
+                );
+            }
+
+            if ($contents !== false) {
+                break;
+            }
         }
 
         $parser = new Parser;

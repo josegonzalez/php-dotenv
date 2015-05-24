@@ -35,7 +35,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     */
+    public function testFilepaths()
+    {
+        $this->assertEquals([$this->fixturePath . '.env'], $this->Loader->filepaths());
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      */
     public function testSetFilepath()
     {
