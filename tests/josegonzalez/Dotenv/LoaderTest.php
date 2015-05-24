@@ -173,6 +173,19 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Environment file '/tmp/php-dotenv-unreadable' is not readable
+     */
+    public function testParseFileIsUnreadable()
+    {
+        touch('/tmp/php-dotenv-unreadable');
+        chmod('/tmp/php-dotenv-unreadable', 0000);
+        $this->Loader->setFilepath('/tmp/php-dotenv-unreadable');
+        $this->Loader->parse();
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::expect
      */
     public function testExpect()
