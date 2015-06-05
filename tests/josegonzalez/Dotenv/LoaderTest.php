@@ -738,7 +738,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         ), $dotenv->toArray());
 
         $dotenv = Loader::load(array(
-            'filepaths' => [$this->fixturePath . '.env'],
+            'filepaths' => array($this->fixturePath . '.env'),
         ));
         $this->assertEquals(array(
             'FOO' => 'bar',
@@ -747,12 +747,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
         ), $dotenv->toArray());
 
-
         $dotenv = Loader::load(array(
-            'filepaths' => [
+            'filepaths' => array(
                 $this->fixturePath . '.env.nonexistent',
                 $this->fixturePath . '.env',
-            ],
+            ),
         ));
         $this->assertEquals(array(
             'FOO' => 'bar',
