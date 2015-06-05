@@ -738,6 +738,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         ), $dotenv->toArray());
 
         $dotenv = Loader::load(array(
+            'filepaths' => [$this->fixturePath . '.env'],
+        ));
+        $this->assertEquals(array(
+            'FOO' => 'bar',
+            'BAR' => 'baz',
+            'SPACED' => 'with spaces',
+            'EQUALS' => 'pgsql:host=localhost;dbname=test',
+        ), $dotenv->toArray());
+
+        $dotenv = Loader::load(array(
             'filepath' => $this->fixturePath . '.env',
             'prefix' => 'PREFIX_'
         ));
