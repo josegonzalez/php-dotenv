@@ -35,16 +35,19 @@ class Loader
 
     public static function load($options = null)
     {
-        $filepath = null;
+        $filepaths = null;
         if (is_string($options)) {
-            $filepath = $options;
+            $filepaths = $options;
             $options = array();
         } elseif (isset($options['filepath'])) {
-            $filepath = $options['filepath'];
+            $filepaths = (array)$options['filepath'];
             unset($options['filepath']);
+        } elseif (isset($options['filepaths'])) {
+            $filepaths = $options['filepaths'];
+            unset($options['filepaths']);
         }
 
-        $dotenv = new \josegonzalez\Dotenv\Loader($filepath);
+        $dotenv = new \josegonzalez\Dotenv\Loader($filepaths);
 
         if (array_key_exists('raiseExceptions', $options)) {
             $dotenv->raiseExceptions($options['raiseExceptions']);
