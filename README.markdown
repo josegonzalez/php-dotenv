@@ -14,14 +14,14 @@ When developing and deploying your applications you are interacting with two dif
 
 _[Using [Composer](http://getcomposer.org/)]_
 
-Run `composer require josegonzalez/dotenv:~1.0`
+Run `composer require josegonzalez/dotenv:dev-master`
 
 Or add the plugin to your project's `composer.json` - something like this:
 
 ```composer
   {
     "require": {
-      "josegonzalez/dotenv": "~1.0"
+      "josegonzalez/dotenv": "dev-master"
     }
   }
 ```
