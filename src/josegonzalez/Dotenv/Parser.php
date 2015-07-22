@@ -29,7 +29,7 @@ class Parser
                 continue;
             }
 
-            if (!$value || strlen($value) === 0) {
+            if (strlen($value) === 0) {
                 $value = '';
             } elseif (strpbrk($value[0], '"\'') !== false) {
                 $quote = $value[0];
