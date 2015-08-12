@@ -14,7 +14,9 @@ When developing and deploying your applications you are interacting with two dif
 
 _[Using [Composer](http://getcomposer.org/)]_
 
-Add the plugin to your project's `composer.json` - something like this:
+Run `composer require josegonzalez/dotenv:dev-master`
+
+Or add the plugin to your project's `composer.json` - something like this:
 
 ```composer
   {
@@ -136,6 +138,19 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 ```
 
 Already defined `$_SERVER` entries will result in an immediate `LogicException`, unless `$overwriteSERVER` is set to `true` (default `false`).
+
+### Making available to `getenv()`
+
+```php
+<?php
+$overwrite = true;
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->parse()
+              ->putenv($overwrite); // Throws LogicException if ->parse() is not called first
+?>
+```
+
+Already defined `getenv()` entries will result in an immediate `LogicException`, unless `$overwriteSERVER` is set to `true` (default `false`).
 
 ### Setting key prefixes
 
