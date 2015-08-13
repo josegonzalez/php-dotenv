@@ -92,9 +92,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('with spaces', $environment['CSPACED']);
         $this->assertEquals('a value with a # character', $environment['CQUOTES']);
         $this->assertEquals('a value with a # character & a quote " character inside quotes', $environment['CQUOTESWITHQUOTE']);
-        $this->assertEquals('', $environment['CNULL']);
+        $this->assertSame('', $environment['CNULL']);
 
-        $this->assertEquals(array(
+        $this->assertSame(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'unquotedwithspaces',
@@ -142,7 +142,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $environment = $this->Loader->toArray();
         $this->assertEquals('app', $environment['APP_NAME']);
-        $this->assertEquals(2, $environment['DEBUG']);
+        $this->assertSame(2, $environment['DEBUG']);
         $this->assertInternalType('int', $environment['DEBUG']);
         $this->assertEquals('DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi', $environment['SECURITY_SALT']);
         $this->assertEquals('76859309657453542496749683645', $environment['SECURITY_CIPHER_SEED']);
@@ -199,7 +199,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testFilters()
     {
-        $this->assertEquals(array(), $this->Loader->filters());
+        $this->assertSame(array(), $this->Loader->filters());
     }
 
     /**
@@ -207,7 +207,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilters()
     {
-        $this->assertEquals(array(), $this->Loader->filters());
+        $this->assertSame(array(), $this->Loader->filters());
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
         )));
@@ -294,7 +294,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertEquals(array(
+        $this->assertSame(array(
             'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
             'READ_DATABASE_SCHEME' => 'mysql',
             'READ_DATABASE_HOST' => 'localhost',
@@ -364,7 +364,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertEquals(array(
+        $this->assertSame(array(
             'DATABASE' => array(
                 'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                 'SCHEME' => 'mysql',
@@ -775,7 +775,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'filepath' => $this->fixturePath . 'url_parse_filter.env',
             'filters' => array('josegonzalez\Dotenv\Filter\UrlParseFilter'),
         ));
-        $this->assertEquals(array(
+        $this->assertSame(array(
             'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
             'READ_DATABASE_SCHEME' => 'mysql',
             'READ_DATABASE_HOST' => 'localhost',

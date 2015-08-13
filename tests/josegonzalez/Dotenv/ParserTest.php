@@ -17,21 +17,21 @@ class ParserTest extends PHPUnit_Framework_TestCase
      */
     public function testParse()
     {
-        $this->assertEquals(array(), $this->Parser->parse("''"));
-        $this->assertEquals(array(), $this->Parser->parse('""'));
-        $this->assertEquals(array(), $this->Parser->parse(''));
-        $this->assertEquals(array(), $this->Parser->parse("\n"));
-        $this->assertEquals(array(), $this->Parser->parse("#comment\n#comment"));
-        $this->assertEquals(array(), $this->Parser->parse("FOO\n#comment"));
-        $this->assertEquals(array('FOO' => ''), $this->Parser->parse("FOO="));
-        $this->assertEquals(array('FOO' => 'bar'), $this->Parser->parse("FOO='bar'"));
-        $this->assertEquals(array('FOO' => 'bar'), $this->Parser->parse("FOO=\"bar\""));
-        $this->assertEquals(array('FOO' => 'bar'), $this->Parser->parse("FOO=bar #comment"));
-        $this->assertEquals(array('FOO' => 'bar'), $this->Parser->parse("FOO=bar # comment"));
-        $this->assertEquals(array('FOO' => 'bar'), $this->Parser->parse("FOO=bar  # comment"));
-        $this->assertEquals(array(), $this->Parser->parse("0FOO=bar # comment"));
-        $this->assertEquals(array('FOO0' => 'bar'), $this->Parser->parse("FOO0=bar # comment"));
-        $this->assertEquals(array('FOO' => "b\nar"), $this->Parser->parse('FOO="b\nar" #comment'));
+        $this->assertSame(array(), $this->Parser->parse("''"));
+        $this->assertSame(array(), $this->Parser->parse('""'));
+        $this->assertSame(array(), $this->Parser->parse(''));
+        $this->assertSame(array(), $this->Parser->parse("\n"));
+        $this->assertSame(array(), $this->Parser->parse("#comment\n#comment"));
+        $this->assertSame(array(), $this->Parser->parse("FOO\n#comment"));
+        $this->assertSame(array('FOO' => ''), $this->Parser->parse("FOO="));
+        $this->assertSame(array('FOO' => 'bar'), $this->Parser->parse("FOO='bar'"));
+        $this->assertSame(array('FOO' => 'bar'), $this->Parser->parse("FOO=\"bar\""));
+        $this->assertSame(array('FOO' => 'bar'), $this->Parser->parse("FOO=bar #comment"));
+        $this->assertSame(array('FOO' => 'bar'), $this->Parser->parse("FOO=bar # comment"));
+        $this->assertSame(array('FOO' => 'bar'), $this->Parser->parse("FOO=bar  # comment"));
+        $this->assertSame(array(), $this->Parser->parse("0FOO=bar # comment"));
+        $this->assertSame(array('FOO0' => 'bar'), $this->Parser->parse("FOO0=bar # comment"));
+        $this->assertSame(array('FOO' => "b\nar"), $this->Parser->parse('FOO="b\nar" #comment'));
     }
 
     /**
@@ -39,11 +39,12 @@ class ParserTest extends PHPUnit_Framework_TestCase
      */
     public function testProcessUnquotedValue()
     {
-        $this->assertEquals(9, $this->Parser->processUnquotedValue('9'));
-        $this->assertEquals(true, $this->Parser->processUnquotedValue('true'));
-        $this->assertEquals(false, $this->Parser->processUnquotedValue('false'));
-        $this->assertEquals(null, $this->Parser->processUnquotedValue('null'));
-        $this->assertEquals('HI', $this->Parser->processUnquotedValue(' HI '));
+        $this->assertSame(0, $this->Parser->processUnquotedValue('0'));
+        $this->assertSame(9, $this->Parser->processUnquotedValue('9'));
+        $this->assertSame(true, $this->Parser->processUnquotedValue('true'));
+        $this->assertSame(false, $this->Parser->processUnquotedValue('false'));
+        $this->assertSame(null, $this->Parser->processUnquotedValue('null'));
+        $this->assertSame('HI', $this->Parser->processUnquotedValue(' HI '));
     }
 
     /**
@@ -51,23 +52,23 @@ class ParserTest extends PHPUnit_Framework_TestCase
      */
     public function testProcessQuotedValue()
     {
-        $this->assertEquals('', $this->Parser->processQuotedValue('""', array()));
-        $this->assertEquals('9', $this->Parser->processQuotedValue('9', array()));
-        $this->assertEquals('true', $this->Parser->processQuotedValue('true', array()));
-        $this->assertEquals('false', $this->Parser->processQuotedValue('false', array()));
-        $this->assertEquals('null', $this->Parser->processQuotedValue('null', array()));
-        $this->assertEquals(' HI ', $this->Parser->processQuotedValue(' HI ', array()));
+        $this->assertSame('', $this->Parser->processQuotedValue('""', array()));
+        $this->assertSame('9', $this->Parser->processQuotedValue('9', array()));
+        $this->assertSame('true', $this->Parser->processQuotedValue('true', array()));
+        $this->assertSame('false', $this->Parser->processQuotedValue('false', array()));
+        $this->assertSame('null', $this->Parser->processQuotedValue('null', array()));
+        $this->assertSame(' HI ', $this->Parser->processQuotedValue(' HI ', array()));
 
-        $this->assertEquals('HI', $this->Parser->processQuotedValue('HI', array()));
-        $this->assertEquals("H\nI", $this->Parser->processQuotedValue('H\nI', array()));
-        $this->assertEquals('HI$derp', $this->Parser->processQuotedValue('HI$derp', array()));
-        $this->assertEquals('HI$derp', $this->Parser->processQuotedValue('HI$derp', array(
+        $this->assertSame('HI', $this->Parser->processQuotedValue('HI', array()));
+        $this->assertSame("H\nI", $this->Parser->processQuotedValue('H\nI', array()));
+        $this->assertSame('HI$derp', $this->Parser->processQuotedValue('HI$derp', array()));
+        $this->assertSame('HI$derp', $this->Parser->processQuotedValue('HI$derp', array(
             'derp' => 'derp'
         )));
-        $this->assertEquals('HIderp', $this->Parser->processQuotedValue('HI${derp}', array(
+        $this->assertSame('HIderp', $this->Parser->processQuotedValue('HI${derp}', array(
             'derp' => 'derp'
         )));
-        $this->assertEquals('HI{}', $this->Parser->processQuotedValue('HI${derp}', array(
+        $this->assertSame('HI{}', $this->Parser->processQuotedValue('HI${derp}', array(
         )));
     }
 }
