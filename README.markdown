@@ -283,6 +283,14 @@ $expect('FOO'); // Returns false if `env` is missing FOO
 ?>
 ```
 
+## General Security Information
+
+If you configure `php-dotenv` to output configuration in any of the ways listed above and then dump them, they may be available to undesired users. For instance, using a project like [filp/whoops](https://github.com/filp/whoops) in conjunction with `$Loader->toServer()` can result in outputting sensitive data to your users if you leave whoops enabled in production.
+
+For this reason, `php-dotenv` never populates data to an environment variable by default and requires that the developer make a conscious decision about how they want to use loaded environment variables
+
+Many error reporting tools have the option of whitelisting or blacklisting sensitive data, and you should familiarize yourself with said tooling.
+
 ## License
 
 The MIT License (MIT)
