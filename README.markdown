@@ -262,7 +262,7 @@ josegonzalez\Dotenv\Loader::load(array(
   'toEnv' => true,
   'toServer' => true,
   'define' => true,
-);
+));
 ?>
 ```
 
