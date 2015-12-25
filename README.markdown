@@ -213,7 +213,14 @@ It is possible to optionally filter the environment data produced by php-dotenv 
 <?php
 class LollipopFilter
 {
-    public function __invoke(array $environment)
+    /**
+     * Sets every key's value to the string `lollipop`
+     *
+     * @param array $environment Array of environment data
+     * @param array $config Array of configuration data that includes the callable
+     * @return array
+     */
+    public function __invoke(array $environment, array $config)
     {
         $newEnvironment = [];
         foreach ($environment as $key => $value) {
@@ -234,7 +241,18 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 ?>
 ```
 
-Filters can also be callables functions, which is useful in one-off situations:
+Note that you can optionally set configuration for your filters. These are passed to the `__invoke` method as the second argument.:
+
+```php
+<?php
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->setFilters([
+                'LollipopFilter' => ['paintshop'],
+              ]); // Takes an array of namespaced class names
+?>
+```
+
+Filters can also be callables functions, which is useful in one-off situations. They are wrapped by the special `CallableFilter`.
 
 ```php
 <?php
@@ -242,6 +260,22 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->setFilters([function ($data) {
                 return $data;
               }]);
+?>
+```
+
+If you need special configuration for your callable filters, you can prefix your callable with `__callable__N`, where `N` is the integer index the callable is in your array. The callable itself should be contained in a `callable` config key, as follows:
+
+```php
+<?php
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->setFilters([
+                '__callable__0' => [
+                  'callable' => function ($data, $config) {
+                    return $data;
+                  },
+                  'someKey' => 'value',
+                ]
+              ]);
 ?>
 ```
 
@@ -260,6 +294,7 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 
 The following filters are built into php-dotenv.
 
+- `josegonzalez\Dotenv\Filter\CallableFilter`: Wraps a callable and invokes it upon the environment.
 - `josegonzalez\Dotenv\Filter\LowercaseKeyFilter`: Lowercases all the keys for an environment to a single-depth.
 - `josegonzalez\Dotenv\Filter\NullFilter`: Returns the environment data without any changes.
 - `josegonzalez\Dotenv\Filter\UnderscoreArrayFilter`: Expands a flat array to a nested array. For example, `['0_Foo_Bar' => 'Far']` becomes `[['Foo' => ['Bar' => 'Far']]]`.

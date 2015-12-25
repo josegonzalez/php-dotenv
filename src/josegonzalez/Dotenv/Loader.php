@@ -4,6 +4,7 @@ namespace josegonzalez\Dotenv;
 
 use InvalidArgumentException;
 use josegonzalez\Dotenv\Expect;
+use josegonzalez\Dotenv\Filter\CallableFilter;
 use josegonzalez\Dotenv\Parser;
 use LogicException;
 
@@ -114,26 +115,46 @@ class Loader
 
     public function setFilters(array $filters)
     {
-        $this->filters = $filters;
-        foreach ($this->filters as $filterClass) {
-            if (is_string($filterClass)) {
-                if (is_callable($filterClass)) {
-                    continue;
-                }
-                if (!class_exists($filterClass)) {
-                    return $this->raise(
-                        'LogicException',
-                        sprintf('Invalid filter class %s', $filterClass)
+        $newList = array();
+        $keys = array_keys($filters);
+        $count = count($keys);
+        for ($i = 0; $i < $count; $i++) {
+            if (is_int($keys[$i])) {
+                $filter = $filters[$keys[$i]];
+                if (is_string($filter)) {
+                    $newList[$filter] = null;
+                } else {
+                    $newList['__callable__' . $i] = array(
+                        'callable' => $filter
                     );
                 }
-                continue;
+            } else {
+                $newList[$keys[$i]] = $filters[$keys[$i]];
             }
-            if (!is_callable($filterClass)) {
+        }
+
+        $this->filters = $newList;
+
+        foreach ($this->filters as $filterClass => $config) {
+            if (substr($filterClass, 0, 12) === '__callable__') {
+                if (is_callable($config['callable'])) {
+                    continue;
+                }
                 return $this->raise(
                     'LogicException',
                     sprintf('Invalid filter class')
                 );
             }
+            if (is_callable($filterClass)) {
+                continue;
+            }
+            if (!class_exists($filterClass)) {
+                return $this->raise(
+                    'LogicException',
+                    sprintf('Invalid filter class %s', $filterClass)
+                );
+            }
+            continue;
         }
         return $this;
     }
@@ -143,14 +164,17 @@ class Loader
         $this->requireParse('filter');
 
         $environment = $this->environment;
-        foreach ($this->filters as $filterClass) {
+        foreach ($this->filters as $filterClass => $config) {
             $filter = $filterClass;
             if (is_string($filterClass)) {
+                if (substr($filterClass, 0, 12) === '__callable__') {
+                    $filter = new CallableFilter;
+                }
                 if (class_exists($filterClass)) {
                     $filter = new $filterClass;
                 }
             }
-            $environment = $filter($environment);
+            $environment = $filter($environment, $config);
         }
 
         $this->environment = $environment;

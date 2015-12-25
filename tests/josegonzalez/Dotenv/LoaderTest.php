@@ -221,6 +221,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\doNothing',
         )));
+
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\doNothing' => array('key' => 'value'),
+        )));
+
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            function () {
+                return array();
+            }
+        )));
     }
 
     /**
@@ -269,17 +279,18 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Filter\CallableFilter::__invoke
      */
     public function testFilterCallable()
     {
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             function () {
-                return array();
+                return array('FOO' => 'BAR');
             }
         )));
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals(array(), $this->Loader->toArray());
+        $this->assertEquals(array('FOO' => 'BAR'), $this->Loader->toArray());
     }
 
     /**
