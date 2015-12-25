@@ -282,6 +282,26 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter::__invoke
+     */
+    public function testUppercaseFirstKeyFilter()
+    {
+        $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
+            'josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter',
+        ));
+        $this->Loader->setFilepath($this->fixturePath . '.env');
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $this->assertEquals(array(
+            'Foo' => 'bar',
+            'Bar' => 'baz',
+            'Spaced' => 'with spaces',
+            'Equals' => 'pgsql:host=localhost;dbname=test',
+        ), $this->Loader->toArray());
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::__invoke
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
      */
