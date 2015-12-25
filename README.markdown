@@ -1,4 +1,7 @@
-[![Build Status](https://travis-ci.org/josegonzalez/php-dotenv.png?branch=master)](https://travis-ci.org/josegonzalez/php-dotenv) [![Coverage Status](https://coveralls.io/repos/josegonzalez/php-dotenv/badge.png?branch=master)](https://coveralls.io/r/josegonzalez/php-dotenv?branch=master) [![Total Downloads](https://poser.pugx.org/josegonzalez/dotenv/d/total.png)](https://packagist.org/packages/josegonzalez/dotenv) [![Latest Stable Version](https://poser.pugx.org/josegonzalez/dotenv/v/stable.png)](https://packagist.org/packages/josegonzalez/dotenv)
+[![Build Status](https://img.shields.io/travis/josegonzalez/php-dotenv.svg?branch=master)](https://travis-ci.org/josegonzalez/php-dotenv) 
+[![Coverage Status](https://img.shields.io/coveralls/josegonzalez/php-dotenv.svg?branch=master)](https://coveralls.io/r/josegonzalez/php-dotenv?branch=master)
+[![Total Downloads](https://img.shields.io/packagist/dt/josegonzalez/dotenv.svg)](https://packagist.org/packages/josegonzalez/dotenv) 
+[![Latest Stable Version](https://img.shields.io/packagist/v/josegonzalez/dotenv.svg)](https://packagist.org/packages/josegonzalez/dotenv)
 
 # PHP Dotenv
 `.env` file parsing for PHP
