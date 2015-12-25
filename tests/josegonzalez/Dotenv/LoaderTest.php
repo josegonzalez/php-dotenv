@@ -3,7 +3,12 @@
 namespace josegonzalez\Dotenv;
 
 use josegonzalez\Dotenv\Loader;
-use \PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_TestCase;
+
+function doNothing($data)
+{
+    return $data;
+}
 
 class LoaderTest extends PHPUnit_Framework_TestCase
 {
@@ -211,14 +216,19 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
         )));
+
+
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\doNothing',
+        )));
     }
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::setFilters
      * @expectedException LogicException
-     * @expectedExceptionMessage nvalid filter class SomeFilter
+     * @expectedExceptionMessage Invalid filter class SomeFilter
      */
-    public function testSetFilterException()
+    public function testSetFilterNonexistentFilter()
     {
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'SomeFilter'
@@ -226,7 +236,20 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @expectedException LogicException
+     * @expectedExceptionMessage Invalid filter class
+     */
+    public function testSetFilterInvalidCallable()
+    {
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            $this
+        )));
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Filter\NullFilter::__invoke
      */
     public function testFilter()
     {
@@ -241,6 +264,22 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
         ), $this->Loader->toArray());
+    }
+
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     */
+    public function testFilterCallable()
+    {
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            function () {
+                return [];
+            }
+        )));
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $this->assertEquals(array(), $this->Loader->toArray());
     }
 
     /**

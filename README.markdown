@@ -1,6 +1,6 @@
-[![Build Status](https://img.shields.io/travis/josegonzalez/php-dotenv.svg?branch=master)](https://travis-ci.org/josegonzalez/php-dotenv) 
+[![Build Status](https://img.shields.io/travis/josegonzalez/php-dotenv.svg?branch=master)](https://travis-ci.org/josegonzalez/php-dotenv)
 [![Coverage Status](https://img.shields.io/coveralls/josegonzalez/php-dotenv.svg?branch=master)](https://coveralls.io/r/josegonzalez/php-dotenv?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/josegonzalez/dotenv.svg)](https://packagist.org/packages/josegonzalez/dotenv) 
+[![Total Downloads](https://img.shields.io/packagist/dt/josegonzalez/dotenv.svg)](https://packagist.org/packages/josegonzalez/dotenv)
 [![Latest Stable Version](https://img.shields.io/packagist/v/josegonzalez/dotenv.svg)](https://packagist.org/packages/josegonzalez/dotenv)
 
 # PHP Dotenv
@@ -222,6 +222,7 @@ class LollipopFilter
         return $newEnvironment;
     }
 }
+?>
 ```
 
 You can attach filters using the `setFilters()` method, which will override all currently specified filters. If an invalid filter is specified, a LogicException will be thrown.
@@ -230,6 +231,17 @@ You can attach filters using the `setFilters()` method, which will override all 
 <?php
 $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->setFilters(['LollipopFilter']); // Takes an array of namespaced class names
+?>
+```
+
+Filters can also be callables functions, which is useful in one-off situations:
+
+```
+<?php
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->setFilters([function ($data) {
+                return $data;
+              }]);
 ?>
 ```
 

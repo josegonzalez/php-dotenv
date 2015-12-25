@@ -116,10 +116,22 @@ class Loader
     {
         $this->filters = $filters;
         foreach ($this->filters as $filterClass) {
-            if (!class_exists($filterClass)) {
+            if (is_string($filterClass)) {
+                if (is_callable($filterClass)) {
+                    continue;
+                }
+                if (!class_exists($filterClass)) {
+                    return $this->raise(
+                        'LogicException',
+                        sprintf('Invalid filter class %s', $filterClass)
+                    );
+                }
+                continue;
+            }
+            if (!is_callable($filterClass)) {
                 return $this->raise(
                     'LogicException',
-                    sprintf('Invalid filter class %s', $filterClass)
+                    sprintf('Invalid filter class')
                 );
             }
         }
@@ -132,7 +144,12 @@ class Loader
 
         $environment = $this->environment;
         foreach ($this->filters as $filterClass) {
-            $filter = new $filterClass;
+            $filter = $filterClass;
+            if (is_string($filterClass)) {
+                if (class_exists($filterClass)) {
+                    $filter = new $filterClass;
+                }
+            }
             $environment = $filter($environment);
         }
 
