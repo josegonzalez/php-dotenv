@@ -331,6 +331,28 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         ), $this->Loader->toArray());
     }
 
+
+    /**
+     * @covers \josegonzalez\Dotenv\Filter\RemapKeysFilter::__invoke
+     */
+    public function testRemapKeysFilter()
+    {
+        $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\Filter\RemapKeysFilter' => array(
+                'FOO' => 'QUX'
+            ),
+        ));
+        $this->Loader->setFilepath($this->fixturePath . '.env');
+        $this->Loader->parse();
+        $this->Loader->filter();
+        $this->assertEquals(array(
+            'QUX' => 'bar',
+            'BAR' => 'baz',
+            'SPACED' => 'with spaces',
+            'EQUALS' => 'pgsql:host=localhost;dbname=test',
+        ), $this->Loader->toArray());
+    }
+
     /**
      * @covers \josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter::__invoke
      */
