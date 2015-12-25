@@ -8,7 +8,7 @@ class UrlParseFilter
      * When there is a key with the suffix `_URL`, this filter uses `parse_url`
      * to add extra data to the environment.
      *
-     * @param array $data Array of environment data
+     * @param array $environment Array of environment data
      * @return array
      */
     public function __invoke(array $environment)

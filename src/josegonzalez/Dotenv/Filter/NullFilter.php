@@ -7,7 +7,7 @@ class NullFilter
     /**
      * Returns the environment data without any changes.
      *
-     * @param array $data Array of environment data
+     * @param array $environment Array of environment data
      * @return array
      */
     public function __invoke(array $environment)

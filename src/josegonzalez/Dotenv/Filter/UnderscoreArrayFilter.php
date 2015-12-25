@@ -10,7 +10,7 @@ class UnderscoreArrayFilter
      * For example, `['0_Foo_Bar' => 'Far']` becomes
      * `[['Foo' => ['Bar' => 'Far']]]`.
      *
-     * @param array $data Array of environment data
+     * @param array $environment Array of environment data
      * @return array
      */
     public function __invoke(array $environment)
