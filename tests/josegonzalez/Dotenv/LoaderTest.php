@@ -274,7 +274,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             function () {
-                return [];
+                return array();
             }
         )));
         $this->Loader->parse();
