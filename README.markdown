@@ -236,7 +236,7 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 
 Filters can also be callables functions, which is useful in one-off situations:
 
-```
+```php
 <?php
 $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->setFilters([function ($data) {
