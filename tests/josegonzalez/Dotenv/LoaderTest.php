@@ -75,7 +75,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $environment = $this->Loader->toArray();
         $this->assertEquals('bar', $environment['FOO']);
         $this->assertEquals('baz', $environment['BAR']);
-        $this->assertEquals('unquotedwithspaces', $environment['SPACED']);
+        $this->assertEquals('unquotedwithspaces spaces', $environment['SPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test#notacomment', $environment['EQUALS']);
 
         $this->assertEquals('bar', $environment['EFOO']);
@@ -97,12 +97,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('with spaces', $environment['CSPACED']);
         $this->assertEquals('a value with a # character', $environment['CQUOTES']);
         $this->assertEquals('a value with a # character & a quote " character inside quotes', $environment['CQUOTESWITHQUOTE']);
-        $this->assertSame('', $environment['CNULL']);
+        $this->assertSame(null, $environment['CNULL']);
 
-        $this->assertSame(array(
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
-            'SPACED' => 'unquotedwithspaces',
+            'SPACED' => 'unquotedwithspaces spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test#notacomment',
             'ANOTHER_NEWLINE' => "quoted newline\nchar",
             'NOT_SKIPPED1' => 'not skipped',
@@ -122,12 +122,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'CSPACED' => 'with spaces',
             'CQUOTES' => 'a value with a # character',
             'CQUOTESWITHQUOTE' => 'a value with a # character & a quote " character inside quotes',
-            'CNULL' => '',
+            'CNULL' => null,
             'SPVAR1' => '$a6^C7k%zs+e^.jvjXk',
             'SPVAR2' => '?BUty3koaV3%GA*hMAwH}B',
             'SPVAR3' => 'jdgEB4{QgEC]HL))&GcXxokB+wqoN+j>xkV7K?m$r',
             'SPVAR4' => '22222:22#2^{',
-            'SPVAR5' => 'test some escaped characters like a quote " or maybe a backslash \\\\',
+            'SPVAR5' => 'test some escaped characters like a quote " or maybe a backslash \\\\\\\\',
             'NVAR1' => 'Hello',
             'NVAR2' => 'World!',
             'NVAR3' => 'Hello World!',
@@ -162,6 +162,18 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('mail://localhost/?from=you@localhost', $environment['EMAIL_URL']);
         $this->assertEquals('smtp://user:secret@localhost:25/?from[site@localhost]=My+Site&timeout=30', $environment['EMAIL_SMTP_URL']);
         $this->assertEquals('smtp://user:secret@localhost:25/?from=you@localhost&messageId=1&template=0&layout=0&timeout=30', $environment['EMAIL_FAST_URL']);
+    }
+
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @expectedException M1\Env\Exception\ParseException
+     * @expectedExceptionMessage Key can only contain alphanumeric and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1
+     */
+    public function testParseException()
+    {
+        $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env');
+        $this->Loader->parse();
     }
 
     /**
