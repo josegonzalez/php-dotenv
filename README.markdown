@@ -4,10 +4,12 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/josegonzalez/dotenv.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/dotenv)
 
 # PHP Dotenv
-`.env` file parsing for PHP
 
-## What is it and why should I use it?
-When developing and deploying your applications you are interacting with two different environments. These two places both execute your code but will do so using different credentials, such as database connection credentials, for example. How do you tackle these differing credentials? dotEnv will solve this issue by allowing you to configure your environments and easily switch between them.
+A `.env` file parsing and loading library for PHP.
+
+- [What is it and why should I use it?](#what-is-it-and-why-should-i-use-it)
+- [Rules to follow](#rules-to-follow)
+- [General Security Information](#general-security-information)
 
 ## Requirements
 
@@ -21,7 +23,7 @@ Run `composer require josegonzalez/dotenv:dev-master`
 
 Or add the plugin to your project's `composer.json` - something like this:
 
-```composer
+```javascript
   {
     "require": {
       "josegonzalez/dotenv": "dev-master"
@@ -335,6 +337,44 @@ $expect('FOO'); // Returns false if `env` is missing FOO
 ?>
 ```
 
+## What is it and why should I use it?
+
+When developing and deploying your applications you are typically interacting with various environments - production and development for instance. These environments both execute your code, but will do so using different credentials. You may also wish to distribute your application to developers without accidentally giving them access to important external services. 
+
+Simple examples include authentication keys to your email provider or database connection credentials. You would never want to accidentally send testing emails to all your users, or run a `DROP TABLE` statement against production because you ran your unit tests.
+
+How do you tackle these differing credentials? The `php-dotenv` helps solve this issue by allowing you to configure your environments in a universal fashion, making it easy to safely switch between environments, as well as share those environments with multiple projects/languages.
+
+Need more reasons? Check out the [twelve-factor app docs on configuration](http://12factor.net/config).
+
+## Rules to follow
+
+When using `php-dotenv`, you should strive to follow the following rules:
+
+- Add your `.env` file to a gitignore and use a `.env.default` or `.env.example` to set defaults for your projects. This allows your development team to override defaults in a method that works for their local environment.
+- Always set sane development defaults for any credential. If necessary, disable features when those credentials are "invalid".
+- Where necessary, add comments to credentials with information as to what they are, how they are used, and how one might procure new ones.
+- As `php-dotenv` uses more lax procedures for defining environment variables, ensure your `.env` files are compatible with your shell. A good way to test this is to run the following:
+
+    ```shell
+    # source in your .env file
+    source .env
+    # check the environment
+    env
+    ```
+- Avoid running `php-dotenv` in production settings, and instead set environment variables in your webserver, process manager, or in bash before running your commands. A simple way to ensure this is to check for the existence of a sentinel environment variable that is *only* set in production:
+
+    ```php
+    // APP_NAME isn't set in staging/dev
+    if (!env('APP_NAME')) {
+        $loader = new josegonzalez\Dotenv\Loader([
+            __DIR__ '/.env',
+            __DIR__ '/.env.default'
+        ]);
+        $loader->parse()->toEnv();
+    }
+    ```
+
 ## General Security Information
 
 If you configure `php-dotenv` to output configuration in any of the ways listed above and then dump them, they may be available to undesired users. For instance, using a project like [filp/whoops](https://github.com/filp/whoops) in conjunction with `$Loader->toServer()` can result in outputting sensitive data to your users if you leave whoops enabled in production.
@@ -342,6 +382,7 @@ If you configure `php-dotenv` to output configuration in any of the ways listed 
 For this reason, `php-dotenv` never populates data to an environment variable by default and requires that the developer make a conscious decision about how they want to use loaded environment variables
 
 Many error reporting tools have the option of whitelisting or blacklisting sensitive data, and you should familiarize yourself with said tooling.
+
 
 ## License
 
