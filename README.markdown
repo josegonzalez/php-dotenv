@@ -96,9 +96,10 @@ WALDO=${xyzzy} # not yet defined, so will result in WALDO = `{}`
 THUD=${GARPLY} # will be defined as `plugh`
 
 # note that variables beginning with a character
-# other than [a-zA-Z_] shall be skipped.
-# However, numbers *are* allowed elsewhere in the key
+# other than [a-zA-Z_] shall throw a ParseException
 01SKIPPED=skipped
+
+# However, numbers *are* allowed elsewhere in the key
 NOT_SKIPPED1=not skipped # will have the value `not`
 ```
 
