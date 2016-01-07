@@ -5,8 +5,8 @@ namespace josegonzalez\Dotenv;
 use InvalidArgumentException;
 use josegonzalez\Dotenv\Expect;
 use josegonzalez\Dotenv\Filter\CallableFilter;
-use josegonzalez\Dotenv\Parser;
 use LogicException;
+use M1\Env\Parser;
 
 class Loader
 {
@@ -214,8 +214,8 @@ class Loader
             }
         }
 
-        $parser = new Parser;
-        $this->environment = $parser->parse($contents);
+        $parser = new Parser($contents);
+        $this->environment = $parser->getContent();
 
         return $this;
     }

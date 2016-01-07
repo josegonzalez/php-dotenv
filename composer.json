@@ -14,7 +14,8 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "m1/env": "2.*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "2.*",
