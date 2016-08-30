@@ -2,8 +2,6 @@
 
 namespace josegonzalez\Dotenv;
 
-use InvalidArgumentException;
-use josegonzalez\Dotenv\Expect;
 use josegonzalez\Dotenv\Filter\CallableFilter;
 use LogicException;
 use M1\Env\Parser;
