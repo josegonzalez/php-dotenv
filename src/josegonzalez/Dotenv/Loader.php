@@ -377,7 +377,6 @@ class Loader
         $environment = array();
         foreach ($this->environment as $key => $value) {
             $environment[$this->prefixed($key)] = $value;
-
         }
         return $environment;
     }
