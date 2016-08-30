@@ -133,6 +133,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'NVAR3' => 'Hello World!',
             'NVAR4' => '{$NVAR1} {$NVAR2}',
             'NVAR5' => '$NVAR1 {NVAR2}',
+            'NULLVAR1' => null,
+            'NVAR6' => ' Hello',
             'PHP_NULL' => null,
             'STRING_NULL' => 'null',
             'PHP_TRUE' => true,
@@ -141,6 +143,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'STRING_FALSE' => 'false',
             'STRING_EMPTY' => '',
             'STRING_EMPTY_2' => '',
+            'NO_VALUE_INLINE_COMMENT' => '',
         ), $environment);
 
         $this->Loader->setFilepath($this->fixturePath . 'cake.env');
