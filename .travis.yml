@@ -18,4 +18,4 @@ script:
   - phpunit --coverage-text --coverage-clover build/logs/clover.xml
 
 after_success:
-  - php vendor/bin/coveralls -v
+  - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then php vendor/bin/coveralls -v; fi
