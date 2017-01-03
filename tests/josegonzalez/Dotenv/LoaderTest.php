@@ -143,7 +143,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'STRING_FALSE' => 'false',
             'STRING_EMPTY' => '',
             'STRING_EMPTY_2' => '',
-            'NO_VALUE_INLINE_COMMENT' => '',
+            'NO_VALUE_INLINE_COMMENT' => null,
         ), $environment);
 
         $this->Loader->setFilepath($this->fixturePath . 'cake.env');
