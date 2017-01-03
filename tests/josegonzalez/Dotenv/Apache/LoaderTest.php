@@ -21,7 +21,7 @@ function apache_setenv($key, $value)
 }
 
 
-class LoaderApacheTest extends PHPUnit_Framework_TestCase
+class LoaderTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()

@@ -5,12 +5,7 @@ namespace josegonzalez\Dotenv;
 use josegonzalez\Dotenv\Loader;
 use PHPUnit_Framework_TestCase;
 
-function doNothing($data)
-{
-    return $data;
-}
-
-class LoaderNonApacheTest extends PHPUnit_Framework_TestCase
+class LoaderTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
