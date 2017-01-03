@@ -798,7 +798,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array('toEnv'), $this->Loader->skipped());
 
         $this->Loader->skipExisting();
-        $this->assertEquals(array('define', 'toEnv', 'toServer', 'putenv'), $this->Loader->skipped());
+        $this->assertEquals(array('apacheSetenv', 'define', 'putenv', 'toEnv', 'toServer'), $this->Loader->skipped());
     }
 
     /**
