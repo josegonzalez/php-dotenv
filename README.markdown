@@ -152,11 +152,11 @@ Already defined `$_SERVER` entries will result in an immediate `LogicException`,
 $overwrite = true;
 $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
-              ->putenv($overwrite); // Throws LogicException if ->parse() is not called first
+              ->putenv($overwriteENV); // Throws LogicException if ->parse() is not called first
 ?>
 ```
 
-Already defined `getenv()` entries will result in an immediate `LogicException`, unless `$overwriteSERVER` is set to `true` (default `false`).
+Already defined `getenv()` entries will result in an immediate `LogicException`, unless `$overwriteENV` is set to `true` (default `false`).
 
 ### Setting key prefixes
 
