@@ -254,7 +254,7 @@ class Loader
                 );
             }
 
-            apache_setenv($prefixedKey . '=' . $value);
+            apache_setenv($prefixedKey, $value);
         }
 
         return $this;
