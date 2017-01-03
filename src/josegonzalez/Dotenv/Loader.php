@@ -22,6 +22,7 @@ class Loader
     protected $raise = true;
 
     protected $skip = array(
+        'apacheSetenv' => false,
         'define' => false,
         'putenv' => false,
         'toEnv' => false,
@@ -65,6 +66,7 @@ class Loader
             'skipExisting',
             'prefix',
             'expect',
+            'apacheSetenv',
             'define',
             'putenv',
             'toEnv',
@@ -226,6 +228,34 @@ class Loader
 
         $expect = new Expect($this->environment, $this->raise);
         call_user_func_array($expect, func_get_args());
+
+        return $this;
+    }
+
+    public function apacheSetenv($overwrite = false)
+    {
+        if (!function_exists('apache_getenv') || !function_exists('apache_setenv')) {
+            return $this->raise(
+                'LogicException',
+                sprintf('apache_getenv() and apache_setenv() undefined in non-apache context')
+            );
+        }
+        $this->requireParse('apache_setenv');
+        foreach ($this->environment as $key => $value) {
+            $prefixedKey = $this->prefixed($key);
+            if (apache_getenv($prefixedKey) && !$overwrite) {
+                if ($this->skip['apache_setenv']) {
+                    continue;
+                }
+
+                return $this->raise(
+                    'LogicException',
+                    sprintf('Key "%s" has already been defined in apache_getenv()', $prefixedKey)
+                );
+            }
+
+            apache_setenv($prefixedKey . '=' . $value);
+        }
 
         return $this;
     }

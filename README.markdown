@@ -145,6 +145,22 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 
 Already defined `$_SERVER` entries will result in an immediate `LogicException`, unless `$overwriteSERVER` is set to `true` (default `false`).
 
+### Making available to `apache_getenv()`
+
+> This should be preferred over `getenv` when using the Apache web server with `mod_php`.
+
+```php
+<?php
+$overwrite = true;
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->parse()
+              ->apacheSetenv($overwriteAPACHE); // Throws LogicException if ->parse() is not called first
+                                                // Throws LogicException if apache_getenv or apache_setenv are undefined
+?>
+```
+
+Already defined `apache_getenv()` entries will result in an immediate `LogicException`, unless `$overwriteAPACHE` is set to `true` (default `false`).
+
 ### Making available to `getenv()`
 
 ```php
@@ -340,7 +356,7 @@ $expect('FOO'); // Returns false if `env` is missing FOO
 
 ## What is it and why should I use it?
 
-When developing and deploying your applications you are typically interacting with various environments - production and development for instance. These environments both execute your code, but will do so using different credentials. You may also wish to distribute your application to developers without accidentally giving them access to important external services. 
+When developing and deploying your applications you are typically interacting with various environments - production and development for instance. These environments both execute your code, but will do so using different credentials. You may also wish to distribute your application to developers without accidentally giving them access to important external services.
 
 Simple examples include authentication keys to your email provider or database connection credentials. You would never want to accidentally send testing emails to all your users, or run a `DROP TABLE` statement against production because you ran your unit tests.
 
