@@ -1,6 +1,6 @@
 <?php
 
-namespace josegonzalez\Dotenv;
+namespace josegonzalez\Dotenv\NonApache;
 
 use josegonzalez\Dotenv\Loader;
 use PHPUnit_Framework_TestCase;
