@@ -155,7 +155,7 @@ $overwrite = true;
 $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
               ->parse()
               ->apacheSetenv($overwriteAPACHE); // Throws LogicException if ->parse() is not called first
-                                                // Throws LogicException if apache_getenv or apache_setenv are undefined
+                                                // May throw a PHP Error if either apache_setenv() or apache_putenv() are not available
 ?>
 ```
 

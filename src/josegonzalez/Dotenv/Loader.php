@@ -234,17 +234,11 @@ class Loader
 
     public function apacheSetenv($overwrite = false)
     {
-        if (!function_exists('apache_getenv') || !function_exists('apache_setenv')) {
-            return $this->raise(
-                'LogicException',
-                sprintf('apache_getenv() and apache_setenv() undefined in non-apache context')
-            );
-        }
         $this->requireParse('apache_setenv');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
             if (apache_getenv($prefixedKey) && !$overwrite) {
-                if ($this->skip['apache_setenv']) {
+                if ($this->skip['apacheSetenv']) {
                     continue;
                 }
 

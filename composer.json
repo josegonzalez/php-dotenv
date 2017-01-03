@@ -19,7 +19,8 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "2.*",
-        "satooshi/php-coveralls": "1.*"
+        "satooshi/php-coveralls": "1.*",
+        "php-mock/php-mock-phpunit": "^1.1"
     },
     "autoload": {
         "psr-0": {

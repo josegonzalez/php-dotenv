@@ -3,6 +3,7 @@
 namespace josegonzalez\Dotenv;
 
 use josegonzalez\Dotenv\Loader;
+use phpmock\phpunit\PHPMock;
 use PHPUnit_Framework_TestCase;
 
 function doNothing($data)
@@ -12,6 +13,7 @@ function doNothing($data)
 
 class LoaderTest extends PHPUnit_Framework_TestCase
 {
+    use PHPMock;
 
     public function setUp()
     {
@@ -19,6 +21,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->server = $_SERVER;
         $this->fixturePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
         $this->Loader = new Loader($this->fixturePath . '.env');
+        $GLOBALS['apache_test_data'] = array();
+
     }
 
     public function tearDown()
@@ -541,6 +545,110 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
+     * @expectedException Error
+     * @expectedExceptionMessage Call to undefined function josegonzalez\Dotenv\apache_getenv()
+     */
+    public function testToApacheSetenvExceptionUnavailable()
+    {
+        $this->Loader->parse();
+        $this->Loader->apacheSetenv(false);
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
+     */
+    public function testToApacheSetenv()
+    {
+        $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
+        $apacheGetenv->expects($this->any())->willReturnCallback(
+            function ($key) {
+                if (isset($GLOBALS['apache_test_data'][$key])) {
+                    return $GLOBALS['apache_test_data'][$key];
+                }
+                return false;
+            }
+        );
+        $apacheSetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_setenv');
+        $apacheSetenv->expects($this->any())->willReturnCallback(
+            function ($key, $value) {
+                $GLOBALS['apache_test_data'][$key] = $value;
+                return true;
+            }
+        );
+
+        $this->Loader->parse();
+        $this->Loader->apacheSetenv(false);
+
+        $this->assertEquals('bar', apache_getenv('FOO'));
+        $this->assertEquals('baz', apache_getenv('BAR'));
+        $this->assertEquals('with spaces', apache_getenv('SPACED'));
+        $this->assertEquals('pgsql:host=localhost;dbname=test', apache_getenv('EQUALS'));
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
+     */
+    public function testToApacheSetenvSkip()
+    {
+        $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
+        $apacheGetenv->expects($this->any())->willReturnCallback(
+            function ($key) {
+                if (isset($GLOBALS['apache_test_data'][$key])) {
+                    return $GLOBALS['apache_test_data'][$key];
+                }
+                return false;
+            }
+        );
+        $apacheSetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_setenv');
+        $apacheSetenv->expects($this->any())->willReturnCallback(
+            function ($key, $value) {
+                $GLOBALS['apache_test_data'][$key] = $value;
+                return true;
+            }
+        );
+
+        $this->Loader->parse();
+        $this->Loader->skipExisting('apacheSetenv');
+        $this->Loader->apacheSetenv(false);
+        $this->Loader->apacheSetenv(false);
+
+        $this->assertEquals('bar', apache_getenv('FOO'));
+        $this->assertEquals('baz', apache_getenv('BAR'));
+        $this->assertEquals('with spaces', apache_getenv('SPACED'));
+        $this->assertEquals('pgsql:host=localhost;dbname=test', apache_getenv('EQUALS'));
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
+     * @expectedException LogicException
+     * @expectedExceptionMessage Key "FOO" has already been defined in apache_getenv()
+     */
+    public function testToApacheSetenvException()
+    {
+        $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
+        $apacheGetenv->expects($this->any())->willReturnCallback(
+            function ($key) {
+                if (isset($GLOBALS['apache_test_data'][$key])) {
+                    return $GLOBALS['apache_test_data'][$key];
+                }
+                return false;
+            }
+        );
+        $apacheSetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_setenv');
+        $apacheSetenv->expects($this->any())->willReturnCallback(
+            function ($key, $value) {
+                $GLOBALS['apache_test_data'][$key] = $value;
+                return true;
+            }
+        );
+
+        $this->Loader->parse();
+        $this->Loader->apacheSetenv(false);
+        $this->Loader->apacheSetenv(false);
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::define
      */
     public function testDefine()
@@ -613,7 +721,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     /**
      * @covers \josegonzalez\Dotenv\Loader::putenv
      * @expectedException LogicException
-     * @expectedExceptionMessage  Key "FOO" has already been defined in getenv()
+     * @expectedExceptionMessage Key "FOO" has already been defined in getenv()
      */
     public function testToPutenvException()
     {
