@@ -581,48 +581,6 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \josegonzalez\Dotenv\Loader::toEnv
-     */
-    public function testToEnv()
-    {
-        $this->Loader->parse();
-        $this->Loader->toEnv(false);
-
-        $this->assertEquals('bar', $_ENV['FOO']);
-        $this->assertEquals('baz', $_ENV['BAR']);
-        $this->assertEquals('with spaces', $_ENV['SPACED']);
-        $this->assertEquals('pgsql:host=localhost;dbname=test', $_ENV['EQUALS']);
-    }
-
-    /**
-     * @covers \josegonzalez\Dotenv\Loader::toEnv
-     */
-    public function testToEnvSkip()
-    {
-        $this->Loader->parse();
-        $this->Loader->skipExisting('toEnv');
-        $this->Loader->toEnv(false);
-        $this->Loader->toEnv(false);
-
-        $this->assertEquals('bar', $_ENV['FOO']);
-        $this->assertEquals('baz', $_ENV['BAR']);
-        $this->assertEquals('with spaces', $_ENV['SPACED']);
-        $this->assertEquals('pgsql:host=localhost;dbname=test', $_ENV['EQUALS']);
-    }
-
-    /**
-     * @covers \josegonzalez\Dotenv\Loader::toEnv
-     * @expectedException LogicException
-     * @expectedExceptionMessage Key "FOO" has already been defined in $_ENV
-     */
-    public function testToEnvException()
-    {
-        $this->Loader->parse();
-        $this->Loader->toEnv(false);
-        $this->Loader->toEnv(false);
-    }
-
-    /**
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
     public function testToPutenv()
@@ -662,6 +620,48 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $this->Loader->putenv(false);
         $this->Loader->putenv(false);
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::toEnv
+     */
+    public function testToEnv()
+    {
+        $this->Loader->parse();
+        $this->Loader->toEnv(false);
+
+        $this->assertEquals('bar', $_ENV['FOO']);
+        $this->assertEquals('baz', $_ENV['BAR']);
+        $this->assertEquals('with spaces', $_ENV['SPACED']);
+        $this->assertEquals('pgsql:host=localhost;dbname=test', $_ENV['EQUALS']);
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::toEnv
+     */
+    public function testToEnvSkip()
+    {
+        $this->Loader->parse();
+        $this->Loader->skipExisting('toEnv');
+        $this->Loader->toEnv(false);
+        $this->Loader->toEnv(false);
+
+        $this->assertEquals('bar', $_ENV['FOO']);
+        $this->assertEquals('baz', $_ENV['BAR']);
+        $this->assertEquals('with spaces', $_ENV['SPACED']);
+        $this->assertEquals('pgsql:host=localhost;dbname=test', $_ENV['EQUALS']);
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::toEnv
+     * @expectedException LogicException
+     * @expectedExceptionMessage Key "FOO" has already been defined in $_ENV
+     */
+    public function testToEnvException()
+    {
+        $this->Loader->parse();
+        $this->Loader->toEnv(false);
+        $this->Loader->toEnv(false);
     }
 
     /**

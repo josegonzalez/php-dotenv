@@ -23,9 +23,9 @@ class Loader
 
     protected $skip = array(
         'define' => false,
+        'putenv' => false,
         'toEnv' => false,
         'toServer' => false,
-        'putenv' => false
     );
 
     public function __construct($filepaths = null)
@@ -66,9 +66,9 @@ class Loader
             'prefix',
             'expect',
             'define',
+            'putenv',
             'toEnv',
             'toServer',
-            'putenv',
         );
         foreach ($methods as $method) {
             if (array_key_exists($method, $options)) {
@@ -252,28 +252,6 @@ class Loader
         return $this;
     }
 
-    public function toEnv($overwrite = false)
-    {
-        $this->requireParse('toEnv');
-        foreach ($this->environment as $key => $value) {
-            $prefixedKey = $this->prefixed($key);
-            if (isset($_ENV[$prefixedKey]) && !$overwrite) {
-                if ($this->skip['toEnv']) {
-                    continue;
-                }
-
-                return $this->raise(
-                    'LogicException',
-                    sprintf('Key "%s" has already been defined in $_ENV', $prefixedKey)
-                );
-            }
-
-            $_ENV[$prefixedKey] = $value;
-        }
-
-        return $this;
-    }
-
     public function putenv($overwrite = false)
     {
         $this->requireParse('putenv');
@@ -291,6 +269,28 @@ class Loader
             }
 
             putenv($prefixedKey . '=' . $value);
+        }
+
+        return $this;
+    }
+
+    public function toEnv($overwrite = false)
+    {
+        $this->requireParse('toEnv');
+        foreach ($this->environment as $key => $value) {
+            $prefixedKey = $this->prefixed($key);
+            if (isset($_ENV[$prefixedKey]) && !$overwrite) {
+                if ($this->skip['toEnv']) {
+                    continue;
+                }
+
+                return $this->raise(
+                    'LogicException',
+                    sprintf('Key "%s" has already been defined in $_ENV', $prefixedKey)
+                );
+            }
+
+            $_ENV[$prefixedKey] = $value;
         }
 
         return $this;
