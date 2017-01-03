@@ -10,7 +10,7 @@ function doNothing($data)
     return $data;
 }
 
-class LoaderApacheTest extends PHPUnit_Framework_TestCase
+class LoaderNonApacheTest extends PHPUnit_Framework_TestCase
 {
 
     public function setUp()
