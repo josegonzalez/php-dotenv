@@ -546,8 +546,6 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
-     * @expectedException Error
-     * @expectedExceptionMessage Call to undefined function josegonzalez\Dotenv\apache_getenv()
      */
     public function testToApacheSetenvExceptionUnavailable()
     {
@@ -555,6 +553,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Unable to mock bare php functions');
         }
 
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage('Call to undefined function josegonzalez\Dotenv\apache_getenv()');
         $this->Loader->parse();
         $this->Loader->apacheSetenv(false);
     }
