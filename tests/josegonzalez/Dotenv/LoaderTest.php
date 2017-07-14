@@ -546,11 +546,15 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
-     * @expectedException Error
-     * @expectedExceptionMessage Call to undefined function josegonzalez\Dotenv\apache_getenv()
      */
     public function testToApacheSetenvExceptionUnavailable()
     {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $this->markTestSkipped('Unable to mock bare php functions');
+        }
+
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage('Call to undefined function josegonzalez\Dotenv\apache_getenv()');
         $this->Loader->parse();
         $this->Loader->apacheSetenv(false);
     }
@@ -560,6 +564,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenv()
     {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $this->markTestSkipped('Unable to mock bare php functions');
+        }
+
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {
@@ -591,6 +599,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvSkip()
     {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $this->markTestSkipped('Unable to mock bare php functions');
+        }
+
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {
@@ -626,6 +638,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvException()
     {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $this->markTestSkipped('Unable to mock bare php functions');
+        }
+
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {

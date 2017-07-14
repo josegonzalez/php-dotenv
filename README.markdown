@@ -13,7 +13,7 @@ A `.env` file parsing and loading library for PHP.
 
 ## Requirements
 
-* PHP 7.0+
+* PHP 5.5+
 
 ## Installation
 
