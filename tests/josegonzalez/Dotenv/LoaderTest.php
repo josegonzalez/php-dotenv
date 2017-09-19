@@ -580,7 +580,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $apacheSetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_setenv');
         $apacheSetenv->expects($this->any())->willReturnCallback(
             function ($key, $value) {
-                $GLOBALS['apache_test_data'][$key] = $value;
+                $GLOBALS['apache_test_data'][$key] = (string)$value;
                 return true;
             }
         );
@@ -607,7 +607,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {
                 if (isset($GLOBALS['apache_test_data'][$key])) {
-                    return $GLOBALS['apache_test_data'][$key];
+                    return (string)$GLOBALS['apache_test_data'][$key];
                 }
                 return false;
             }
@@ -615,7 +615,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $apacheSetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_setenv');
         $apacheSetenv->expects($this->any())->willReturnCallback(
             function ($key, $value) {
-                $GLOBALS['apache_test_data'][$key] = $value;
+                $GLOBALS['apache_test_data'][$key] = (string)$value;
                 return true;
             }
         );
@@ -646,7 +646,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {
                 if (isset($GLOBALS['apache_test_data'][$key])) {
-                    return $GLOBALS['apache_test_data'][$key];
+                    return (string)$GLOBALS['apache_test_data'][$key];
                 }
                 return false;
             }
@@ -654,7 +654,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $apacheSetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_setenv');
         $apacheSetenv->expects($this->any())->willReturnCallback(
             function ($key, $value) {
-                $GLOBALS['apache_test_data'][$key] = $value;
+                $GLOBALS['apache_test_data'][$key] = (string)$value;
                 return true;
             }
         );
@@ -662,6 +662,48 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $this->Loader->apacheSetenv(false);
         $this->Loader->apacheSetenv(false);
+    }
+
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::putenv
+     */
+    public function testToApacheSetenvPreserveZeros()
+    {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $this->markTestSkipped('Unable to mock bare php functions');
+        }
+
+        $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
+        $apacheGetenv->expects($this->any())->willReturnCallback(
+            function ($key) {
+                if (isset($GLOBALS['apache_test_data'][$key])) {
+                    return (string)$GLOBALS['apache_test_data'][$key];
+                }
+                return false;
+            }
+        );
+        $apacheSetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_setenv');
+        $apacheSetenv->expects($this->any())->willReturnCallback(
+            function ($key, $value) {
+                $GLOBALS['apache_test_data'][$key] = (string)$value;
+                return true;
+            }
+        );
+
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
+        $this->Loader->parse();
+        $this->Loader->apacheSetenv(false);
+
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_1.env');
+        $this->Loader->parse();
+        $this->Loader->skipExisting('apacheSetenv');
+        $this->Loader->apacheSetenv(false);
+
+        $this->assertEquals('0', apache_getenv('Z_NUMBER'));
+        $this->assertEquals('', apache_getenv('Z_BOOL'));
+        $this->assertEquals('', apache_getenv('Z_STRING'));
+        $this->assertEquals('', apache_getenv('Z_NULLABLE'));
     }
 
     /**
@@ -747,6 +789,26 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::putenv
+     */
+    public function testToPutenvPreserveZeros()
+    {
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
+        $this->Loader->parse();
+        $this->Loader->putenv(false);
+
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_1.env');
+        $this->Loader->parse();
+        $this->Loader->skipExisting('putenv');
+        $this->Loader->putenv(false);
+
+        $this->assertEquals('0', getenv('Z_NUMBER'));
+        $this->assertEquals('', getenv('Z_BOOL'));
+        $this->assertEquals('', getenv('Z_STRING'));
+        $this->assertEquals('', getenv('Z_NULLABLE'));
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      */
     public function testToEnv()
@@ -789,6 +851,26 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::toEnv
+     */
+    public function testToEnvPreserveZeros()
+    {
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
+        $this->Loader->parse();
+        $this->Loader->toEnv(false);
+
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_1.env');
+        $this->Loader->parse();
+        $this->Loader->skipExisting('toEnv');
+        $this->Loader->toEnv(false);
+
+        $this->assertEquals(0, $_ENV['Z_NUMBER']);
+        $this->assertEquals(false, $_ENV['Z_BOOL']);
+        $this->assertEquals('', $_ENV['Z_STRING']);
+        $this->assertEquals(null, $_ENV['Z_NULLABLE']);
+    }
+
+    /**
      * @covers \josegonzalez\Dotenv\Loader::toServer
      */
     public function testToServer()
@@ -828,6 +910,26 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $this->Loader->toServer(false);
         $this->Loader->toServer(false);
+    }
+
+    /**
+     * @covers \josegonzalez\Dotenv\Loader::toServer
+     */
+    public function testToServerPreserveZeros()
+    {
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
+        $this->Loader->parse();
+        $this->Loader->toServer(false);
+
+        $this->Loader->setFilepaths($this->fixturePath . 'zero_test_1.env');
+        $this->Loader->parse();
+        $this->Loader->skipExisting('toServer');
+        $this->Loader->toServer(false);
+
+        $this->assertEquals(0, $_SERVER['Z_NUMBER']);
+        $this->assertEquals(false, $_SERVER['Z_BOOL']);
+        $this->assertEquals('', $_SERVER['Z_STRING']);
+        $this->assertEquals(null, $_SERVER['Z_NULLABLE']);
     }
 
     /**

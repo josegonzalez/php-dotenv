@@ -237,7 +237,7 @@ class Loader
         $this->requireParse('apache_setenv');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
-            if (apache_getenv($prefixedKey) && !$overwrite) {
+            if (apache_getenv($prefixedKey) !== false && !$overwrite) {
                 if ($this->skip['apacheSetenv']) {
                     continue;
                 }
@@ -281,7 +281,7 @@ class Loader
         $this->requireParse('putenv');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
-            if (getenv($prefixedKey) && !$overwrite) {
+            if (getenv($prefixedKey) !== false && !$overwrite) {
                 if ($this->skip['putenv']) {
                     continue;
                 }
@@ -303,7 +303,7 @@ class Loader
         $this->requireParse('toEnv');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
-            if (isset($_ENV[$prefixedKey]) && !$overwrite) {
+            if (array_key_exists($prefixedKey, $_ENV) && !$overwrite) {
                 if ($this->skip['toEnv']) {
                     continue;
                 }
@@ -325,7 +325,7 @@ class Loader
         $this->requireParse('toServer');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
-            if (isset($_SERVER[$prefixedKey]) && !$overwrite) {
+            if (array_key_exists($prefixedKey, $_SERVER) && !$overwrite) {
                 if ($this->skip['toServer']) {
                     continue;
                 }
