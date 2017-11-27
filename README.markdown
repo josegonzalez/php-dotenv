@@ -224,6 +224,19 @@ $Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
 ?>
 ```
 
+### Skip existing environment variables
+
+It is possible to skip existing enviroment variables (e.g. in a containerized / Docker setup).
+
+```php
+<?php
+$Loader = (new josegonzalez\Dotenv\Loader('path/to/.env'))
+              ->parse()
+              ->skipExisting() //Skip any environment variables that are already present
+              ->putenv();
+?>
+```
+
 ### Filtering environments
 
 It is possible to optionally filter the environment data produced by php-dotenv through the use of filter classes. A filter class has an `__invoke` method like so:
