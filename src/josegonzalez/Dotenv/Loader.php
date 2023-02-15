@@ -10,6 +10,7 @@ use M1\Env\Parser;
 
 class Loader
 {
+    protected $exceptions = [];
 
     protected $environment = null;
 
@@ -32,7 +33,6 @@ class Loader
     public function __construct($filepaths = null)
     {
         $this->setFilepaths($filepaths);
-        return $this;
     }
 
     public static function load($options = null)
