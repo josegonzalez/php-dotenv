@@ -10,6 +10,7 @@
          convertDeprecationsToExceptions="true"
          failOnRisky="false"
          failOnWarning="true"
+         stopOnFailure="false"
          verbose="true">
     <testsuites>
         <testsuite name="Dotenv Test Suite">
