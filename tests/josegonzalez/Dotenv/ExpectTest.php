@@ -3,7 +3,7 @@
 namespace josegonzalez\Dotenv;
 
 use josegonzalez\Dotenv\Expect;
-use \PHPUnit_Framework_TestCase;
+use \PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 class ExpectTest extends PHPUnit_Framework_TestCase
 {

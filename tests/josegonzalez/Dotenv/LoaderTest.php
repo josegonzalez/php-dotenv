@@ -4,7 +4,7 @@ namespace josegonzalez\Dotenv;
 
 use josegonzalez\Dotenv\Loader;
 use phpmock\phpunit\PHPMock;
-use PHPUnit_Framework_TestCase;
+use \PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 function doNothing($data)
 {
