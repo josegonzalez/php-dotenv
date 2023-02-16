@@ -47,12 +47,11 @@ class ExpectTest extends TestCase
     /**
      * @covers \josegonzalez\Dotenv\Expect::__invoke
      * @covers \josegonzalez\Dotenv\Expect::raise
-     * @expectedException LogicException
-     * @expectedExceptionMessage No arguments were passed to expect()
      */
     public function testExpectLogicException(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('No arguments were passed to expect()');
         $expect = new Expect($this->server);
         $expect();
     }
@@ -60,12 +59,11 @@ class ExpectTest extends TestCase
     /**
      * @covers \josegonzalez\Dotenv\Expect::__invoke
      * @covers \josegonzalez\Dotenv\Expect::raise
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Required ENV vars missing: ['INVALID']
      */
     public function testExpectRuntimeException(): void
     {
         $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Required ENV vars missing: ['INVALID']");
         $expect = new Expect($this->server);
         $expect('INVALID');
     }

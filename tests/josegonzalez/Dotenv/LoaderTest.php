@@ -204,49 +204,46 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::parse
-     * @expectedException M1\Env\Exception\ParseException
-     * @expectedExceptionMessage Key can only contain alphanumeric
-     *      and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1
+     * @expectedExceptionMessage
      */
     public function testParseException(): void
     {
         $this->expectException(\M1\Env\Exception\ParseException::class);
-        $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env');
+        $this->expectExceptionMessage('Key can only contain alphanumeric' .
+                ' and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1');
+        $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env ');
         $this->Loader->parse();
     }
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::parse
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Environment file '.env' is not found
      */
     public function testParseFileNotFound(): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Environment file '.env' is not found");
         $this->Loader->setFilepath('.env');
         $this->Loader->parse();
     }
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::parse
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Environment file '/tmp' is a directory. Should be a file
      */
     public function testParseFileIsDirectory(): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Environment file '/tmp' is a directory. Should be a file");
         $this->Loader->setFilepath('/tmp');
         $this->Loader->parse();
     }
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::parse
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Environment file '/tmp/php-dotenv-unreadable' is not readable
      */
     public function testParseFileIsUnreadable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Environment file '/tmp/php-dotenv-unreadable' is not readable");
         touch('/tmp/php-dotenv-unreadable');
         chmod('/tmp/php-dotenv-unreadable', 0000);
         $this->Loader->setFilepath('/tmp/php-dotenv-unreadable');
@@ -289,12 +286,11 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::setFilters
-     * @expectedException LogicException
-     * @expectedExceptionMessage Invalid filter class SomeFilter
      */
     public function testSetFilterNonexistentFilter(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Invalid filter class SomeFilter');
         $this->assertEquals($this->Loader, $this->Loader->setFilters([
             'SomeFilter'
         ]));
@@ -302,12 +298,11 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::setFilters
-     * @expectedException LogicException
-     * @expectedExceptionMessage Invalid filter class
      */
     public function testSetFilterInvalidCallable(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Invalid filter class');
         $this->assertEquals($this->Loader, $this->Loader->setFilters([
             $this
         ]));
@@ -551,35 +546,33 @@ class LoaderTest extends TestCase
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Environment must be parsed before calling expect()
+     * @covers \josegonzalez\Dotenv\Loader::expect With no parsing done yet.
      */
     public function testExpectRequireParse(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Environment must be parsed before calling expect()');
         $this->Loader->expect();
     }
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::expect
-     * @expectedException LogicException
-     * @expectedExceptionMessage No arguments were passed to expect()
      */
     public function testExpectLogicException(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('No arguments were passed to expect()');
         $this->Loader->parse();
         $this->Loader->expect();
     }
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::expect
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Required ENV vars missing: ['INVALID']
      */
     public function testExpectRuntimeException(): void
     {
         $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Required ENV vars missing: ['INVALID']");
         $this->Loader->parse();
         $this->Loader->expect('INVALID');
     }
@@ -673,8 +666,6 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
-     * @expectedException LogicException
-     * @expectedExceptionMessage Key "FOO" has already been defined in apache_getenv()
      */
     public function testToApacheSetenvException(): void
     {
@@ -700,6 +691,7 @@ class LoaderTest extends TestCase
         );
 
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Key "FOO" has already been defined in apache_getenv()');
         $this->Loader->parse();
         $this->Loader->apacheSetenv(false);
         $this->Loader->apacheSetenv(false);
@@ -778,12 +770,11 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::define
-     * @expectedException LogicException
-     * @expectedExceptionMessage Key "FOO" has already been defined
      */
     public function testDefineException(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Key "FOO" has already been defined');
         $this->Loader->parse();
         $this->Loader->define();
     }
@@ -820,12 +811,11 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::putenv
-     * @expectedException LogicException
-     * @expectedExceptionMessage Key "FOO" has already been defined in getenv()
      */
     public function testToPutenvException(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Key "FOO" has already been defined in getenv()');
         $this->Loader->parse();
         $this->Loader->putenv(false);
         $this->Loader->putenv(false);
@@ -883,12 +873,11 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::toEnv
-     * @expectedException LogicException
-     * @expectedExceptionMessage Key "FOO" has already been defined in $_ENV
      */
     public function testToEnvException(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Key "FOO" has already been defined in $_ENV');
         $this->Loader->parse();
         $this->Loader->toEnv(false);
         $this->Loader->toEnv(false);
@@ -946,12 +935,11 @@ class LoaderTest extends TestCase
 
     /**
      * @covers \josegonzalez\Dotenv\Loader::toServer
-     * @expectedException LogicException
-     * @expectedExceptionMessage Key "FOO" has already been defined in $_SERVER
      */
     public function testToServerException(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Key "FOO" has already been defined in $_SERVER');
         $this->Loader->parse();
         $this->Loader->toServer(false);
         $this->Loader->toServer(false);
@@ -1025,12 +1013,12 @@ class LoaderTest extends TestCase
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Environment must be parsed before calling toArray()
+     * @covers \josegonzalez\Dotenv\Loader::toArray With no parsing done yet.
      */
     public function testToArrayRequireParse(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Environment must be parsed before calling toArray()');
         $this->Loader->toArray();
     }
 
@@ -1058,12 +1046,12 @@ class LoaderTest extends TestCase
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Environment must be parsed before calling toEnv()
+     * @covers \josegonzalez\Dotenv\Loader::requireParse With no parsing done yet.
      */
     public function testRequireParseException(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Environment must be parsed before calling toEnv()');
         $this->protectedMethodCall($this->Loader, 'requireParse', ['toEnv']);
     }
 
@@ -1078,12 +1066,12 @@ class LoaderTest extends TestCase
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage derp
+     * @covers \josegonzalez\Dotenv\Loader::raise
      */
     public function testRaise(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('derp');
         $this->protectedMethodCall($this->Loader, 'raise', ['LogicException', 'derp']);
     }
 
