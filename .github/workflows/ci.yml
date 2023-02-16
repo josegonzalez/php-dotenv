@@ -85,8 +85,8 @@ jobs:
       run: composer run-script coverage-${{ matrix.php-version }}
 
     - name: Upload to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
-        token: ${{ secrets.CODE_COV_TOKEN }}
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: ./tmp/coverage.xml
         verbose: true
