@@ -7,7 +7,7 @@
   </coverage>
   <testsuites>
     <testsuite name="Dotenv Test Suite">
-      <directory suffix=".php">tests</directory>
+      <directory suffix=".php">tests/josegonzalez/Dotenv</directory>
     </testsuite>
   </testsuites>
 </phpunit>
