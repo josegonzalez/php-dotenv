@@ -82,7 +82,7 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: composer run-script coverage--${{ matrix.php-version }}
+      run: composer run-script coverage-${{ matrix.php-version }}
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2
