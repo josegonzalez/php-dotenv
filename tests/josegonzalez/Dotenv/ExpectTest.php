@@ -7,8 +7,11 @@ use PHPUnit\Framework\TestCase;
 
 class ExpectTest extends TestCase
 {
+
+    /** @var array<mixed, mixed> */
     protected $env = [];
     
+    /** @var array<mixed, mixed> */
     protected $server = [];
 
     public function setUp(): void
@@ -34,11 +37,11 @@ class ExpectTest extends TestCase
     {
         $expect = new Expect($this->server);
         $this->assertTrue($expect('USER'));
-        $this->assertTrue($expect(array('USER', 'HOME')));
+        $this->assertTrue($expect(['USER', 'HOME']));
 
         $expect = new Expect($this->server, false);
         $this->assertFalse($expect('FOO'));
-        $this->assertFalse($expect(array('USER', 'FOO')));
+        $this->assertFalse($expect(['USER', 'FOO']));
     }
 
     /**

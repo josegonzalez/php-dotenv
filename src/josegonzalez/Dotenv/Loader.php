@@ -1,4 +1,8 @@
 <?php
+/**
+ * The class that loads the variables from the .env file
+ * and adds them to the needed enviroments.
+ */
 
 namespace josegonzalez\Dotenv;
 
@@ -10,37 +14,56 @@ use M1\Env\Parser;
 
 class Loader
 {
+    /** @var array<int|string, object> List of thrown exceptsions being tracked. */
     protected $exceptions = [];
 
+    /** @var null|array<string, mixed> The parsed variables. */
     protected $environment = null;
 
+    /** @var array<int|string, string>|null A list of file paths to use to fine the .env file. */
     protected $filepaths = null;
 
-    protected $filters = array();
+    /** @var array<string, mixed> List of filters to use. */
+    protected $filters = [];
 
+    /** @var null|string The prefix we should use for keys. */
     protected $prefix = null;
 
+    /** @var bool If we should raise exceptions. */
     protected $raise = true;
 
-    protected $skip = array(
+    /** @var array<string, bool> Available sources and if they should be skipped. */
+    protected $skip = [
         'apacheSetenv' => false,
         'define' => false,
         'putenv' => false,
         'toEnv' => false,
         'toServer' => false,
-    );
+    ];
 
+    /**
+     * Constructor
+     *
+     * @param null|string|array<int|string, string> $filepaths
+     * @return void
+     */
     public function __construct($filepaths = null)
     {
         $this->setFilepaths($filepaths);
     }
 
+    /**
+     * Creates the Loader object with a set of options.
+     *
+     * @param null|string|array<int|string, mixed> $options
+     * @return \josegonzalez\Dotenv\Loader
+     */
     public static function load($options = null)
     {
         $filepaths = null;
         if (is_string($options)) {
             $filepaths = $options;
-            $options = array();
+            $options = [];
         } elseif (isset($options['filepath'])) {
             $filepaths = (array)$options['filepath'];
             unset($options['filepath']);
@@ -62,7 +85,7 @@ class Loader
             $dotenv->filter();
         }
 
-        $methods = array(
+        $methods = [
             'skipExisting',
             'prefix',
             'expect',
@@ -71,7 +94,8 @@ class Loader
             'putenv',
             'toEnv',
             'toServer',
-        );
+        ];
+
         foreach ($methods as $method) {
             if (array_key_exists($method, $options)) {
                 $dotenv->$method($options[$method]);
@@ -81,43 +105,77 @@ class Loader
         return $dotenv;
     }
 
+    /**
+     * Gets the current file path from the list.
+     *
+     * @return string
+     */
     public function filepath()
     {
         return current($this->filepaths);
     }
 
+    /**
+     * Gets the list of files paths.
+     *
+     * @return array<int|string, string>|null
+     */
     public function filepaths()
     {
         return $this->filepaths;
     }
 
-    public function setFilepath($filepath = null)
+    /**
+     * Sets a single file path
+     *
+     * @param null|string $filepath The path to add to the list.
+     * @return self
+     */
+    public function setFilepath(?string $filepath = null)
     {
         return $this->setFilepaths($filepath);
     }
 
+    /**
+     * Sets the list of paths to look for the .env file
+     *
+     * @param null|string|array<int|string, string> $filepaths One or more file paths to look in.
+     * @return self
+     */
     public function setFilepaths($filepaths = null)
     {
         if ($filepaths == null) {
-            $filepaths = array(__DIR__ . DIRECTORY_SEPARATOR . '.env');
+            $filepaths = [__DIR__ . DIRECTORY_SEPARATOR . '.env'];
         }
 
         if (is_string($filepaths)) {
-            $filepaths = array($filepaths);
+            $filepaths = [$filepaths];
         }
 
         $this->filepaths = $filepaths;
         return $this;
     }
 
+    /**
+     * gets the filters to use.
+     *
+     * @return array<string, mixed> The defined list of filters.
+     */
     public function filters()
     {
         return $this->filters;
     }
 
+    /**
+     * Sets the filters to use.
+     *
+     * @param array<int|string, mixed> $filters An array of filters to use.
+     * @return self|bool
+     * @throws \LogicException
+     */
     public function setFilters(array $filters)
     {
-        $newList = array();
+        $newList = [];
         $keys = array_keys($filters);
         $count = count($keys);
         for ($i = 0; $i < $count; $i++) {
@@ -126,9 +184,9 @@ class Loader
                 if (is_string($filter)) {
                     $newList[$filter] = null;
                 } else {
-                    $newList['__callable__' . $i] = array(
+                    $newList['__callable__' . $i] = [
                         'callable' => $filter
-                    );
+                    ];
                 }
             } else {
                 $newList[$keys[$i]] = $filters[$keys[$i]];
@@ -161,6 +219,12 @@ class Loader
         return $this;
     }
 
+    /**
+     * Filter variables
+     *
+     * @return self
+     * @throws \InvalidArgumentException
+     */
     public function filter()
     {
         $this->requireParse('filter');
@@ -176,6 +240,7 @@ class Loader
                     $filter = new $filterClass;
                 }
             }
+            /** @var \josegonzalez\Dotenv\Filter\Filter $filter */
             $environment = $filter($environment, $config);
         }
 
@@ -183,9 +248,15 @@ class Loader
         return $this;
     }
 
+    /**
+     * Parses the .env file into the environment variable
+     *
+     * @return self|bool
+     * @throws \InvalidArgumentException
+     */
     public function parse()
     {
-        $contents = false;
+        $contents = '';
         $filepaths = $this->filepaths();
 
         foreach ($filepaths as $i => $filepath) {
@@ -216,12 +287,19 @@ class Loader
             }
         }
 
+        /** @var string $contents Come on phpstan. */
         $parser = new Parser($contents);
         $this->environment = $parser->getContent();
 
         return $this;
     }
 
+    /**
+     * Used to create an Expect object
+     *
+     * @return self|bool
+     * @throws \Exception
+     */
     public function expect()
     {
         $this->requireParse('expect');
@@ -232,6 +310,13 @@ class Loader
         return $this;
     }
 
+    /**
+     * Uses apache_setenv() to set variables
+     *
+     * @param bool $overwrite If we should overwrite variables via apache_setenv()
+     * @return self|bool
+     * @throws \Exception
+     */
     public function apacheSetenv($overwrite = false)
     {
         $this->requireParse('apache_setenv');
@@ -254,6 +339,12 @@ class Loader
         return $this;
     }
 
+    /**
+     * Uses define() to set variables
+     *
+     * @return self|bool
+     * @throws \Exception
+     */
     public function define()
     {
         $this->requireParse('define');
@@ -276,6 +367,13 @@ class Loader
         return $this;
     }
 
+    /**
+     * Uses putenv() to set variables
+     *
+     * @param bool $overwrite If we should overwrite variables via putenv()
+     * @return self|bool
+     * @throws \Exception
+     */
     public function putenv($overwrite = false)
     {
         $this->requireParse('putenv');
@@ -298,6 +396,13 @@ class Loader
         return $this;
     }
 
+    /**
+     * Updates $_ENV
+     *
+     * @param bool $overwrite If we should overwrite the initial value of $_ENV values
+     * @return self|bool
+     * @throws \Exception
+     */
     public function toEnv($overwrite = false)
     {
         $this->requireParse('toEnv');
@@ -320,6 +425,13 @@ class Loader
         return $this;
     }
 
+    /**
+     * Updates $_SERVER
+     *
+     * @param bool $overwrite If we should overwrite the initial value of $_SERVER values
+     * @return self|bool
+     * @throws \Exception
+     */
     public function toServer($overwrite = false)
     {
         $this->requireParse('toServer');
@@ -342,6 +454,12 @@ class Loader
         return $this;
     }
 
+    /**
+     * Sets what types to skip
+     *
+     * @param mixed $types The types to skip
+     * @return self
+     */
     public function skipExisting($types = null)
     {
         $args = func_get_args();
@@ -354,6 +472,7 @@ class Loader
             $types = array_keys($this->skip);
         }
 
+        /** @var string $type */
         foreach ((array)$types as $type) {
             $this->skip[$type] = true;
         }
@@ -361,9 +480,14 @@ class Loader
         return $this;
     }
 
+    /**
+     * Returns list of variables to skip.
+     *
+     * @return array<int, string>
+     */
     public function skipped()
     {
-        $skipped = array();
+        $skipped = [];
         foreach ($this->skip as $key => $value) {
             if ($value == true) {
                 $skipped[] = $key;
@@ -372,13 +496,25 @@ class Loader
         return $skipped;
     }
 
-    public function prefix($prefix = null)
+    /**
+     * Sets the prefix.
+     *
+     * @param string|null $prefix
+     * @return self
+     */
+    public function prefix(?string $prefix = null)
     {
         $this->prefix = $prefix;
         return $this;
     }
 
-    public function prefixed($key)
+    /**
+     * Add prefix to a key
+     *
+     * @param string $key The key that may need to be prefixed.
+     * @return string The modified key.
+     */
+    public function prefixed(string $key)
     {
         if (!!$this->prefix) {
             $key = $this->prefix . $key;
@@ -387,12 +523,24 @@ class Loader
         return $key;
     }
 
+    /**
+     * Flags if we should raise exceptions, or ignore them
+     *
+     * @param bool $raise If we should allow exceptions
+     * @return self
+     */
     public function raiseExceptions($raise = true)
     {
         $this->raise = $raise;
         return $this;
     }
 
+    /**
+     * Creates and return an array from the known environment.
+     *
+     * @return array<string, mixed>|null
+     * @throws \Exception
+     */
     public function toArray()
     {
         $this->requireParse('toArray');
@@ -400,25 +548,38 @@ class Loader
             return null;
         }
 
-        $environment = array();
+        $environment = [];
         foreach ($this->environment as $key => $value) {
             $environment[$this->prefixed($key)] = $value;
         }
         return $environment;
     }
 
+    /**
+     * Converts array to json string
+     *
+     * @return string
+     */
     public function __toString()
     {
         try {
             $data = $this->toArray();
         } catch (LogicException $e) {
-            $data = array();
+            $data = [];
         }
 
-        return json_encode($data);
+        $json = json_encode($data);
+        return $json ? $json : '';
     }
 
-    protected function requireParse($method)
+    /**
+     * Requires the the .env has been parsed first.
+     *
+     * @param string $method The message send with the exception.
+     * @return void|bool
+     * @throws \Exception
+     */
+    protected function requireParse(string $method)
     {
         if (!is_array($this->environment)) {
             return $this->raise(
@@ -428,9 +589,19 @@ class Loader
         }
     }
 
-    protected function raise($exception, $message)
+    /**
+     * Throw and track exceptions
+     *
+     * @param \Exception|string $exception
+     * @param string $message The message send with the exception.
+     * @return bool Actually always false
+     * @throws \Exception
+     */
+    protected function raise($exception, string $message): bool
     {
         if ($this->raise) {
+            // @todo Figure out how to properly define this line so phpstan can understand it.
+            // @phpstan-ignore-next-line
             throw new $exception($message);
         }
 

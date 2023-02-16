@@ -6,6 +6,11 @@ use josegonzalez\Dotenv\Loader;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Just return what was handed to it.
+ * @param mixed $data basically anything
+ * @return mixed Whatever was in $data
+ */
 function doNothing($data)
 {
     return $data;
@@ -15,12 +20,16 @@ class LoaderTest extends TestCase
 {
     use PHPMock;
 
+    /** @var array<mixed, mixed> */
     protected $env = [];
     
+    /** @var array<mixed, mixed> */
     protected $server = [];
 
+    /** @var string */
     protected $fixturePath = '';
 
+    /** @var \josegonzalez\Dotenv\Loader */
     protected $Loader;
 
     public function setUp(): void
@@ -29,7 +38,7 @@ class LoaderTest extends TestCase
         $this->server = $_SERVER;
         $this->fixturePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
         $this->Loader = new Loader($this->fixturePath . '.env');
-        $GLOBALS['apache_test_data'] = array();
+        $GLOBALS['apache_test_data'] = [];
     }
 
     public function tearDown(): void
@@ -55,7 +64,7 @@ class LoaderTest extends TestCase
      */
     public function testFilepaths(): void
     {
-        $this->assertEquals(array($this->fixturePath . '.env'), $this->Loader->filepaths());
+        $this->assertEquals([$this->fixturePath . '.env'], $this->Loader->filepaths());
     }
 
     /**
@@ -68,11 +77,11 @@ class LoaderTest extends TestCase
         $this->assertEquals('/tmp/.env', $this->Loader->filepath());
 
         $this->Loader->setFilepath(null);
-        $basePath = realpath(implode(DIRECTORY_SEPARATOR, array(
+        $basePath = realpath(implode(DIRECTORY_SEPARATOR, [
             __DIR__,
             '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..',
             'src' . DIRECTORY_SEPARATOR . 'josegonzalez' . DIRECTORY_SEPARATOR . 'Dotenv',
-        )));
+        ]));
         $this->assertEquals($basePath . DIRECTORY_SEPARATOR .'.env', $this->Loader->filepath());
     }
 
@@ -111,7 +120,7 @@ class LoaderTest extends TestCase
             'character inside quotes', $environment['CQUOTESWITHQUOTE']);
         $this->assertSame(null, $environment['CNULL']);
 
-        $this->assertEquals(array(
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'unquotedwithspaces spaces',
@@ -156,7 +165,7 @@ class LoaderTest extends TestCase
             'STRING_EMPTY' => '',
             'STRING_EMPTY_2' => '',
             'NO_VALUE_INLINE_COMMENT' => null,
-        ), $environment);
+        ], $environment);
 
         $this->Loader->setFilepath($this->fixturePath . 'cake.env');
         $this->Loader->parse();
@@ -249,7 +258,7 @@ class LoaderTest extends TestCase
      */
     public function testFilters(): void
     {
-        $this->assertSame(array(), $this->Loader->filters());
+        $this->assertSame([], $this->Loader->filters());
     }
 
     /**
@@ -257,25 +266,25 @@ class LoaderTest extends TestCase
      */
     public function testSetFilters(): void
     {
-        $this->assertSame(array(), $this->Loader->filters());
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+        $this->assertSame([], $this->Loader->filters());
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\NullFilter',
-        )));
+        ]));
 
 
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
             'josegonzalez\Dotenv\doNothing',
-        )));
+        ]));
 
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
-            'josegonzalez\Dotenv\doNothing' => array('key' => 'value'),
-        )));
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
+            'josegonzalez\Dotenv\doNothing' => ['key' => 'value'],
+        ]));
 
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
             function () {
-                return array();
+                return [];
             }
-        )));
+        ]));
     }
 
     /**
@@ -286,9 +295,9 @@ class LoaderTest extends TestCase
     public function testSetFilterNonexistentFilter(): void
     {
         $this->expectException(\LogicException::class);
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
             'SomeFilter'
-        )));
+        ]));
     }
 
     /**
@@ -299,9 +308,9 @@ class LoaderTest extends TestCase
     public function testSetFilterInvalidCallable(): void
     {
         $this->expectException(\LogicException::class);
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
             $this
-        )));
+        ]));
     }
 
     /**
@@ -310,17 +319,17 @@ class LoaderTest extends TestCase
      */
     public function testFilter(): void
     {
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\NullFilter',
-        )));
+        ]));
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals(array(
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $this->Loader->toArray());
+        ], $this->Loader->toArray());
     }
 
 
@@ -330,14 +339,14 @@ class LoaderTest extends TestCase
      */
     public function testFilterCallable(): void
     {
-        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+        $this->assertEquals($this->Loader, $this->Loader->setFilters([
             function () {
-                return array('FOO' => 'BAR');
+                return ['FOO' => 'BAR'];
             }
-        )));
+        ]));
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals(array('FOO' => 'BAR'), $this->Loader->toArray());
+        $this->assertEquals(['FOO' => 'BAR'], $this->Loader->toArray());
     }
 
     /**
@@ -345,18 +354,18 @@ class LoaderTest extends TestCase
      */
     public function testLowercaseKeyFilter(): void
     {
-        $this->Loader->setFilters(array(
+        $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
-        ));
+        ]);
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals(array(
+        $this->assertEquals([
             'foo' => 'bar',
             'bar' => 'baz',
             'spaced' => 'with spaces',
             'equals' => 'pgsql:host=localhost;dbname=test',
-        ), $this->Loader->toArray());
+        ], $this->Loader->toArray());
     }
 
     /**
@@ -364,18 +373,18 @@ class LoaderTest extends TestCase
      */
     public function testNullFilter(): void
     {
-        $this->Loader->setFilters(array(
+        $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\NullFilter',
-        ));
+        ]);
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals(array(
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $this->Loader->toArray());
+        ], $this->Loader->toArray());
     }
 
 
@@ -384,20 +393,20 @@ class LoaderTest extends TestCase
      */
     public function testRemapKeysFilter(): void
     {
-        $this->Loader->setFilters(array(
-            'josegonzalez\Dotenv\Filter\RemapKeysFilter' => array(
+        $this->Loader->setFilters([
+            'josegonzalez\Dotenv\Filter\RemapKeysFilter' => [
                 'FOO' => 'QUX'
-            ),
-        ));
+            ],
+        ]);
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals(array(
+        $this->assertEquals([
             'QUX' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $this->Loader->toArray());
+        ], $this->Loader->toArray());
     }
 
     /**
@@ -405,19 +414,19 @@ class LoaderTest extends TestCase
      */
     public function testUppercaseFirstKeyFilter(): void
     {
-        $this->Loader->setFilters(array(
+        $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
             'josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter',
-        ));
+        ]);
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals(array(
+        $this->assertEquals([
             'Foo' => 'bar',
             'Bar' => 'baz',
             'Spaced' => 'with spaces',
             'Equals' => 'pgsql:host=localhost;dbname=test',
-        ), $this->Loader->toArray());
+        ], $this->Loader->toArray());
     }
 
     /**
@@ -426,14 +435,14 @@ class LoaderTest extends TestCase
      */
     public function testUrlParseFilter(): void
     {
-        $this->Loader->setFilters(array(
+        $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\UrlParseFilter',
-        ));
+        ]);
         $this->Loader->setFilepath($this->fixturePath . 'url_parse_filter.env');
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertSame(array(
+        $this->assertSame([
             'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
             'READ_DATABASE_SCHEME' => 'mysql',
             'READ_DATABASE_HOST' => 'localhost',
@@ -452,7 +461,7 @@ class LoaderTest extends TestCase
             'DATABASE_PATH' => '/database_name',
             'DATABASE_QUERY' => 'encoding=utf8',
             'DATABASE_FRAGMENT' => '',
-        ), $environment);
+        ], $environment);
     }
 
     /**
@@ -460,32 +469,32 @@ class LoaderTest extends TestCase
      */
     public function testUnderscoreArrayFilter(): void
     {
-        $this->Loader->setFilters(array(
+        $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
-        ));
+        ]);
         $this->Loader->setFilepath($this->fixturePath . 'underscore_array_filter.env');
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertEquals(array(
-            'DATABASE' => array(
+        $this->assertEquals([
+            'DATABASE' => [
                 'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
-                0 => array(
+                0 => [
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                     'OTHERURL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
-                ),
-                1 => array(
+                ],
+                1 => [
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                     'OTHERURL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
-                ),
-            ),
-            'DATA' => array(
-                'BASE' => array(
+                ],
+            ],
+            'DATA' => [
+                'BASE' => [
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8'
-                ),
-            ),
+                ],
+            ],
 
-        ), $environment);
+        ], $environment);
     }
 
     /**
@@ -495,16 +504,16 @@ class LoaderTest extends TestCase
      */
     public function testMultipleFilters(): void
     {
-        $this->Loader->setFilters(array(
+        $this->Loader->setFilters([
             'josegonzalez\Dotenv\Filter\UrlParseFilter',
             'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
-        ));
+        ]);
         $this->Loader->setFilepath($this->fixturePath . 'filter.env');
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertSame(array(
-            'DATABASE' => array(
+        $this->assertSame([
+            'DATABASE' => [
                 'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                 'SCHEME' => 'mysql',
                 'HOST' => 'localhost',
@@ -514,9 +523,9 @@ class LoaderTest extends TestCase
                 'PATH' => '/database_name',
                 'QUERY' => 'encoding=utf8',
                 'FRAGMENT' => '',
-            ),
-            'DATA' => array(
-                'BASE' => array(
+            ],
+            'DATA' => [
+                'BASE' => [
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                     'SCHEME' => 'mysql',
                     'HOST' => 'localhost',
@@ -526,9 +535,9 @@ class LoaderTest extends TestCase
                     'PATH' => '/database_name',
                     'QUERY' => 'encoding=utf8',
                     'FRAGMENT' => '',
-                ),
-            ),
-        ), $environment);
+                ],
+            ],
+        ], $environment);
     }
 
     /**
@@ -538,7 +547,7 @@ class LoaderTest extends TestCase
     {
         $this->Loader->parse();
         $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->expect('FOO'));
-        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->expect(array('FOO', 'BAR')));
+        $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->expect(['FOO', 'BAR']));
     }
 
     /**
@@ -974,16 +983,16 @@ class LoaderTest extends TestCase
      */
     public function testSkipExisting(): void
     {
-        $this->assertEquals(array(), $this->Loader->skipped());
+        $this->assertEquals([], $this->Loader->skipped());
 
         $this->Loader->skipExisting('toEnv');
-        $this->assertEquals(array('toEnv'), $this->Loader->skipped());
+        $this->assertEquals(['toEnv'], $this->Loader->skipped());
 
-        $this->Loader->skipExisting(array('toEnv'));
-        $this->assertEquals(array('toEnv'), $this->Loader->skipped());
+        $this->Loader->skipExisting(['toEnv']);
+        $this->assertEquals(['toEnv'], $this->Loader->skipped());
 
         $this->Loader->skipExisting();
-        $this->assertEquals(array('apacheSetenv', 'define', 'putenv', 'toEnv', 'toServer'), $this->Loader->skipped());
+        $this->assertEquals(['apacheSetenv', 'define', 'putenv', 'toEnv', 'toServer'], $this->Loader->skipped());
     }
 
     /**
@@ -1007,12 +1016,12 @@ class LoaderTest extends TestCase
     public function testToArray(): void
     {
         $this->Loader->parse();
-        $this->assertEquals(array(
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $this->Loader->toArray());
+        ], $this->Loader->toArray());
     }
 
     /**
@@ -1045,7 +1054,7 @@ class LoaderTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->Loader->parse();
-        $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->protectedMethodCall($this->Loader, 'requireParse', ['toEnv']);
     }
 
     /**
@@ -1055,7 +1064,7 @@ class LoaderTest extends TestCase
     public function testRequireParseException(): void
     {
         $this->expectException(\LogicException::class);
-        $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->protectedMethodCall($this->Loader, 'requireParse', ['toEnv']);
     }
 
     /**
@@ -1065,7 +1074,7 @@ class LoaderTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->Loader->raiseExceptions(false);
-        $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->protectedMethodCall($this->Loader, 'requireParse', ['toEnv']);
     }
 
     /**
@@ -1075,7 +1084,7 @@ class LoaderTest extends TestCase
     public function testRaise(): void
     {
         $this->expectException(\LogicException::class);
-        $this->protectedMethodCall($this->Loader, 'raise', array('LogicException', 'derp'));
+        $this->protectedMethodCall($this->Loader, 'raise', ['LogicException', 'derp']);
     }
 
     /**
@@ -1086,73 +1095,73 @@ class LoaderTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->Loader->raiseExceptions(false);
-        $this->protectedMethodCall($this->Loader, 'raise', array('LogicException', 'derp'));
+        $this->protectedMethodCall($this->Loader, 'raise', ['LogicException', 'derp']);
     }
 
     public function testStatic(): void
     {
-        $dotenv = Loader::load(array(
+        $dotenv = Loader::load([
             'raiseExceptions' => false
-        ));
+        ]);
         $this->assertNull($dotenv->toArray());
 
         $dotenv = Loader::load($this->fixturePath . '.env');
-        $this->assertEquals(array(
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $dotenv->toArray());
+        ], $dotenv->toArray());
 
-        $dotenv = Loader::load(array(
+        $dotenv = Loader::load([
             'filepath' => $this->fixturePath . '.env',
-        ));
-        $this->assertEquals(array(
+        ]);
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $dotenv->toArray());
+        ], $dotenv->toArray());
 
-        $dotenv = Loader::load(array(
-            'filepaths' => array($this->fixturePath . '.env'),
-        ));
-        $this->assertEquals(array(
+        $dotenv = Loader::load([
+            'filepaths' => [$this->fixturePath . '.env'],
+        ]);
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $dotenv->toArray());
+        ], $dotenv->toArray());
 
-        $dotenv = Loader::load(array(
-            'filepaths' => array(
+        $dotenv = Loader::load([
+            'filepaths' => [
                 $this->fixturePath . '.env.nonexistent',
                 $this->fixturePath . '.env',
-            ),
-        ));
-        $this->assertEquals(array(
+            ],
+        ]);
+        $this->assertEquals([
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $dotenv->toArray());
+        ], $dotenv->toArray());
 
-        $dotenv = Loader::load(array(
+        $dotenv = Loader::load([
             'filepath' => $this->fixturePath . '.env',
             'prefix' => 'PREFIX_'
-        ));
-        $this->assertEquals(array(
+        ]);
+        $this->assertEquals([
             'PREFIX_FOO' => 'bar',
             'PREFIX_BAR' => 'baz',
             'PREFIX_SPACED' => 'with spaces',
             'PREFIX_EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ), $dotenv->toArray());
+        ], $dotenv->toArray());
 
-        $dotenv = Loader::load(array(
+        $dotenv = Loader::load([
             'filepath' => $this->fixturePath . 'url_parse_filter.env',
-            'filters' => array('josegonzalez\Dotenv\Filter\UrlParseFilter'),
-        ));
-        $this->assertSame(array(
+            'filters' => ['josegonzalez\Dotenv\Filter\UrlParseFilter'],
+        ]);
+        $this->assertSame([
             'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
             'READ_DATABASE_SCHEME' => 'mysql',
             'READ_DATABASE_HOST' => 'localhost',
@@ -1171,18 +1180,18 @@ class LoaderTest extends TestCase
             'DATABASE_PATH' => '/database_name',
             'DATABASE_QUERY' => 'encoding=utf8',
             'DATABASE_FRAGMENT' => '',
-        ), $dotenv->toArray());
+        ], $dotenv->toArray());
     }
 
 /**
  * Call a protected method on an object
  *
- * @param object $object object
+ * @param object $obj object
  * @param string $name method to call
- * @param array $args arguments to pass to the method
+ * @param array<mixed, mixed> $args arguments to pass to the method
  * @return mixed
  */
-    public function protectedMethodCall($obj, $name, array $args)
+    public function protectedMethodCall(object $obj, string $name, array $args = [])
     {
         $class = new \ReflectionClass($obj);
         $method = $class->getMethod($name);

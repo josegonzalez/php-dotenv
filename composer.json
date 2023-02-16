@@ -21,7 +21,9 @@
         "php": ">=7",
         "squizlabs/php_codesniffer": "2.*|3.*",
         "php-coveralls/php-coveralls": "~2.5",
-        "php-mock/php-mock-phpunit": "~2.6"
+        "php-mock/php-mock-phpunit": "~2.6",
+        "phpstan/phpstan": "^1.9",
+        "staabm/annotate-pull-request-from-checkstyle": "^1.8"
     },
     "autoload": {
         "psr-0": {
@@ -29,9 +31,18 @@
         }
     },
     "scripts": {
+        "ci": [
+            "@cs-check",
+            "@phpstan",
+            "@test"
+        ],
         "cs-check": "php -d memory_limit=-1 ./vendor/bin/phpcs --standard=psr2 ./src ./tests",
+        "cs-checkstyle": "php -d memory_limit=-1 ./vendor/bin/phpcs --standard=psr2 --report=checkstyle ./src ./tests",
         "cs-fix": "php -d memory_limit=-1 ./vendor/bin/phpcbf --standard=psr2 ./src ./tests",
+        "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan --no-progress -vvv",
+        "phpstan-github": "php -d memory_limit=-1 ./vendor/bin/phpstan --no-progress -vvv --error-format=github",
         "test": "php -d memory_limit=-1 ./vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml",
+        "coverage-clover": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-clover=tmp/coverage.xml --testdox",
         "coveralls": "php -d memory_limit=-1 ./vendor/bin/vendor/bin/coveralls -v"
     }
 }
