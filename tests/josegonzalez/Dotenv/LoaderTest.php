@@ -211,7 +211,7 @@ class LoaderTest extends TestCase
         $this->expectException(\M1\Env\Exception\ParseException::class);
         $this->expectExceptionMessage('Key can only contain alphanumeric' .
                 ' and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1');
-        $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env ');
+        $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env');
         $this->Loader->parse();
     }
 
@@ -1122,6 +1122,7 @@ class LoaderTest extends TestCase
         ], $dotenv->toArray());
 
         $dotenv = Loader::load([
+            'raiseExceptions' => true,
             'filepaths' => [
                 $this->fixturePath . '.env.nonexistent',
                 $this->fixturePath . '.env',

@@ -256,7 +256,7 @@ class Loader
      */
     public function parse()
     {
-        $contents = '';
+        $contents = false;
         $filepaths = $this->filepaths();
 
         foreach ($filepaths as $i => $filepath) {
