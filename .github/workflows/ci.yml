@@ -58,14 +58,15 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: composer run-script test
+      run: composer run-script test-${{ matrix.php-version }}
 
   coverage-php:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['5.5', '5.6', '7.1', '7.2', '7.4', '8.0', '8.1', '8.2']
+        php-version: ['5.5', '5.6', '7.2', '7.4', '8.0', '8.1', '8.2'] # removed 7.1 as it seems to have an issue with no code coverage driver.
+    name: Coverage PHP ${{ matrix.php-version }}
 
     steps:
     - uses: actions/checkout@v3
@@ -81,7 +82,7 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: composer run-script coverage-clover
+      run: composer run-script coverage--${{ matrix.php-version }}
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2
