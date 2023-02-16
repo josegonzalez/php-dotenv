@@ -58,9 +58,9 @@
         "test-5": "php -d memory_limit=-1 ./vendor/bin/phpunit -c phpunit.5.xml --colors=always --log-junit unitreport.xml --testdox",
         "test-7": "php -d memory_limit=-1 ./vendor/bin/phpunit -c phpunit.7.xml --colors=always --log-junit unitreport.xml --testdox",
         "test-8": "php -d memory_limit=-1 ./vendor/bin/phpunit -c phpunit.8.xml --colors=always --log-junit unitreport.xml --testdox",
-        "coverage-5": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit -c phpunit.5.xml --coverage-text --coverage-clover=coverage.xml --testdox",
-        "coverage-7": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit -c phpunit.7.xml --coverage-text --coverage-clover=coverage.xml --testdox",
-        "coverage-8": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit -c phpunit.8.xml --coverage-text --coverage-clover=coverage.xml --testdox",
+        "coverage-5": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit -c phpunit.5.xml --coverage-text --coverage-clover=./tmp/coverage.xml --testdox",
+        "coverage-7": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit -c phpunit.7.xml --coverage-text --coverage-clover=./tmp/coverage.xml --testdox",
+        "coverage-8": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit -c phpunit.8.xml --coverage-text --coverage-clover=./tmp/coverage.xml --testdox",
         "coveralls": "php -d memory_limit=-1 ./vendor/bin/vendor/bin/coveralls -v"
     }
 }

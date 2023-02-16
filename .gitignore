@@ -1,7 +1,8 @@
 .DS_Store
 build
 composer.lock
-tmp
+tmp/*
+!tmp/.gitkeep
 vendor
 .phpunit.result.cache
 /.phpunit.cache
