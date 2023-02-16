@@ -13,6 +13,8 @@ class Loader
 
     protected $environment = null;
 
+    protected $exceptions = array();
+
     protected $filepaths = null;
 
     protected $filters = array();

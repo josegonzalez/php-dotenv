@@ -7,14 +7,25 @@ use \PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 class ExpectTest extends PHPUnit_Framework_TestCase
 {
+    protected $env = array();
 
-    public function setUp()
+    protected $server = array();
+
+    /**
+     * Hopefully this will allow php > 7.1 to run.
+     * Phpunit >= *.0 uses setUp(): void which this needs to match, but will break php 5.x
+     */
+    public function _setUp()
     {
         $this->env = $_ENV;
         $this->server = $_SERVER;
     }
 
-    public function tearDown()
+    /**
+     * Hopefully this will allow php > 7.1 to run.
+     * Phpunit >= *.0 uses tearDown(): void which this needs to match, but will break php 5.x
+     */
+    public function _tearDown()
     {
         $_ENV = $this->env;
         $_SERVER = $this->server;
@@ -29,6 +40,7 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      */
     public function testExpect()
     {
+        $this->_setUp();
         $expect = new Expect($this->server);
         $this->assertTrue($expect('USER'));
         $this->assertTrue($expect(array('USER', 'HOME')));
@@ -46,8 +58,10 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectLogicException()
     {
+        $this->_setUp();
         $expect = new Expect($this->server);
         $expect();
+        $this->_tearDown();
     }
 
     /**
@@ -58,7 +72,9 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRuntimeException()
     {
+        $this->_setUp();
         $expect = new Expect($this->server);
         $expect('INVALID');
+        $this->_tearDown();
     }
 }

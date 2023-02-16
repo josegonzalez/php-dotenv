@@ -3,3 +3,4 @@ build
 composer.lock
 tmp
 vendor
+.phpunit.result.cache

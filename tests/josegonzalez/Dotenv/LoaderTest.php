@@ -14,8 +14,19 @@ function doNothing($data)
 class LoaderTest extends PHPUnit_Framework_TestCase
 {
     use PHPMock;
+    protected $env = [];
 
-    public function setUp()
+    protected $server = [];
+
+    protected $fixturePath = '';
+
+    protected $Loader;
+
+    /**
+     * Hopefully this will allow php > 7.1 to run.
+     * Phpunit >= *.0 uses setUp(): void which this needs to match, but will break php 5.x
+     */
+    public function _setUp()
     {
         $this->env = $_ENV;
         $this->server = $_SERVER;
@@ -24,7 +35,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $GLOBALS['apache_test_data'] = array();
     }
 
-    public function tearDown()
+    /**
+     * Hopefully this will allow php > 7.1 to run.
+     * Phpunit >= *.0 uses tearDown(): void which this needs to match, but will break php 5.x
+     */
+    public function _tearDown()
     {
         $_ENV = $this->env;
         $_SERVER = $this->server;
@@ -39,7 +54,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testFilepath()
     {
+        $this->_setUp();
         $this->assertEquals($this->fixturePath . '.env', $this->Loader->filepath());
+        $this->_tearDown();
     }
 
     /**
@@ -47,7 +64,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testFilepaths()
     {
+        $this->_setUp();
         $this->assertEquals(array($this->fixturePath . '.env'), $this->Loader->filepaths());
+        $this->_tearDown();
     }
 
     /**
@@ -56,6 +75,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilepath()
     {
+        $this->_setUp();
         $this->Loader->setFilepath('/tmp/.env');
         $this->assertEquals('/tmp/.env', $this->Loader->filepath());
 
@@ -66,6 +86,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'src' . DIRECTORY_SEPARATOR . 'josegonzalez' . DIRECTORY_SEPARATOR . 'Dotenv',
         )));
         $this->assertEquals($basePath . DIRECTORY_SEPARATOR .'.env', $this->Loader->filepath());
+        $this->_tearDown();
     }
 
     /**
@@ -73,6 +94,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParse()
     {
+        $this->_setUp();
         $this->Loader->setFilepath($this->fixturePath . 'all.env');
         $this->Loader->parse();
         $environment = $this->Loader->toArray();
@@ -168,6 +190,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('mail://localhost/?from=you@localhost', $environment['EMAIL_URL']);
         $this->assertEquals('smtp://user:secret@localhost:25/?from[site@localhost]=My+Site&timeout=30', $environment['EMAIL_SMTP_URL']);
         $this->assertEquals('smtp://user:secret@localhost:25/?from=you@localhost&messageId=1&template=0&layout=0&timeout=30', $environment['EMAIL_FAST_URL']);
+        $this->_tearDown();
     }
 
 
@@ -178,8 +201,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseException()
     {
+        $this->_setUp();
         $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env');
         $this->Loader->parse();
+        $this->_tearDown();
     }
 
     /**
@@ -189,8 +214,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileNotFound()
     {
+        $this->_setUp();
         $this->Loader->setFilepath('.env');
         $this->Loader->parse();
+        $this->_tearDown();
     }
 
     /**
@@ -200,8 +227,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileIsDirectory()
     {
+        $this->_setUp();
         $this->Loader->setFilepath('/tmp');
         $this->Loader->parse();
+        $this->_tearDown();
     }
 
     /**
@@ -211,10 +240,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileIsUnreadable()
     {
+        $this->_setUp();
         touch('/tmp/php-dotenv-unreadable');
         chmod('/tmp/php-dotenv-unreadable', 0000);
         $this->Loader->setFilepath('/tmp/php-dotenv-unreadable');
         $this->Loader->parse();
+        $this->_tearDown();
     }
 
     /**
@@ -222,7 +253,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testFilters()
     {
+        $this->_setUp();
         $this->assertSame(array(), $this->Loader->filters());
+        $this->_tearDown();
     }
 
     /**
@@ -230,6 +263,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilters()
     {
+        $this->_setUp();
         $this->assertSame(array(), $this->Loader->filters());
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
@@ -249,6 +283,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
                 return array();
             }
         )));
+        $this->_tearDown();
     }
 
     /**
@@ -258,9 +293,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilterNonexistentFilter()
     {
+        $this->_setUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'SomeFilter'
         )));
+        $this->_tearDown();
     }
 
     /**
@@ -270,9 +307,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilterInvalidCallable()
     {
+        $this->_setUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             $this
         )));
+        $this->_tearDown();
     }
 
     /**
@@ -281,6 +320,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testFilter()
     {
+        $this->_setUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
         )));
@@ -292,6 +332,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
         ), $this->Loader->toArray());
+        $this->_tearDown();
     }
 
 
@@ -301,6 +342,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testFilterCallable()
     {
+        $this->_setUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             function () {
                 return array('FOO' => 'BAR');
@@ -309,6 +351,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $this->Loader->filter();
         $this->assertEquals(array('FOO' => 'BAR'), $this->Loader->toArray());
+        $this->_tearDown();
     }
 
     /**
@@ -316,6 +359,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testLowercaseKeyFilter()
     {
+        $this->_setUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
         ));
@@ -328,6 +372,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'spaced' => 'with spaces',
             'equals' => 'pgsql:host=localhost;dbname=test',
         ), $this->Loader->toArray());
+        $this->_tearDown();
     }
 
     /**
@@ -335,6 +380,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testNullFilter()
     {
+        $this->_setUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
         ));
@@ -347,6 +393,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
         ), $this->Loader->toArray());
+        $this->_tearDown();
     }
 
 
@@ -355,6 +402,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRemapKeysFilter()
     {
+        $this->_setUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\RemapKeysFilter' => array(
                 'FOO' => 'QUX'
@@ -369,6 +417,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
         ), $this->Loader->toArray());
+        $this->_tearDown();
     }
 
     /**
@@ -376,6 +425,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testUppercaseFirstKeyFilter()
     {
+        $this->_setUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
             'josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter',
@@ -389,6 +439,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'Spaced' => 'with spaces',
             'Equals' => 'pgsql:host=localhost;dbname=test',
         ), $this->Loader->toArray());
+        $this->_tearDown();
     }
 
     /**
@@ -397,6 +448,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testUrlParseFilter()
     {
+        $this->_setUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\UrlParseFilter',
         ));
@@ -424,6 +476,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'DATABASE_QUERY' => 'encoding=utf8',
             'DATABASE_FRAGMENT' => '',
         ), $environment);
+        $this->_tearDown();
     }
 
     /**
@@ -431,6 +484,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testUnderscoreArrayFilter()
     {
+        $this->_setUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
         ));
@@ -457,6 +511,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             ),
 
         ), $environment);
+        $this->_tearDown();
     }
 
     /**
@@ -466,6 +521,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testMultipleFilters()
     {
+        $this->_setUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\UrlParseFilter',
             'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
@@ -500,6 +556,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
                 ),
             ),
         ), $environment);
+        $this->_tearDown();
     }
 
     /**
@@ -507,9 +564,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpect()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->expect('FOO'));
         $this->assertInstanceOf('josegonzalez\Dotenv\Loader', $this->Loader->expect(array('FOO', 'BAR')));
+        $this->_tearDown();
     }
 
     /**
@@ -518,7 +577,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRequireParse()
     {
+        $this->_setUp();
         $this->Loader->expect();
+        $this->_tearDown();
     }
 
     /**
@@ -528,8 +589,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectLogicException()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->expect();
+        $this->_tearDown();
     }
 
     /**
@@ -539,8 +602,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRuntimeException()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->expect('INVALID');
+        $this->_tearDown();
     }
 
     /**
@@ -548,6 +613,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvExceptionUnavailable()
     {
+        $this->_setUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
@@ -556,6 +622,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->expectExceptionMessage('Call to undefined function josegonzalez\Dotenv\apache_getenv()');
         $this->Loader->parse();
         $this->Loader->apacheSetenv(false);
+        $this->_tearDown();
     }
 
     /**
@@ -563,6 +630,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenv()
     {
+        $this->_setUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
@@ -591,6 +659,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', apache_getenv('BAR'));
         $this->assertEquals('with spaces', apache_getenv('SPACED'));
         $this->assertEquals('pgsql:host=localhost;dbname=test', apache_getenv('EQUALS'));
+        $this->_tearDown();
     }
 
     /**
@@ -598,6 +667,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvSkip()
     {
+        $this->_setUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
@@ -628,6 +698,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', apache_getenv('BAR'));
         $this->assertEquals('with spaces', apache_getenv('SPACED'));
         $this->assertEquals('pgsql:host=localhost;dbname=test', apache_getenv('EQUALS'));
+        $this->_tearDown();
     }
 
     /**
@@ -637,6 +708,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvException()
     {
+        $this->_setUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
@@ -661,6 +733,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $this->Loader->apacheSetenv(false);
         $this->Loader->apacheSetenv(false);
+        $this->_tearDown();
     }
 
 
@@ -669,6 +742,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvPreserveZeros()
     {
+        $this->_setUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
@@ -703,6 +777,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('', apache_getenv('Z_BOOL'));
         $this->assertEquals('', apache_getenv('Z_STRING'));
         $this->assertEquals('', apache_getenv('Z_NULLABLE'));
+        $this->_tearDown();
     }
 
     /**
@@ -710,6 +785,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testDefine()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->define();
 
@@ -717,6 +793,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', BAR);
         $this->assertEquals('with spaces', SPACED);
         $this->assertEquals('pgsql:host=localhost;dbname=test', EQUALS);
+        $this->_tearDown();
     }
 
     /**
@@ -724,6 +801,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testDefineSkip()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->skipExisting('define');
         $this->Loader->define();
@@ -732,6 +810,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', BAR);
         $this->assertEquals('with spaces', SPACED);
         $this->assertEquals('pgsql:host=localhost;dbname=test', EQUALS);
+        $this->_tearDown();
     }
 
     /**
@@ -741,8 +820,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testDefineException()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->define();
+        $this->_tearDown();
     }
 
     /**
@@ -750,6 +831,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToPutenv()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->putenv(false);
 
@@ -757,6 +839,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', getenv('BAR'));
         $this->assertEquals('with spaces', getenv('SPACED'));
         $this->assertEquals('pgsql:host=localhost;dbname=test', getenv('EQUALS'));
+        $this->_tearDown();
     }
 
     /**
@@ -764,6 +847,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToPutenvSkip()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->skipExisting('putenv');
         $this->Loader->putenv(false);
@@ -773,6 +857,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', getenv('BAR'));
         $this->assertEquals('with spaces', getenv('SPACED'));
         $this->assertEquals('pgsql:host=localhost;dbname=test', getenv('EQUALS'));
+        $this->_tearDown();
     }
 
     /**
@@ -782,9 +867,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToPutenvException()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->putenv(false);
         $this->Loader->putenv(false);
+        $this->_tearDown();
     }
 
     /**
@@ -792,6 +879,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToPutenvPreserveZeros()
     {
+        $this->_setUp();
         $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
         $this->Loader->parse();
         $this->Loader->putenv(false);
@@ -805,6 +893,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('', getenv('Z_BOOL'));
         $this->assertEquals('', getenv('Z_STRING'));
         $this->assertEquals('', getenv('Z_NULLABLE'));
+        $this->_tearDown();
     }
 
     /**
@@ -812,6 +901,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToEnv()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->toEnv(false);
 
@@ -819,6 +909,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $_ENV['BAR']);
         $this->assertEquals('with spaces', $_ENV['SPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test', $_ENV['EQUALS']);
+        $this->_tearDown();
     }
 
     /**
@@ -826,6 +917,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToEnvSkip()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->skipExisting('toEnv');
         $this->Loader->toEnv(false);
@@ -835,6 +927,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $_ENV['BAR']);
         $this->assertEquals('with spaces', $_ENV['SPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test', $_ENV['EQUALS']);
+        $this->_tearDown();
     }
 
     /**
@@ -844,9 +937,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToEnvException()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->toEnv(false);
         $this->Loader->toEnv(false);
+        $this->_tearDown();
     }
 
     /**
@@ -854,6 +949,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToEnvPreserveZeros()
     {
+        $this->_setUp();
         $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
         $this->Loader->parse();
         $this->Loader->toEnv(false);
@@ -867,6 +963,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $_ENV['Z_BOOL']);
         $this->assertEquals('', $_ENV['Z_STRING']);
         $this->assertEquals(null, $_ENV['Z_NULLABLE']);
+        $this->_tearDown();
     }
 
     /**
@@ -874,6 +971,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToServer()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->toServer(false);
 
@@ -881,6 +979,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $_SERVER['BAR']);
         $this->assertEquals('with spaces', $_SERVER['SPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test', $_SERVER['EQUALS']);
+        $this->_tearDown();
     }
 
     /**
@@ -888,6 +987,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToServerSkip()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->skipExisting('toServer');
         $this->Loader->toServer(false);
@@ -897,6 +997,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $_SERVER['BAR']);
         $this->assertEquals('with spaces', $_SERVER['SPACED']);
         $this->assertEquals('pgsql:host=localhost;dbname=test', $_SERVER['EQUALS']);
+        $this->_tearDown();
     }
 
     /**
@@ -906,9 +1007,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToServerException()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->Loader->toServer(false);
         $this->Loader->toServer(false);
+        $this->_tearDown();
     }
 
     /**
@@ -916,6 +1019,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToServerPreserveZeros()
     {
+        $this->_setUp();
         $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
         $this->Loader->parse();
         $this->Loader->toServer(false);
@@ -929,6 +1033,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $_SERVER['Z_BOOL']);
         $this->assertEquals('', $_SERVER['Z_STRING']);
         $this->assertEquals(null, $_SERVER['Z_NULLABLE']);
+        $this->_tearDown();
     }
 
     /**
@@ -937,6 +1042,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSkipExisting()
     {
+        $this->_setUp();
         $this->assertEquals(array(), $this->Loader->skipped());
 
         $this->Loader->skipExisting('toEnv');
@@ -947,6 +1053,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
         $this->Loader->skipExisting();
         $this->assertEquals(array('apacheSetenv', 'define', 'putenv', 'toEnv', 'toServer'), $this->Loader->skipped());
+        $this->_tearDown();
     }
 
     /**
@@ -955,6 +1062,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testPrefix()
     {
+        $this->_setUp();
         $this->assertEquals('KEY', $this->Loader->prefixed('KEY'));
 
         $this->Loader->prefix('PREFIX_');
@@ -962,6 +1070,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
         $this->Loader->prefix('PREFIX_TWO_');
         $this->assertEquals('PREFIX_TWO_KEY', $this->Loader->prefixed('KEY'));
+        $this->_tearDown();
     }
 
     /**
@@ -969,6 +1078,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToArray()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->assertEquals(array(
             'FOO' => 'bar',
@@ -976,6 +1086,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
         ), $this->Loader->toArray());
+        $this->_tearDown();
     }
 
     /**
@@ -984,7 +1095,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToArrayRequireParse()
     {
+        $this->_setUp();
         $this->Loader->toArray();
+        $this->_tearDown();
     }
 
     /**
@@ -992,10 +1105,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
+        $this->_setUp();
         $this->assertEquals('[]', $this->Loader->__toString());
 
         $this->Loader->parse();
         $this->assertEquals('{"FOO":"bar","BAR":"baz","SPACED":"with spaces","EQUALS":"pgsql:host=localhost;dbname=test"}', $this->Loader->__toString());
+        $this->_tearDown();
     }
 
     /**
@@ -1003,8 +1118,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRequireParse()
     {
+        $this->_setUp();
         $this->Loader->parse();
         $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->_tearDown();
     }
 
     /**
@@ -1013,7 +1130,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRequireParseException()
     {
+        $this->_setUp();
         $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->_tearDown();
     }
 
     /**
@@ -1021,8 +1140,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRequireParseNoException()
     {
+        $this->_setUp();
         $this->Loader->raiseExceptions(false);
         $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->_tearDown();
     }
 
     /**
@@ -1031,7 +1152,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRaise()
     {
+        $this->_setUp();
         $this->protectedMethodCall($this->Loader, 'raise', array('LogicException', 'derp'));
+        $this->_tearDown();
     }
 
     /**
@@ -1040,12 +1163,15 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRaiseNoException()
     {
+        $this->_setUp();
         $this->Loader->raiseExceptions(false);
         $this->protectedMethodCall($this->Loader, 'raise', array('LogicException', 'derp'));
+        $this->_tearDown();
     }
 
     public function testStatic()
     {
+        $this->_setUp();
         $dotenv = Loader::load(array(
             'raiseExceptions' => false
         ));
@@ -1127,12 +1253,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
             'DATABASE_QUERY' => 'encoding=utf8',
             'DATABASE_FRAGMENT' => '',
         ), $dotenv->toArray());
+        $this->_tearDown();
     }
 
 /**
  * Call a protected method on an object
  *
- * @param Object $object object
+ * @param object $obj object
  * @param string $name method to call
  * @param array $args arguments to pass to the method
  * @return mixed
