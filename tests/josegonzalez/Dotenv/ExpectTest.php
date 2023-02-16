@@ -48,6 +48,7 @@ class ExpectTest extends PHPUnit_Framework_TestCase
         $expect = new Expect($this->server, false);
         $this->assertFalse($expect('FOO'));
         $this->assertFalse($expect(array('USER', 'FOO')));
+        $this->compatibleTearDown();
     }
 
     /**
