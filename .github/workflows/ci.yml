@@ -12,6 +12,30 @@ permissions:
   contents: read
 
 jobs:
+  coding-standard:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['5.5', '5.6', '7.1', '7.2', '7.4', '8.0', '8.1', '8.2']
+    name: Coding Standard ${{ matrix.php-version }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, intl
+        coverage: none
+
+    - name: Composer install
+      run: composer install
+
+    - name: Run PHP CodeSniffer
+      run: composer run-script cs-check
+
   test:
     runs-on: ubuntu-22.04
     strategy:
@@ -66,27 +90,3 @@ jobs:
         token: ${{ secrets.CODE_COV_TOKEN }}
         files: ./tmp/coverage.xml
         verbose: true
-
-  coding-standard:
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
-        php-version: ['5.5', '5.6', '7.1', '7.2', '7.4', '8.0', '8.1', '8.2']
-    name: Coding Standard ${{ matrix.php-version }}
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-version }}
-        extensions: mbstring, intl
-        coverage: none
-
-    - name: Composer install
-      run: composer install
-
-    - name: Run PHP CodeSniffer
-      run: composer run-script cs-check
