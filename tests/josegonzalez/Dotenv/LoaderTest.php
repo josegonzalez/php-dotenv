@@ -175,8 +175,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $environment = $this->Loader->toArray();
         $this->assertEquals('app', $environment['APP_NAME']);
+        $this->assertIsInt($environment['DEBUG']);
         $this->assertSame(2, $environment['DEBUG']);
-        $this->assertInternalType('int', $environment['DEBUG']);
         $this->assertEquals('DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi', $environment['SECURITY_SALT']);
         $this->assertEquals('76859309657453542496749683645', $environment['SECURITY_CIPHER_SEED']);
         $this->assertEquals('mysql://user:password@localhost/database_name?encoding=utf8', $environment['DATABASE_URL']);
