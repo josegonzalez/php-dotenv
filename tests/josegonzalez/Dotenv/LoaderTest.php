@@ -24,7 +24,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     /**
      * Hopefully this will allow php > 7.1 to run.
-     * Phpunit >= *.0 uses setUp(): void which this needs to match, but will break php 5.x
+     * Phpunit >= 8.0 uses setUp(): void which this needs to match, but will break php 5.x
      */
     public function compatibleSetUp()
     {
@@ -37,7 +37,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
     /**
      * Hopefully this will allow php > 7.1 to run.
-     * Phpunit >= *.0 uses tearDown(): void which this needs to match, but will break php 5.x
+     * Phpunit >= 8.0 uses tearDown(): void which this needs to match, but will break php 5.x
      */
     public function compatibleTearDown()
     {
@@ -220,12 +220,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseException()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\M1\Env\Exception\ParseException::class);
             $this->expectExceptionMessage('Key can only contain alphanumeric' .
                 ' and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1');
         }
-        $this->compatibleSetUp();
         $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env');
         $this->Loader->parse();
         $this->compatibleTearDown();
@@ -243,11 +243,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileNotFound()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\InvalidArgumentException::class);
             $this->expectExceptionMessage("Environment file '.env' is not found");
         }
-        $this->compatibleSetUp();
         $this->Loader->setFilepath('.env');
         $this->Loader->parse();
         $this->compatibleTearDown();
@@ -265,11 +265,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileIsDirectory()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\InvalidArgumentException::class);
             $this->expectExceptionMessage("Environment file '/tmp' is a directory. Should be a file");
         }
-        $this->compatibleSetUp();
         $this->Loader->setFilepath('/tmp');
         $this->Loader->parse();
         $this->compatibleTearDown();
@@ -287,11 +287,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileIsUnreadable()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\InvalidArgumentException::class);
             $this->expectExceptionMessage("Environment file '/tmp/php-dotenv-unreadable' is not readable");
         }
-        $this->compatibleSetUp();
         touch('/tmp/php-dotenv-unreadable');
         chmod('/tmp/php-dotenv-unreadable', 0000);
         $this->Loader->setFilepath('/tmp/php-dotenv-unreadable');
@@ -352,11 +352,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilterNonexistentFilter()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
             $this->expectExceptionMessage('Invalid filter class SomeFilter');
         }
-        $this->compatibleSetUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'SomeFilter'
         )));
@@ -373,11 +373,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilterInvalidCallable()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
             $this->expectExceptionMessage('Invalid filter class');
         }
-        $this->compatibleSetUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             $this
         )));
@@ -746,11 +746,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRequireParse()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
             $this->expectExceptionMessage('Environment must be parsed before calling expect()');
         }
-        $this->compatibleSetUp();
         $this->Loader->expect();
         $this->compatibleTearDown();
     }
@@ -770,11 +770,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectLogicException()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
             $this->expectExceptionMessage('No arguments were passed to expect()');
         }
-        $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->expect();
         $this->compatibleTearDown();
@@ -795,11 +795,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRuntimeException()
     {
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\RuntimeException::class);
             $this->expectExceptionMessage("Required ENV vars missing: ['INVALID']");
         }
-        $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->expect('INVALID');
         $this->compatibleTearDown();
@@ -816,11 +816,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvExceptionUnavailable()
     {
-        $this->compatibleSetUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
 
+        $this->compatibleSetUp();
         $this->expectException(\Error::class);
         $this->expectExceptionMessage('Call to undefined function josegonzalez\Dotenv\apache_getenv()');
         $this->Loader->parse();
@@ -839,11 +839,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenv()
     {
-        $this->compatibleSetUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
 
+        $this->compatibleSetUp();
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {
@@ -883,11 +883,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvSkip()
     {
-        $this->compatibleSetUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
 
+        $this->compatibleSetUp();
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {
@@ -934,11 +934,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
+
+        $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
             $this->expectExceptionMessage('Key "FOO" has already been defined in apache_getenv()');
         }
-        $this->compatibleSetUp();
 
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
@@ -977,11 +978,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvPreserveZeros()
     {
-        $this->compatibleSetUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
 
+        $this->compatibleSetUp();
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
             function ($key) {
