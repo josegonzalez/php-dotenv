@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['5.5', '5.6', '7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
+        php-version: ['7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
     name: Test PHP ${{ matrix.php-version }}
 
     steps:
@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['5.5', '5.6', '7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
+        php-version: ['7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
     name: Coverage PHP ${{ matrix.php-version }}
 
     steps:
@@ -69,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['5.5', '5.6', '7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
+        php-version: ['7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
     name: Coding Standard ${{ matrix.php-version }}
 
     steps:
@@ -93,7 +93,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['5.5', '5.6', '7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
+        php-version: ['7.0', '7.1', '7.4', '8.0', '8.1', '8.2']
     name: Static Analysis - PHP ${{ matrix.php-version }}
 
     steps:
