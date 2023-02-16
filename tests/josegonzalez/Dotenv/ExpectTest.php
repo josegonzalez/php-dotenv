@@ -61,5 +61,4 @@ class ExpectTest extends PHPUnit_Framework_TestCase
         $expect = new Expect($this->server);
         $expect('INVALID');
     }
-
 }
