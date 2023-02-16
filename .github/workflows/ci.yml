@@ -6,7 +6,7 @@ on:
       - '*'
   push:
     branches:
-      - master
+      - '*'
 
 permissions:
   contents: read
@@ -35,7 +35,7 @@ jobs:
 
     - name: Run PHPUnit
       run: composer run-script test
-  
+
   coverage-php:
     runs-on: ubuntu-22.04
     strategy:
