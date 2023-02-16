@@ -26,5 +26,17 @@
         "psr-0": {
             "josegonzalez\\Dotenv": ["src", "tests"]
         }
+    },
+    "scripts": {
+        "ci": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "php -d memory_limit=-1 ./vendor/bin/phpcs --standard=psr2 ./src ./tests",
+        "cs-checkstyle": "php -d memory_limit=-1 ./vendor/bin/phpcs --standard=psr2 --report=checkstyle ./src ./tests",
+        "cs-fix": "php -d memory_limit=-1 ./vendor/bin/phpcbf --standard=psr2 ./src ./tests",
+        "test": "php -d memory_limit=-1 ./vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml",
+        "coverage-clover": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-clover=tmp/coverage.xml --testdox",
+        "coveralls": "php -d memory_limit=-1 ./vendor/bin/vendor/bin/coveralls -v"
     }
 }
