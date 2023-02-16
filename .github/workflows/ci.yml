@@ -89,4 +89,4 @@ jobs:
       run: composer install
 
     - name: Run PHP CodeSniffer
-      run: composer run-script cs-checkstyle | vendor/bin/cs2pr
+      run: composer run-script cs-check
