@@ -33,10 +33,21 @@
             "@test",
             "@coverage-clover"
         ],
+        "test-5.5": "@test-5",
+        "test-5.6": "@test-5",
+        "test-7.0": "@test-7",
+        "test-7.1": "@test-7",
+        "test-7.2": "@test-7",
+        "test-8.0": "@test-8",
+        "test-8.1": "@test-8",
+        "test-8.2": "@test-8",
         "cs-check": "php -d memory_limit=-1 ./vendor/bin/phpcs --standard=psr2 --exclude=Generic.Files.LineLength ./src ./tests",
         "cs-checkstyle": "php -d memory_limit=-1 ./vendor/bin/phpcs --standard=psr2 --report=checkstyle ./src ./tests",
         "cs-fix": "php -d memory_limit=-1 ./vendor/bin/phpcbf --standard=psr2 ./src ./tests",
-        "test": "php -d memory_limit=-1 ./vendor/bin/phpunit --colors=always --log-junit unitreport.xml --testdox",
+        "test": "@test-8",
+        "test-5": "php -d memory_limit=-1 ./vendor/bin/phpunit -c phpunit.5.xml --colors=always --log-junit unitreport.xml --testdox",
+        "test-7": "php -d memory_limit=-1 ./vendor/bin/phpunit -c phpunit.7.xml --colors=always --log-junit unitreport.xml --testdox",
+        "test-8": "php -d memory_limit=-1 ./vendor/bin/phpunit -c phpunit.8.xml --colors=always --log-junit unitreport.xml --testdox",
         "coverage-clover": "php -d memory_limit=-1 -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml --testdox",
         "coveralls": "php -d memory_limit=-1 ./vendor/bin/vendor/bin/coveralls -v"
     }
