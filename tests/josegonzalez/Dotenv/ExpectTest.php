@@ -58,6 +58,10 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectLogicException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('No arguments were passed to expect()');
+        }
         $this->compatibleSetUp();
         $expect = new Expect($this->server);
         $expect();
@@ -72,6 +76,10 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRuntimeException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessage("Required ENV vars missing: ['INVALID']");
+        }
         $this->compatibleSetUp();
         $expect = new Expect($this->server);
         $expect('INVALID');

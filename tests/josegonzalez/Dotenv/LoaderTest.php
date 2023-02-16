@@ -201,6 +201,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\M1\Env\Exception\ParseException::class);
+            $this->expectExceptionMessage('Key can only contain alphanumeric' .
+                ' and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1');
+        }
         $this->compatibleSetUp();
         $this->Loader->setFilepath($this->fixturePath . 'parse_exception.env');
         $this->Loader->parse();
@@ -214,6 +219,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileNotFound()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\InvalidArgumentException::class);
+            $this->expectExceptionMessage("Environment file '.env' is not found");
+        }
         $this->compatibleSetUp();
         $this->Loader->setFilepath('.env');
         $this->Loader->parse();
@@ -227,6 +236,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileIsDirectory()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\InvalidArgumentException::class);
+            $this->expectExceptionMessage("Environment file '/tmp' is a directory. Should be a file");
+        }
         $this->compatibleSetUp();
         $this->Loader->setFilepath('/tmp');
         $this->Loader->parse();
@@ -240,6 +253,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testParseFileIsUnreadable()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\InvalidArgumentException::class);
+            $this->expectExceptionMessage("Environment file '/tmp/php-dotenv-unreadable' is not readable");
+        }
         $this->compatibleSetUp();
         touch('/tmp/php-dotenv-unreadable');
         chmod('/tmp/php-dotenv-unreadable', 0000);
@@ -293,6 +310,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilterNonexistentFilter()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Invalid filter class SomeFilter');
+        }
         $this->compatibleSetUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'SomeFilter'
@@ -307,6 +328,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testSetFilterInvalidCallable()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Invalid filter class');
+        }
         $this->compatibleSetUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             $this
@@ -577,6 +602,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRequireParse()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Environment must be parsed before calling expect()');
+        }
         $this->compatibleSetUp();
         $this->Loader->expect();
         $this->compatibleTearDown();
@@ -589,6 +618,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectLogicException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('No arguments were passed to expect()');
+        }
         $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->expect();
@@ -602,6 +635,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testExpectRuntimeException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessage("Required ENV vars missing: ['INVALID']");
+        }
         $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->expect('INVALID');
@@ -708,10 +745,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToApacheSetenvException()
     {
-        $this->compatibleSetUp();
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
         }
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Key "FOO" has already been defined in apache_getenv()');
+        }
+        $this->compatibleSetUp();
 
         $apacheGetenv = $this->getFunctionMock(__NAMESPACE__, 'apache_getenv');
         $apacheGetenv->expects($this->any())->willReturnCallback(
@@ -820,6 +861,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testDefineException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Key "FOO" has already been defined');
+        }
         $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->define();
@@ -867,6 +912,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToPutenvException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Key "FOO" has already been defined in getenv()');
+        }
         $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->putenv(false);
@@ -937,6 +986,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToEnvException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Key "FOO" has already been defined in $_ENV');
+        }
         $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->toEnv(false);
@@ -1007,6 +1060,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToServerException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Key "FOO" has already been defined in $_SERVER');
+        }
         $this->compatibleSetUp();
         $this->Loader->parse();
         $this->Loader->toServer(false);
@@ -1095,6 +1152,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testToArrayRequireParse()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Environment must be parsed before calling toArray()');
+        }
         $this->compatibleSetUp();
         $this->Loader->toArray();
         $this->compatibleTearDown();
@@ -1130,6 +1191,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRequireParseException()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Environment must be parsed before calling toEnv()');
+        }
         $this->compatibleSetUp();
         $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
         $this->compatibleTearDown();
@@ -1152,6 +1217,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
      */
     public function testRaise()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('derp');
+        }
         $this->compatibleSetUp();
         $this->protectedMethodCall($this->Loader, 'raise', array('LogicException', 'derp'));
         $this->compatibleTearDown();
