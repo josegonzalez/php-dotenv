@@ -175,7 +175,6 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->Loader->parse();
         $environment = $this->Loader->toArray();
         $this->assertEquals('app', $environment['APP_NAME']);
-        $this->assertIsInt($environment['DEBUG']);
         if (method_exists($this, 'assertInternalType')) {
             $this->assertInternalType('int', $environment['DEBUG']);
         }
