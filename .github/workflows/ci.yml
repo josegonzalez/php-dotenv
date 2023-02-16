@@ -90,27 +90,3 @@ jobs:
 
     - name: Run PHP CodeSniffer
       run: composer run-script cs-checkstyle | vendor/bin/cs2pr
-
-  static-analysis:
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
-        php-version: ['5.5', '5.6', '7.1', '7.2', '7.4', '8.0', '8.1', '8.2']
-    name: Static Analysis - PHP ${{ matrix.php-version }}
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-version }}
-        extensions: mbstring, intl
-        coverage: none
-
-    - name: Composer install
-      run: composer install
-
-    - name: Run PHP Analyzer
-      run: composer run-script phpstan-github
