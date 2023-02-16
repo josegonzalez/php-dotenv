@@ -10,8 +10,14 @@
          convertDeprecationsToExceptions="true"
          failOnRisky="false"
          failOnWarning="true"
-         stopOnFailure="false"
          backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
          verbose="true">
     <testsuites>
         <testsuite name="Dotenv Test Suite">
