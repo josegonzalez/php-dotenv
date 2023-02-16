@@ -50,6 +50,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::filepath
      */
     public function testFilepath()
@@ -60,6 +62,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::filepaths
      */
     public function testFilepaths()
@@ -70,8 +74,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
      * @covers \josegonzalez\Dotenv\Loader::setFilepath
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::filepath
      */
     public function testSetFilepath()
     {
@@ -90,6 +96,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Loader::parse
      */
     public function testParse()
@@ -197,6 +210,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
      * @expectedException M1\Env\Exception\ParseException
      * @expectedExceptionMessage Key can only contain alphanumeric and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1
@@ -215,6 +232,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Environment file '.env' is not found
@@ -232,6 +254,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Environment file '/tmp' is a directory. Should be a file
@@ -249,6 +276,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Environment file '/tmp/php-dotenv-unreadable' is not readable
@@ -268,6 +300,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::filters
      */
     public function testFilters()
@@ -278,6 +312,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filters
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::setFilters
      */
     public function testSetFilters()
@@ -306,6 +343,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::setFilters
      * @expectedException LogicException
      * @expectedExceptionMessage Invalid filter class SomeFilter
@@ -324,6 +364,9 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::setFilters
      * @expectedException LogicException
      * @expectedExceptionMessage Invalid filter class
@@ -342,6 +385,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Loader::filter
      * @covers \josegonzalez\Dotenv\Filter\NullFilter::__invoke
      */
@@ -364,6 +415,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Loader::filter
      * @covers \josegonzalez\Dotenv\Filter\CallableFilter::__invoke
      */
@@ -382,6 +441,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\LowercaseKeyFilter::__invoke
      */
     public function testLowercaseKeyFilter()
@@ -403,6 +472,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\NullFilter::__invoke
      */
     public function testNullFilter()
@@ -425,6 +504,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\RemapKeysFilter::__invoke
      */
     public function testRemapKeysFilter()
@@ -448,6 +537,17 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Filter\LowercaseKeyFilter::__invoke
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter::__invoke
      */
     public function testUppercaseFirstKeyFilter()
@@ -470,6 +570,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::__invoke
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
      */
@@ -507,6 +617,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\UnderscoreArrayFilter::__invoke
      */
     public function testUnderscoreArrayFilter()
@@ -542,6 +662,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepath
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::__invoke
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
      * @covers \josegonzalez\Dotenv\Filter\UnderscoreArrayFilter::__invoke
@@ -587,6 +717,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Expect::__construct
+     * @covers \josegonzalez\Dotenv\Expect::__invoke
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::expect
      */
     public function testExpect()
@@ -599,6 +736,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::expect
      * @expectedException LogicException
      * @expectedExceptionMessage Environment must be parsed before calling expect()
      */
@@ -614,6 +756,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Expect::__construct
+     * @covers \josegonzalez\Dotenv\Expect::__invoke
+     * @covers \josegonzalez\Dotenv\Expect::raise
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::expect
      * @expectedException LogicException
      * @expectedExceptionMessage No arguments were passed to expect()
@@ -631,6 +781,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Expect::__construct
+     * @covers \josegonzalez\Dotenv\Expect::__invoke
+     * @covers \josegonzalez\Dotenv\Expect::raise
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::expect
      * @expectedException RuntimeException
      * @expectedExceptionMessage Required ENV vars missing: ['INVALID']
@@ -648,6 +806,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
      */
     public function testToApacheSetenvExceptionUnavailable()
@@ -665,6 +829,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
      */
     public function testToApacheSetenv()
@@ -702,6 +872,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
      */
     public function testToApacheSetenvSkip()
@@ -741,6 +918,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
      * @expectedException LogicException
      * @expectedExceptionMessage Key "FOO" has already been defined in apache_getenv()
@@ -781,6 +965,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
     public function testToApacheSetenvPreserveZeros()
@@ -824,6 +1016,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::define
      */
     public function testDefine()
@@ -840,6 +1038,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::define
      */
     public function testDefineSkip()
@@ -857,6 +1062,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::define
      * @expectedException LogicException
      * @expectedExceptionMessage Key "FOO" has already been defined
@@ -874,6 +1086,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
     public function testToPutenv()
@@ -890,6 +1108,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
     public function testToPutenvSkip()
@@ -908,6 +1133,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::putenv
      * @expectedException LogicException
      * @expectedExceptionMessage Key "FOO" has already been defined in getenv()
@@ -926,6 +1158,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
     public function testToPutenvPreserveZeros()
@@ -948,6 +1187,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      */
     public function testToEnv()
@@ -964,6 +1209,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      */
     public function testToEnvSkip()
@@ -982,6 +1234,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      * @expectedException LogicException
      * @expectedExceptionMessage Key "FOO" has already been defined in $_ENV
@@ -1000,6 +1259,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      */
     public function testToEnvPreserveZeros()
@@ -1022,6 +1288,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toServer
      */
     public function testToServer()
@@ -1038,6 +1310,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toServer
      */
     public function testToServerSkip()
@@ -1056,6 +1335,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toServer
      * @expectedException LogicException
      * @expectedExceptionMessage Key "FOO" has already been defined in $_SERVER
@@ -1074,6 +1360,13 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toServer
      */
     public function testToServerPreserveZeros()
@@ -1096,6 +1389,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::skipped
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      */
@@ -1116,6 +1411,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::prefix
      * @covers \josegonzalez\Dotenv\Loader::prefixed
      */
@@ -1133,6 +1430,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toArray
      */
     public function testToArray()
@@ -1149,6 +1452,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @expectedException LogicException
      * @expectedExceptionMessage Environment must be parsed before calling toArray()
      */
@@ -1164,6 +1472,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Loader::__toString
      */
     public function testToString()
@@ -1177,6 +1493,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      */
     public function testRequireParse()
@@ -1184,10 +1504,15 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->compatibleSetUp();
         $this->Loader->parse();
         $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->assertSame(true, true);
         $this->compatibleTearDown();
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @expectedException LogicException
      * @expectedExceptionMessage Environment must be parsed before calling toEnv()
      */
@@ -1203,6 +1528,10 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::raiseExceptions
      */
     public function testRequireParseNoException()
@@ -1210,10 +1539,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->compatibleSetUp();
         $this->Loader->raiseExceptions(false);
         $this->protectedMethodCall($this->Loader, 'requireParse', array('toEnv'));
+        $this->assertSame(true, true);
         $this->compatibleTearDown();
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::raise
      * @expectedException LogicException
      * @expectedExceptionMessage derp
      */
@@ -1229,6 +1562,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::raiseExceptions
      * @covers \josegonzalez\Dotenv\Loader::raise
      */
@@ -1237,9 +1572,27 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->compatibleSetUp();
         $this->Loader->raiseExceptions(false);
         $this->protectedMethodCall($this->Loader, 'raise', array('LogicException', 'derp'));
+        $this->assertSame(true, true);
         $this->compatibleTearDown();
     }
 
+    /**
+     * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::__invoke
+     * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
+     * @covers \josegonzalez\Dotenv\Loader::__construct
+     * @covers \josegonzalez\Dotenv\Loader::filepaths
+     * @covers \josegonzalez\Dotenv\Loader::filter
+     * @covers \josegonzalez\Dotenv\Loader::parse
+     * @covers \josegonzalez\Dotenv\Loader::prefix
+     * @covers \josegonzalez\Dotenv\Loader::prefixed
+     * @covers \josegonzalez\Dotenv\Loader::raise
+     * @covers \josegonzalez\Dotenv\Loader::raiseExceptions
+     * @covers \josegonzalez\Dotenv\Loader::requireParse
+     * @covers \josegonzalez\Dotenv\Loader::setFilepaths
+     * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @covers \josegonzalez\Dotenv\Loader::load
+     * @covers \josegonzalez\Dotenv\Loader::toArray
+     */
     public function testStatic()
     {
         $this->compatibleSetUp();

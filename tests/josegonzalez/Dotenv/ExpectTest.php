@@ -51,6 +51,7 @@ class ExpectTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Expect::__construct
      * @covers \josegonzalez\Dotenv\Expect::__invoke
      * @covers \josegonzalez\Dotenv\Expect::raise
      * @expectedException LogicException
@@ -69,6 +70,7 @@ class ExpectTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \josegonzalez\Dotenv\Expect::__construct
      * @covers \josegonzalez\Dotenv\Expect::__invoke
      * @covers \josegonzalez\Dotenv\Expect::raise
      * @expectedException RuntimeException
