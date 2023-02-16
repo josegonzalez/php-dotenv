@@ -11,6 +11,7 @@
          failOnRisky="false"
          failOnWarning="true"
          stopOnFailure="false"
+         backupGlobals="false"
          verbose="true">
     <testsuites>
         <testsuite name="Dotenv Test Suite">
