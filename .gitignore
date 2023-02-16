@@ -7,3 +7,4 @@ vendor
 /.phpunit.cache
 coverage.xml
 unitreport.xml
+.vscode
