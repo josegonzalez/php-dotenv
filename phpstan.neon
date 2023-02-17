@@ -1,0 +1,9 @@
+parameters:
+    level: 7
+    parallel:
+        processTimeout: 900.0
+    paths:
+    - src
+    - tests
+    ignoreErrors:
+    - '#Constant [A-Z_]+ not found.#'

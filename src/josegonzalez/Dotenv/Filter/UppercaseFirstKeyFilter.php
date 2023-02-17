@@ -2,17 +2,18 @@
 
 namespace josegonzalez\Dotenv\Filter;
 
-class UppercaseFirstKeyFilter
+class UppercaseFirstKeyFilter extends Filter
 {
     /**
      * Uppercases the first letter for all the keys for an environment to a single-depth.
      *
-     * @param array $environment Array of environment data
-     * @return array
+     * @param array<string, mixed> $environment Array of environment data
+     * @param null|array<mixed, mixed> $config Config values. Here to be compatible with Filter.
+     * @return array<string, mixed>
      */
-    public function __invoke(array $environment)
+    public function __invoke(array $environment, $config = null)
     {
-        $newEnvironment = array();
+        $newEnvironment = [];
         foreach ($environment as $key => $value) {
             $newEnvironment[ucfirst($key)] = $value;
         }

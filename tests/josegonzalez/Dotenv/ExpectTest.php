@@ -5,7 +5,7 @@ namespace josegonzalez\Dotenv;
 use josegonzalez\Dotenv\Expect;
 use \PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
-class ExpectTest extends PHPUnit_Framework_TestCase
+class ExpectTest extends TestCase
 {
     protected $env = array();
 
@@ -38,12 +38,12 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      * @covers \josegonzalez\Dotenv\Expect::__invoke
      * @covers \josegonzalez\Dotenv\Expect::raise
      */
-    public function testExpect()
+    public function testExpect(): void
     {
         $this->compatibleSetUp();
         $expect = new Expect($this->server);
         $this->assertTrue($expect('USER'));
-        $this->assertTrue($expect(array('USER', 'HOME')));
+        $this->assertTrue($expect(['USER', 'HOME']));
 
         $expect = new Expect($this->server, false);
         $this->assertFalse($expect('FOO'));
@@ -55,10 +55,8 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      * @covers \josegonzalez\Dotenv\Expect::__construct
      * @covers \josegonzalez\Dotenv\Expect::__invoke
      * @covers \josegonzalez\Dotenv\Expect::raise
-     * @expectedException LogicException
-     * @expectedExceptionMessage No arguments were passed to expect()
      */
-    public function testExpectLogicException()
+    public function testExpectLogicException(): void
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -74,10 +72,8 @@ class ExpectTest extends PHPUnit_Framework_TestCase
      * @covers \josegonzalez\Dotenv\Expect::__construct
      * @covers \josegonzalez\Dotenv\Expect::__invoke
      * @covers \josegonzalez\Dotenv\Expect::raise
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Required ENV vars missing: ['INVALID']
      */
-    public function testExpectRuntimeException()
+    public function testExpectRuntimeException(): void
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
