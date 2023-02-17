@@ -2,16 +2,15 @@
 
 namespace josegonzalez\Dotenv\Filter;
 
-class NullFilter extends Filter
+class NullFilter
 {
     /**
      * Returns the environment data without any changes.
      *
-     * @param array<string, mixed> $environment Array of environment data
-     * @param null|array<mixed, mixed> $config Config values. Here to be compatible with Filter.
-     * @return array<string, mixed>
+     * @param array $environment Array of environment data
+     * @return array
      */
-    public function __invoke(array $environment, $config = [])
+    public function __invoke(array $environment)
     {
         return $environment;
     }

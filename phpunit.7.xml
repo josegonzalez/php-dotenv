@@ -14,4 +14,12 @@
       <directory suffix=".php">tests/josegonzalez/Dotenv</directory>
     </testsuite>
   </testsuites>
+  <filter>
+    <!-- this is required, even if empty, until
+    https://github.com/sebastianbergmann/phpunit/issues/1872
+    is resolved -->
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">src</directory>
+    </whitelist>
+  </filter>
 </phpunit>

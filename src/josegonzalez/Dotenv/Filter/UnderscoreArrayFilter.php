@@ -2,7 +2,7 @@
 
 namespace josegonzalez\Dotenv\Filter;
 
-class UnderscoreArrayFilter extends Filter
+class UnderscoreArrayFilter
 {
     /**
      * Expands a flat array to a nested array.
@@ -10,33 +10,32 @@ class UnderscoreArrayFilter extends Filter
      * For example, `['0_Foo_Bar' => 'Far']` becomes
      * `[['Foo' => ['Bar' => 'Far']]]`.
      *
-     * @param array<string, mixed> $environment Array of environment data
-     * @param null|array<mixed, mixed> $config Config values. Here to be compatible with Filter.
-     * @return array<string, mixed>
+     * @param array $environment Array of environment data
+     * @return array
      */
-    public function __invoke(array $environment, $config = null)
+    public function __invoke(array $environment)
     {
-        $result = [];
+        $result = array();
         foreach ($environment as $flat => $value) {
             $keys = explode('_', $flat);
             $keys = array_reverse($keys);
-            $child = [
+            $child = array(
                 $keys[0] => $value
-            ];
+            );
             array_shift($keys);
             foreach ($keys as $k) {
-                $child = [
+                $child = array(
                     $k => $child
-                ];
+                );
             }
 
-            $stack = [[$child, &$result]];
+            $stack = array(array($child, &$result));
             while (!empty($stack)) {
                 foreach ($stack as $curKey => &$curMerge) {
                     foreach ($curMerge[0] as $key => &$val) {
                         $hasKey = !empty($curMerge[1][$key]);
                         if ($hasKey && (array)$curMerge[1][$key] === $curMerge[1][$key] && (array)$val === $val) {
-                            $stack[] = [&$val, &$curMerge[1][$key]];
+                            $stack[] = array(&$val, &$curMerge[1][$key]);
                         } else {
                             $curMerge[1][$key] = $val;
                         }
