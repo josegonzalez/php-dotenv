@@ -7,7 +7,7 @@ use RuntimeException;
 
 class Expect
 {
-    protected $environment = [];
+    protected $environment = array();
 
     protected $raise = true;
 

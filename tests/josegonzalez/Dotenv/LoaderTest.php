@@ -14,9 +14,9 @@ function doNothing($data)
 class LoaderTest extends PHPUnit_Framework_TestCase
 {
     use PHPMock;
-    protected $env = [];
+    protected $env = array();
 
-    protected $server = [];
+    protected $server = array();
 
     protected $fixturePath = '';
 
