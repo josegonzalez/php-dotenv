@@ -2,16 +2,16 @@
 
 namespace josegonzalez\Dotenv\Filter;
 
-class CallableFilter extends Filter
+class CallableFilter
 {
     /**
      * Wraps a callable and invokes it upon the environment.
      *
-     * @param array<string, mixed> $environment Array of environment data
-     * @param array<mixed, mixed> $config Array of configuration data that includes the callable
-     * @return array<string, mixed>|object
+     * @param array $environment Array of environment data
+     * @param array $config Array of configuration data that includes the callable
+     * @return array
      */
-    public function __invoke(array $environment, $config = [])
+    public function __invoke(array $environment, array $config)
     {
         $callable = $config['callable'];
         return $callable($environment, $config);

@@ -6,17 +6,12 @@ use josegonzalez\Dotenv\Loader;
 use phpmock\phpunit\PHPMock;
 use \PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
-/**
- * Just return what was handed to it.
- * @param mixed $data basically anything
- * @return mixed Whatever was in $data
- */
 function doNothing($data)
 {
     return $data;
 }
 
-class LoaderTest extends TestCase
+class LoaderTest extends PHPUnit_Framework_TestCase
 {
     use PHPMock;
     protected $env = [];
@@ -59,7 +54,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::filepath
      */
-    public function testFilepath(): void
+    public function testFilepath()
     {
         $this->compatibleSetUp();
         $this->assertEquals($this->fixturePath . '.env', $this->Loader->filepath());
@@ -71,7 +66,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::filepaths
      */
-    public function testFilepaths(): void
+    public function testFilepaths()
     {
         $this->compatibleSetUp();
         $this->assertEquals(array($this->fixturePath . '.env'), $this->Loader->filepaths());
@@ -84,18 +79,18 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::filepath
      */
-    public function testSetFilepath(): void
+    public function testSetFilepath()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilepath('/tmp/.env');
         $this->assertEquals('/tmp/.env', $this->Loader->filepath());
 
         $this->Loader->setFilepath(null);
-        $basePath = realpath(implode(DIRECTORY_SEPARATOR, [
+        $basePath = realpath(implode(DIRECTORY_SEPARATOR, array(
             __DIR__,
             '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..',
             'src' . DIRECTORY_SEPARATOR . 'josegonzalez' . DIRECTORY_SEPARATOR . 'Dotenv',
-        ]));
+        )));
         $this->assertEquals($basePath . DIRECTORY_SEPARATOR .'.env', $this->Loader->filepath());
         $this->compatibleTearDown();
     }
@@ -110,7 +105,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Loader::parse
      */
-    public function testParse(): void
+    public function testParse()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilepath($this->fixturePath . 'all.env');
@@ -139,11 +134,10 @@ class LoaderTest extends TestCase
         $this->assertEquals('bar', $environment['CFOO']);
         $this->assertEquals('with spaces', $environment['CSPACED']);
         $this->assertEquals('a value with a # character', $environment['CQUOTES']);
-        $this->assertEquals('a value with a # character & a quote " ' .
-            'character inside quotes', $environment['CQUOTESWITHQUOTE']);
+        $this->assertEquals('a value with a # character & a quote " character inside quotes', $environment['CQUOTESWITHQUOTE']);
         $this->assertSame(null, $environment['CNULL']);
 
-        $this->assertEquals([
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'unquotedwithspaces spaces',
@@ -188,7 +182,7 @@ class LoaderTest extends TestCase
             'STRING_EMPTY' => '',
             'STRING_EMPTY_2' => '',
             'NO_VALUE_INLINE_COMMENT' => null,
-        ], $environment);
+        ), $environment);
 
         $this->Loader->setFilepath($this->fixturePath . 'cake.env');
         $this->Loader->parse();
@@ -221,9 +215,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepath
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
-     * @expectedExceptionMessage
+     * @expectedException M1\Env\Exception\ParseException
+     * @expectedExceptionMessage Key can only contain alphanumeric and underscores and can not start with a number: 01SKIPPED near 01SKIPPED at line 1
      */
-    public function testParseException(): void
+    public function testParseException()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -243,8 +238,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepath
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Environment file '.env' is not found
      */
-    public function testParseFileNotFound(): void
+    public function testParseFileNotFound()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -263,8 +260,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepath
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Environment file '/tmp' is a directory. Should be a file
      */
-    public function testParseFileIsDirectory(): void
+    public function testParseFileIsDirectory()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -283,8 +282,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepath
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::parse
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Environment file '/tmp/php-dotenv-unreadable' is not readable
      */
-    public function testParseFileIsUnreadable(): void
+    public function testParseFileIsUnreadable()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -303,7 +304,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::filters
      */
-    public function testFilters(): void
+    public function testFilters()
     {
         $this->compatibleSetUp();
         $this->assertSame(array(), $this->Loader->filters());
@@ -316,26 +317,26 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::setFilters
      */
-    public function testSetFilters(): void
+    public function testSetFilters()
     {
         $this->compatibleSetUp();
         $this->assertSame(array(), $this->Loader->filters());
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
-        ]));
+        )));
 
 
-        $this->assertEquals($this->Loader, $this->Loader->setFilters([
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\doNothing',
-        ]));
+        )));
 
-        $this->assertEquals($this->Loader, $this->Loader->setFilters([
-            'josegonzalez\Dotenv\doNothing' => ['key' => 'value'],
-        ]));
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
+            'josegonzalez\Dotenv\doNothing' => array('key' => 'value'),
+        )));
 
-        $this->assertEquals($this->Loader, $this->Loader->setFilters([
+        $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             function () {
-                return [];
+                return array();
             }
         )));
         $this->compatibleTearDown();
@@ -346,8 +347,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::raise
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @expectedException LogicException
+     * @expectedExceptionMessage Invalid filter class SomeFilter
      */
-    public function testSetFilterNonexistentFilter(): void
+    public function testSetFilterNonexistentFilter()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -365,8 +368,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::raise
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::setFilters
+     * @expectedException LogicException
+     * @expectedExceptionMessage Invalid filter class
      */
-    public function testSetFilterInvalidCallable(): void
+    public function testSetFilterInvalidCallable()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -391,15 +396,15 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::filter
      * @covers \josegonzalez\Dotenv\Filter\NullFilter::__invoke
      */
-    public function testFilter(): void
+    public function testFilter()
     {
         $this->compatibleSetUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
-        ]));
+        )));
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals([
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
@@ -421,14 +426,14 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::filter
      * @covers \josegonzalez\Dotenv\Filter\CallableFilter::__invoke
      */
-    public function testFilterCallable(): void
+    public function testFilterCallable()
     {
         $this->compatibleSetUp();
         $this->assertEquals($this->Loader, $this->Loader->setFilters(array(
             function () {
-                return ['FOO' => 'BAR'];
+                return array('FOO' => 'BAR');
             }
-        ]));
+        )));
         $this->Loader->parse();
         $this->Loader->filter();
         $this->assertEquals(array('FOO' => 'BAR'), $this->Loader->toArray());
@@ -448,16 +453,16 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\LowercaseKeyFilter::__invoke
      */
-    public function testLowercaseKeyFilter(): void
+    public function testLowercaseKeyFilter()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
-        ]);
+        ));
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals([
+        $this->assertEquals(array(
             'foo' => 'bar',
             'bar' => 'baz',
             'spaced' => 'with spaces',
@@ -479,16 +484,16 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\NullFilter::__invoke
      */
-    public function testNullFilter(): void
+    public function testNullFilter()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\NullFilter',
-        ]);
+        ));
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals([
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
@@ -511,18 +516,18 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\RemapKeysFilter::__invoke
      */
-    public function testRemapKeysFilter(): void
+    public function testRemapKeysFilter()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\RemapKeysFilter' => array(
                 'FOO' => 'QUX'
-            ],
-        ]);
+            ),
+        ));
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals([
+        $this->assertEquals(array(
             'QUX' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
@@ -545,17 +550,17 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter::__invoke
      */
-    public function testUppercaseFirstKeyFilter(): void
+    public function testUppercaseFirstKeyFilter()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\LowercaseKeyFilter',
             'josegonzalez\Dotenv\Filter\UppercaseFirstKeyFilter',
-        ]);
+        ));
         $this->Loader->setFilepath($this->fixturePath . '.env');
         $this->Loader->parse();
         $this->Loader->filter();
-        $this->assertEquals([
+        $this->assertEquals(array(
             'Foo' => 'bar',
             'Bar' => 'baz',
             'Spaced' => 'with spaces',
@@ -578,17 +583,17 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::__invoke
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
      */
-    public function testUrlParseFilter(): void
+    public function testUrlParseFilter()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\UrlParseFilter',
-        ]);
+        ));
         $this->Loader->setFilepath($this->fixturePath . 'url_parse_filter.env');
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertSame([
+        $this->assertSame(array(
             'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
             'READ_DATABASE_SCHEME' => 'mysql',
             'READ_DATABASE_HOST' => 'localhost',
@@ -624,33 +629,33 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Filter\UnderscoreArrayFilter::__invoke
      */
-    public function testUnderscoreArrayFilter(): void
+    public function testUnderscoreArrayFilter()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
-        ]);
+        ));
         $this->Loader->setFilepath($this->fixturePath . 'underscore_array_filter.env');
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertEquals([
-            'DATABASE' => [
+        $this->assertEquals(array(
+            'DATABASE' => array(
                 'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
-                0 => [
+                0 => array(
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                     'OTHERURL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
-                ],
-                1 => [
+                ),
+                1 => array(
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                     'OTHERURL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
-                ],
-            ],
-            'DATA' => [
-                'BASE' => [
+                ),
+            ),
+            'DATA' => array(
+                'BASE' => array(
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8'
-                ],
-            ],
+                ),
+            ),
 
         ), $environment);
         $this->compatibleTearDown();
@@ -671,19 +676,19 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Filter\UrlParseFilter::get
      * @covers \josegonzalez\Dotenv\Filter\UnderscoreArrayFilter::__invoke
      */
-    public function testMultipleFilters(): void
+    public function testMultipleFilters()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilters(array(
             'josegonzalez\Dotenv\Filter\UrlParseFilter',
             'josegonzalez\Dotenv\Filter\UnderscoreArrayFilter',
-        ]);
+        ));
         $this->Loader->setFilepath($this->fixturePath . 'filter.env');
         $this->Loader->parse();
         $this->Loader->filter();
         $environment = $this->Loader->toArray();
-        $this->assertSame([
-            'DATABASE' => [
+        $this->assertSame(array(
+            'DATABASE' => array(
                 'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                 'SCHEME' => 'mysql',
                 'HOST' => 'localhost',
@@ -693,9 +698,9 @@ class LoaderTest extends TestCase
                 'PATH' => '/database_name',
                 'QUERY' => 'encoding=utf8',
                 'FRAGMENT' => '',
-            ],
-            'DATA' => [
-                'BASE' => [
+            ),
+            'DATA' => array(
+                'BASE' => array(
                     'URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
                     'SCHEME' => 'mysql',
                     'HOST' => 'localhost',
@@ -721,7 +726,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::expect
      */
-    public function testExpect(): void
+    public function testExpect()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -739,7 +744,7 @@ class LoaderTest extends TestCase
      * @expectedException LogicException
      * @expectedExceptionMessage Environment must be parsed before calling expect()
      */
-    public function testExpectRequireParse(): void
+    public function testExpectRequireParse()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -760,8 +765,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::expect
+     * @expectedException LogicException
+     * @expectedExceptionMessage No arguments were passed to expect()
      */
-    public function testExpectLogicException(): void
+    public function testExpectLogicException()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -783,8 +790,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::expect
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Required ENV vars missing: ['INVALID']
      */
-    public function testExpectRuntimeException(): void
+    public function testExpectRuntimeException()
     {
         $this->compatibleSetUp();
         if (method_exists($this, 'expectException')) {
@@ -805,7 +814,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
      */
-    public function testToApacheSetenvExceptionUnavailable(): void
+    public function testToApacheSetenvExceptionUnavailable()
     {
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
@@ -828,7 +837,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
      */
-    public function testToApacheSetenv(): void
+    public function testToApacheSetenv()
     {
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
@@ -872,7 +881,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
      */
-    public function testToApacheSetenvSkip(): void
+    public function testToApacheSetenvSkip()
     {
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
@@ -917,8 +926,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::apacheSetenv
+     * @expectedException LogicException
+     * @expectedExceptionMessage Key "FOO" has already been defined in apache_getenv()
      */
-    public function testToApacheSetenvException(): void
+    public function testToApacheSetenvException()
     {
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
@@ -947,8 +958,6 @@ class LoaderTest extends TestCase
             }
         );
 
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Key "FOO" has already been defined in apache_getenv()');
         $this->Loader->parse();
         $this->Loader->apacheSetenv(false);
         $this->Loader->apacheSetenv(false);
@@ -967,7 +976,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
-    public function testToApacheSetenvPreserveZeros(): void
+    public function testToApacheSetenvPreserveZeros()
     {
         if (version_compare(PHP_VERSION, '7.0', '<')) {
             $this->markTestSkipped('Unable to mock bare php functions');
@@ -1016,7 +1025,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::define
      */
-    public function testDefine(): void
+    public function testDefine()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1039,7 +1048,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::define
      */
-    public function testDefineSkip(): void
+    public function testDefineSkip()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1062,8 +1071,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::define
+     * @expectedException LogicException
+     * @expectedExceptionMessage Key "FOO" has already been defined
      */
-    public function testDefineException(): void
+    public function testDefineException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
@@ -1084,7 +1095,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
-    public function testToPutenv(): void
+    public function testToPutenv()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1107,7 +1118,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
-    public function testToPutenvSkip(): void
+    public function testToPutenvSkip()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1131,8 +1142,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::putenv
+     * @expectedException LogicException
+     * @expectedExceptionMessage Key "FOO" has already been defined in getenv()
      */
-    public function testToPutenvException(): void
+    public function testToPutenvException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
@@ -1155,7 +1168,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::putenv
      */
-    public function testToPutenvPreserveZeros(): void
+    public function testToPutenvPreserveZeros()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
@@ -1183,7 +1196,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      */
-    public function testToEnv(): void
+    public function testToEnv()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1206,7 +1219,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      */
-    public function testToEnvSkip(): void
+    public function testToEnvSkip()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1230,8 +1243,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toEnv
+     * @expectedException LogicException
+     * @expectedExceptionMessage Key "FOO" has already been defined in $_ENV
      */
-    public function testToEnvException(): void
+    public function testToEnvException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
@@ -1254,7 +1269,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toEnv
      */
-    public function testToEnvPreserveZeros(): void
+    public function testToEnvPreserveZeros()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
@@ -1282,7 +1297,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toServer
      */
-    public function testToServer(): void
+    public function testToServer()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1305,7 +1320,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toServer
      */
-    public function testToServerSkip(): void
+    public function testToServerSkip()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1329,8 +1344,10 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toServer
+     * @expectedException LogicException
+     * @expectedExceptionMessage Key "FOO" has already been defined in $_SERVER
      */
-    public function testToServerException(): void
+    public function testToServerException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
@@ -1353,7 +1370,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      * @covers \josegonzalez\Dotenv\Loader::toServer
      */
-    public function testToServerPreserveZeros(): void
+    public function testToServerPreserveZeros()
     {
         $this->compatibleSetUp();
         $this->Loader->setFilepaths($this->fixturePath . 'zero_test_0.env');
@@ -1378,16 +1395,16 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::skipped
      * @covers \josegonzalez\Dotenv\Loader::skipExisting
      */
-    public function testSkipExisting(): void
+    public function testSkipExisting()
     {
         $this->compatibleSetUp();
         $this->assertEquals(array(), $this->Loader->skipped());
 
         $this->Loader->skipExisting('toEnv');
-        $this->assertEquals(['toEnv'], $this->Loader->skipped());
+        $this->assertEquals(array('toEnv'), $this->Loader->skipped());
 
-        $this->Loader->skipExisting(['toEnv']);
-        $this->assertEquals(['toEnv'], $this->Loader->skipped());
+        $this->Loader->skipExisting(array('toEnv'));
+        $this->assertEquals(array('toEnv'), $this->Loader->skipped());
 
         $this->Loader->skipExisting();
         $this->assertEquals(array('apacheSetenv', 'define', 'putenv', 'toEnv', 'toServer'), $this->Loader->skipped());
@@ -1400,7 +1417,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::prefix
      * @covers \josegonzalez\Dotenv\Loader::prefixed
      */
-    public function testPrefix(): void
+    public function testPrefix()
     {
         $this->compatibleSetUp();
         $this->assertEquals('KEY', $this->Loader->prefixed('KEY'));
@@ -1422,11 +1439,11 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::toArray
      */
-    public function testToArray(): void
+    public function testToArray()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
-        $this->assertEquals([
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
@@ -1444,7 +1461,7 @@ class LoaderTest extends TestCase
      * @expectedException LogicException
      * @expectedExceptionMessage Environment must be parsed before calling toArray()
      */
-    public function testToArrayRequireParse(): void
+    public function testToArrayRequireParse()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
@@ -1466,7 +1483,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::toArray
      * @covers \josegonzalez\Dotenv\Loader::__toString
      */
-    public function testToString(): void
+    public function testToString()
     {
         $this->compatibleSetUp();
         $this->assertEquals('[]', $this->Loader->__toString());
@@ -1483,7 +1500,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::requireParse
      */
-    public function testRequireParse(): void
+    public function testRequireParse()
     {
         $this->compatibleSetUp();
         $this->Loader->parse();
@@ -1500,7 +1517,7 @@ class LoaderTest extends TestCase
      * @expectedException LogicException
      * @expectedExceptionMessage Environment must be parsed before calling toEnv()
      */
-    public function testRequireParseException(): void
+    public function testRequireParseException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
@@ -1518,7 +1535,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::setFilepaths
      * @covers \josegonzalez\Dotenv\Loader::raiseExceptions
      */
-    public function testRequireParseNoException(): void
+    public function testRequireParseNoException()
     {
         $this->compatibleSetUp();
         $this->Loader->raiseExceptions(false);
@@ -1534,7 +1551,7 @@ class LoaderTest extends TestCase
      * @expectedException LogicException
      * @expectedExceptionMessage derp
      */
-    public function testRaise(): void
+    public function testRaise()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException(\LogicException::class);
@@ -1551,7 +1568,7 @@ class LoaderTest extends TestCase
      * @covers \josegonzalez\Dotenv\Loader::raiseExceptions
      * @covers \josegonzalez\Dotenv\Loader::raise
      */
-    public function testRaiseNoException(): void
+    public function testRaiseNoException()
     {
         $this->compatibleSetUp();
         $this->Loader->raiseExceptions(false);
@@ -1582,67 +1599,66 @@ class LoaderTest extends TestCase
         $this->compatibleSetUp();
         $dotenv = Loader::load(array(
             'raiseExceptions' => false
-        ]);
+        ));
         $this->assertNull($dotenv->toArray());
 
         $dotenv = Loader::load($this->fixturePath . '.env');
-        $this->assertEquals([
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ], $dotenv->toArray());
+        ), $dotenv->toArray());
 
-        $dotenv = Loader::load([
+        $dotenv = Loader::load(array(
             'filepath' => $this->fixturePath . '.env',
-        ]);
-        $this->assertEquals([
+        ));
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ], $dotenv->toArray());
+        ), $dotenv->toArray());
 
-        $dotenv = Loader::load([
-            'filepaths' => [$this->fixturePath . '.env'],
-        ]);
-        $this->assertEquals([
+        $dotenv = Loader::load(array(
+            'filepaths' => array($this->fixturePath . '.env'),
+        ));
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ], $dotenv->toArray());
+        ), $dotenv->toArray());
 
-        $dotenv = Loader::load([
-            'raiseExceptions' => true,
-            'filepaths' => [
+        $dotenv = Loader::load(array(
+            'filepaths' => array(
                 $this->fixturePath . '.env.nonexistent',
                 $this->fixturePath . '.env',
-            ],
-        ]);
-        $this->assertEquals([
+            ),
+        ));
+        $this->assertEquals(array(
             'FOO' => 'bar',
             'BAR' => 'baz',
             'SPACED' => 'with spaces',
             'EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ], $dotenv->toArray());
+        ), $dotenv->toArray());
 
-        $dotenv = Loader::load([
+        $dotenv = Loader::load(array(
             'filepath' => $this->fixturePath . '.env',
             'prefix' => 'PREFIX_'
-        ]);
-        $this->assertEquals([
+        ));
+        $this->assertEquals(array(
             'PREFIX_FOO' => 'bar',
             'PREFIX_BAR' => 'baz',
             'PREFIX_SPACED' => 'with spaces',
             'PREFIX_EQUALS' => 'pgsql:host=localhost;dbname=test',
-        ], $dotenv->toArray());
+        ), $dotenv->toArray());
 
-        $dotenv = Loader::load([
+        $dotenv = Loader::load(array(
             'filepath' => $this->fixturePath . 'url_parse_filter.env',
-            'filters' => ['josegonzalez\Dotenv\Filter\UrlParseFilter'],
-        ]);
-        $this->assertSame([
+            'filters' => array('josegonzalez\Dotenv\Filter\UrlParseFilter'),
+        ));
+        $this->assertSame(array(
             'READ_DATABASE_URL' => 'mysql://user:password@localhost/database_name?encoding=utf8',
             'READ_DATABASE_SCHEME' => 'mysql',
             'READ_DATABASE_HOST' => 'localhost',
@@ -1669,12 +1685,11 @@ class LoaderTest extends TestCase
  * Call a protected method on an object
  *
  * @param object $obj object
- * @param object $obj object
  * @param string $name method to call
- * @param array<mixed, mixed> $args arguments to pass to the method
+ * @param array $args arguments to pass to the method
  * @return mixed
  */
-    public function protectedMethodCall(object $obj, string $name, array $args = [])
+    public function protectedMethodCall($obj, $name, array $args)
     {
         $class = new \ReflectionClass($obj);
         $method = $class->getMethod($name);

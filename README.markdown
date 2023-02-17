@@ -13,29 +13,20 @@ A `.env` file parsing and loading library for PHP.
 
 ## Requirements
 
-* PHP 5.5+|7.2+
+* PHP 5.5+
 
 ## Installation
 
 _[Using [Composer](http://getcomposer.org/)]_
 
-Run `composer require josegonzalez/dotenv`
+Run `composer require josegonzalez/dotenv:dev-master`
 
 Or add the plugin to your project's `composer.json` - something like this:
 
-For php 5.5 -> 7.4
-```json
+```javascript
   {
     "require": {
-      "josegonzalez/dotenv": ~3.2"
-    }
-  }
-```
-For php 7.4 -> 8.2+
-```json
-  {
-    "require": {
-      "josegonzalez/dotenv": ~4.0"
+      "josegonzalez/dotenv": "dev-master"
     }
   }
 ```
