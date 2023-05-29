@@ -13,6 +13,8 @@ class Loader
 
     protected $environment = null;
 
+    protected $exceptions = array();
+
     protected $filepaths = null;
 
     protected $filters = array();
@@ -32,7 +34,6 @@ class Loader
     public function __construct($filepaths = null)
     {
         $this->setFilepaths($filepaths);
-        return $this;
     }
 
     public static function load($options = null)

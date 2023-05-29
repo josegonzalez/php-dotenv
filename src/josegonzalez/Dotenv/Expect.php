@@ -7,6 +7,8 @@ use RuntimeException;
 
 class Expect
 {
+    protected $environment = array();
+
     protected $raise = true;
 
     public function __construct($environment, $raise = true)

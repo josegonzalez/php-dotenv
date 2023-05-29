@@ -1,5 +1,5 @@
 [![Build Status](https://img.shields.io/travis/josegonzalez/php-dotenv/master.svg?branch=master&style=flat-square)](https://travis-ci.org/josegonzalez/php-dotenv)
-[![Coverage Status](https://img.shields.io/coveralls/josegonzalez/php-dotenv.svg?branch=master&style=flat-square)](https://coveralls.io/r/josegonzalez/php-dotenv?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/josegonzalez/dotenv.svg?style=flat-square)](https://codecov.io/github/josegonzalez/dotenv)
 [![Total Downloads](https://img.shields.io/packagist/dt/josegonzalez/dotenv.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/dotenv)
 [![Latest Stable Version](https://img.shields.io/packagist/v/josegonzalez/dotenv.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/dotenv)
 
@@ -19,14 +19,14 @@ A `.env` file parsing and loading library for PHP.
 
 _[Using [Composer](http://getcomposer.org/)]_
 
-Run `composer require josegonzalez/dotenv:dev-master`
+Run `composer require josegonzalez/dotenv:`
 
 Or add the plugin to your project's `composer.json` - something like this:
 
 ```javascript
   {
     "require": {
-      "josegonzalez/dotenv": "dev-master"
+      "josegonzalez/dotenv": "3.3.0"
     }
   }
 ```

@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - '*'
+
+permissions:
+  contents: read
+
+jobs:
+  coding-standard:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['5.5', '5.6', '7.1', '7.2', '7.4', '8.0', '8.1', '8.2']
+    name: Coding Standard ${{ matrix.php-version }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, intl
+        coverage: none
+
+    - name: Composer install
+      run: composer install
+
+    - name: Run PHP CodeSniffer
+      run: composer run-script cs-check
+
+  test:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['5.5', '5.6', '7.1', '7.2', '7.4', '8.0', '8.1', '8.2']
+    name: Test PHP ${{ matrix.php-version }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, intl
+        coverage: none
+
+    - name: Composer install
+      run: composer install
+
+    - name: Run PHPUnit
+      run: composer run-script test-${{ matrix.php-version }}
+
+  coverage-php:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['5.5', '5.6', '7.2', '7.4', '8.0', '8.1', '8.2'] # removed 7.1 as it seems to have an issue with no code coverage driver.
+    name: Coverage PHP ${{ matrix.php-version }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, intl
+        coverage: pcov
+
+    - name: Composer install
+      run: composer install
+
+    - name: Run PHPUnit
+      run: composer run-script coverage-${{ matrix.php-version }}
+
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./tmp/coverage.xml
+        verbose: true
